@@ -13755,9 +13755,10 @@ $$
 <br></p>
 $$
 \begin{align*}x &amp;\sim \mathcal{N}\left(\mu,\sigma^2\right) \\
-&amp; \implies P_Y\left(y\right) = P_X\left(x\right), \quad y = \frac{x-\mu}{\sigma}, \quad x=\sigma y + \mu\\
+&amp; \implies P_Y\left(y\right) = P_X\left(x\right), \quad y = \frac{x-\mu}{\sigma}, \quad x=\sigma y + \mu\\\\
 P_X\left(X=x\right) &amp;\sim \exp\left(-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2\right) \\
-&amp;= \exp\left(-\frac{1}{2}\frac{\left(x-\mu\right)^2}{\sigma^2}\right)
+&amp;= \exp\left(-\frac{1}{2}\frac{\left(x-\mu\right)^2}{\sigma^2}\right) \\\\
+E[x] &amp;= \mu \\ \text{var}(x) &amp;= E[(x-\mu)^2] = \sigma^2
 \end{align*}$$<p></p>
 <p><br></p>
 <p></p><center><img src="data:image/png;base64,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" width="280"></center>
@@ -13899,7 +13900,9 @@ $$
 \begin{align*} \mathcal{N}\big(x;\, \mu,\Sigma\big) &amp;= \frac{1}{(2\pi)^{\frac{n}{2}}\lvert\Sigma\rvert^{\frac{1}{2}}}\exp\left(-\frac{1}{2}\left(x-\mu\right)^T\Sigma^{-1}\left(x-\mu\right)\right) \\ \\
 \mu &amp;= \text{length}\,\, n \,\,\text{column vector} \\
 \Sigma &amp;= n \times n \,\,\text{matrix (covariance matrix)} \\
-\lvert\Sigma\rvert &amp;= \text{matrix determinant}\end{align*}$$</p>
+\lvert\Sigma\rvert &amp;= \text{matrix determinant}\\\\
+E[x] &amp;= \mu \\ \text{cov}(x) &amp;= E[(x-\mu)(x-\mu)^T] = \Sigma
+\end{align*}$$</p>
 <p><br></p>
 <ul>
 <li>Multivariate Gaussian models and ellipse<ul>
@@ -14332,6 +14335,113 @@ D =
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.1.-Affine-Transformation">4.1. Affine Transformation<a class="anchor-link" href="#4.1.-Affine-Transformation">¶</a></h2><ul>
+<li>Suppose $x \sim \mathcal{N}(\mu_x, \Sigma_x)$</li>
+</ul>
+<ul>
+<li>Consider affine transformation of $x$</li>
+</ul>
+<p><br></p>
+$$y = Ax + b$$<p><br></p>
+<ul>
+<li>Then it is amazing that $y$ is Gaussian with </li>
+</ul>
+<p><br></p>
+$$
+\begin{align*}
+E[y] &amp; = AE[x] + b = A\mu_x + b\\\\
+\text{cov}(y) &amp; = \Sigma_y = A\text{cov}(x)A^T = A\Sigma_x A^T
+\end{align*}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.2-Marginal-Probability-of-a-Gaussian">4.2 Marginal Probability of a Gaussian<a class="anchor-link" href="#4.2-Marginal-Probability-of-a-Gaussian">¶</a></h2><ul>
+<li>Suppose $x \sim \mathcal{N}(\mu, \Sigma)$</li>
+</ul>
+<p><br></p>
+$$x = \begin{bmatrix} x_1 \\ x_2\end{bmatrix}, \quad \mu = \begin{bmatrix} \mu_1 \\ \mu_2\end{bmatrix}, \quad \Sigma = \begin{bmatrix} \Sigma_{11}&amp; \Sigma_{12}\\ \Sigma_{21}&amp; \Sigma_{22} \end{bmatrix}$$<p><br></p>
+<ul>
+<li>Let's look at the component $x_1$</li>
+</ul>
+<p><br></p>
+$$
+\begin{align*}
+x_1 &amp;= \begin{bmatrix} I &amp; 0\end{bmatrix} x = Ax \quad (\text{affine transformation})\\\\
+E[x_1] &amp;= \begin{bmatrix} I &amp; 0\end{bmatrix} E[x] = \mu_1 \\\\
+\text{cov}(x_1) &amp;= \begin{bmatrix} I &amp; 0\end{bmatrix} \text{cov}(x) \begin{bmatrix} I \\ 0\end{bmatrix} = \begin{bmatrix} I &amp; 0\end{bmatrix}\Sigma \begin{bmatrix} I \\ 0\end{bmatrix} = \Sigma_{11}
+\end{align*}
+$$<p><br></p>
+<ul>
+<li>In fact, the random vector $x_1$ is also Gaussian. (this is not obvious)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.3.-Component-of-a-Gaussian-Random-Vector">4.3. Component of a Gaussian Random Vector<a class="anchor-link" href="#4.3.-Component-of-a-Gaussian-Random-Vector">¶</a></h2><p>Suppose $x \sim \mathcal{N}(0, \Sigma)$, $c \in \mathbb{R}^n$ be a unit vector</p>
+<p><br></p>
+$$y = c^Tx$$<p><br></p>
+<ul>
+<li>$y$ is the component of $x$ in the direction $c$</li>
+</ul>
+<ul>
+<li>$y$ is Gaussian with $E[y] = 0, \quad \text{cov}(y) = c^T \Sigma c$</li>
+</ul>
+<ul>
+<li>So $E[y^2] = c^T \Sigma c$</li>
+</ul>
+<ul>
+<li>The unit vector $c$ that minimizes $c^T \Sigma c$ is the eigenvector of $\Sigma$ with the smallest eigenvalue </li>
+</ul>
+<p><br></p>
+$$E[y^2] = \lambda_{\text{min}}$$<p><br></p>
+<ul>
+<li>Notice that we have seen this in PCA</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.4.-Conditional-Probability-of-a-Gaussian-Random-Vector">4.4. Conditional Probability of a Gaussian Random Vector<a class="anchor-link" href="#4.4.-Conditional-Probability-of-a-Gaussian-Random-Vector">¶</a></h2><p><br></p>
+$$\begin{bmatrix} x \\ y\end{bmatrix} \sim \mathcal{N}\left( \begin{bmatrix} \mu_x \\ \mu_y\end{bmatrix}, \begin{bmatrix} \Sigma_{x}&amp; \Sigma_{xy}\\ \Sigma_{yx}&amp; \Sigma_{y} \end{bmatrix} \right)$$<p><br></p>
+<ul>
+<li>The conditional pdf of $x$ given $y$ is Gaussian</li>
+</ul>
+<p><br>
+$$x \mid y \sim \mathcal{N} \left(\mu_x + \Sigma_{xy}\Sigma_{y}^{-1}(y-\mu_y), \; \Sigma_{x} - \Sigma_{xy}\Sigma_{y}^{-1}\Sigma_{yx} \right)$$
+<br></p>
+<ul>
+<li>The conditional mean is</li>
+</ul>
+<p><br>
+$$E[x \mid y] = \mu_x + \Sigma_{xy}\Sigma_{y}^{-1}(y-\mu_y)$$
+<br></p>
+<ul>
+<li>The conditional covariance is</li>
+</ul>
+<p><br>
+$$\text{cov}(x \mid y) = \Sigma_{x} - \Sigma_{xy}\Sigma_{y}^{-1}\Sigma_{yx} \leq \Sigma_{x}$$
+<br></p>
+<ul>
+<li>Notice that conditional confidence intervals are narrower. i.e., measuring $y$ gives information about $x$</li>
+</ul>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In [19]:</div>
@@ -14529,10 +14639,10 @@ D =
 
 
 
-<div id="acd1c9ea-b319-4695-a037-ad83b820594e"></div>
+<div id="4a7e8c76-adb7-491c-a979-8ae652f7fd5c"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#acd1c9ea-b319-4695-a037-ad83b820594e');
+var element = $('#4a7e8c76-adb7-491c-a979-8ae652f7fd5c');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
