@@ -13925,7 +13925,7 @@ $$
 P\left(X_1=x_1,X_2=x_2\right) &amp;= P_{X_1}\left(x_1\right)P_{X_2}\left(x_2\right) \\\\
 &amp;\sim \exp \left(-\frac{1}{2} \frac{\left(x_1-\mu_{x_1}\right)^2}{\sigma_{x_1}^2}\right)
 \cdot \exp \left(-\frac{1}{2} \frac{\left(x_2-\mu_{x_2}\right)^2}{\sigma_{x_2}^2}\right) \\\\
-&amp;\sim\exp \left(-\frac{1}{2}\left(\frac{x_1^2}{\sigma_{x_1}^2} + \frac{x_2^2}{\sigma_{x_2}^2}\right)\right)\\
+&amp;\sim\exp \left(-\frac{1}{2}\left(\frac{\left(x_1-\mu_{x_1}\right)^2}{\sigma_{x_1}^2} + \frac{\left(x_2-\mu_{x_2}\right)^2}{\sigma_{x_2}^2}\right)\right)\\
 \end{align*}
 $$</p>
 <ul>
@@ -14140,7 +14140,7 @@ $$
 &amp; x \sim \mathcal{N}(\mu_x,\Sigma_x) \text{ and } y = Ax + b \;
 \text{affine transformation}\\ \\ \implies \; 
 &amp; y \sim \mathcal{N}(\mu_y,\Sigma_y) = \mathcal{N}(A\mu_x+b,A\Sigma_xA^T)\\\\ \implies \; 
-&amp; y \;\; \text{is also Gaussian with} \;\; \mu_y = Ax+b, \;\; \Sigma_y = A \Sigma_x A^T
+&amp; y \;\; \text{is also Gaussian with} \;\; \mu_y = A\mu_x+b, \;\; \Sigma_y = A \Sigma_x A^T
 \end{align*}$$
 </div>
 </div>
@@ -14639,10 +14639,10 @@ $$\text{cov}(x \mid y) = \Sigma_{x} - \Sigma_{xy}\Sigma_{y}^{-1}\Sigma_{yx} \leq
 
 
 
-<div id="4a7e8c76-adb7-491c-a979-8ae652f7fd5c"></div>
+<div id="ac42f292-367c-40f3-bf0c-d9b041c1e37c"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#4a7e8c76-adb7-491c-a979-8ae652f7fd5c');
+var element = $('#ac42f292-367c-40f3-bf0c-d9b041c1e37c');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
