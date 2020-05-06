@@ -13435,6 +13435,7 @@ $$\Phi(x) = \begin{bmatrix} 1 \\ \text{feature1}\\ \text{feature2} \end{bmatrix}
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Step-3.-Define-variables">Step 3. Define variables<a class="anchor-link" href="#Step-3.-Define-variables">¶</a></h2><p>Find a classifier using the support vector machine which is equivalent to solving the following optimization problem:</p>
+<p><br>
 $$\begin{align*}
 \text{minimize } &amp; \lVert \omega \rVert_2 + \gamma(1^Tu + 1^Tv)\\
 \text{subject to }&amp; \\
@@ -13442,7 +13443,9 @@ $$\begin{align*}
 &amp; Y^T \omega + \omega_0 \leq - (1-v)\\
 &amp; u \geq 0\\
 &amp; v \geq 0
-\end{align*}$$<p>Here, $X$  and $Y$  are $1000\times3$ matrix for each class. You can divide the above matrix $\Phi$ into two parts to reuse it.</p>
+\end{align*}$$
+<br></p>
+<p>Here, $X$  and $Y$  are $1000\times3$ matrix for each class. You can divide the above matrix $\Phi$ into two parts to reuse it.</p>
 
 </div>
 </div>
