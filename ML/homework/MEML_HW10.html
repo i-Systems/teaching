@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8">
 
-<title>MEML_HW10</title>
+<title>MEML_HW10_rev</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13124,7 +13124,7 @@ Industrial AI Lab at POSTECH
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [6]:</div>
+<div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
@@ -13181,7 +13181,7 @@ Industrial AI Lab at POSTECH
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [ ]:</div>
+<div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># write your code here</span>
@@ -13209,7 +13209,7 @@ Industrial AI Lab at POSTECH
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [33]:</div>
+<div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># write your code here</span>
@@ -13231,7 +13231,7 @@ Industrial AI Lab at POSTECH
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [ ]:</div>
+<div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># write your code here</span>
@@ -13252,7 +13252,7 @@ Industrial AI Lab at POSTECH
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [ ]:</div>
+<div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># write your code here</span>
@@ -13271,10 +13271,10 @@ Industrial AI Lab at POSTECH
 <p>Let's load the dataset.</p>
 <ul>
 <li>Download data files<ul>
-<li><a href="https://www.dropbox.com/s/9rjujpqnugkmph8/mnist_train_images.npy?dl=1">mnist_train_images</a></li>
-<li><a href="https://www.dropbox.com/s/vol2p9ueitxhvy2/mnist_train_labels.npy?dl=1">mnist_train_labels</a></li>
-<li><a href="https://www.dropbox.com/s/02397rd9zjf76hb/mnist_test_images.npy?dl=1">mnist_test_images</a></li>
-<li><a href="https://www.dropbox.com/s/iaw5heu64fo5sw1/mnist_test_labels.npy?dl=1">mnist_test_labels</a></li>
+<li><a href="https://www.dropbox.com/s/n3i8s3sgjfv523l/mnist_train_images_rev.npy?dl=1">mnist_train_images</a></li>
+<li><a href="https://www.dropbox.com/s/ja4hss746rheq0h/mnist_train_labels_rev.npy?dl=1">mnist_train_labels</a></li>
+<li><a href="https://www.dropbox.com/s/4tlm2rf5t3t3m2v/mnist_test_images_rev.npy?dl=1">mnist_test_images</a></li>
+<li><a href="https://www.dropbox.com/s/t8fbjzsyqeotx19/mnist_test_labels_rev.npy?dl=1">mnist_test_labels</a></li>
 </ul>
 </li>
 </ul>
@@ -13284,17 +13284,17 @@ Industrial AI Lab at POSTECH
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [1]:</div>
+<div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 
-<span class="n">mnist_train_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_train_images.npy'</span><span class="p">)</span>
-<span class="n">mnist_train_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_train_labels.npy'</span><span class="p">)</span>
-<span class="n">mnist_test_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_test_images.npy'</span><span class="p">)</span>
-<span class="n">mnist_test_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_test_labels.npy'</span><span class="p">)</span>
+<span class="n">mnist_train_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_train_images_rev.npy'</span><span class="p">)</span>
+<span class="n">mnist_train_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_train_labels_rev.npy'</span><span class="p">)</span>
+<span class="n">mnist_test_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_test_images_rev.npy'</span><span class="p">)</span>
+<span class="n">mnist_test_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_test_labels_rev.npy'</span><span class="p">)</span>
 </pre></div>
 
     </div>
