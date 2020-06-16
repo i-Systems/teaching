@@ -13235,9 +13235,10 @@ $$G_t = R_{t+1} + \gamma R_{t+2} + \cdots = \sum_{k=0}^{\infty}\gamma^k R_{t+k+1
 <span class="n">S</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">G</span> <span class="o">+</span> <span class="p">(</span><span class="n">gamma</span><span class="o">**</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="n">R</span><span class="p">[</span><span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
-    
+
 <span class="nb">print</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>    
 </pre></div>
 
@@ -13255,7 +13256,7 @@ $$G_t = R_{t+1} + \gamma R_{t+2} + \cdots = \sum_{k=0}^{\infty}\gamma^k R_{t+k+1
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>-6.0032
+<pre>-5.41271
 </pre>
 </div>
 </div>
@@ -13266,7 +13267,7 @@ $$G_t = R_{t+1} + \gamma R_{t+2} + \cdots = \sum_{k=0}^{\infty}\gamma^k R_{t+k+1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [3]:</div>
+<div class="prompt input_prompt">In [8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -13314,8 +13315,8 @@ $$G_t = R_{t+1} + \gamma R_{t+2} + \cdots = \sum_{k=0}^{\infty}\gamma^k R_{t+k+1
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[0, 1, 2, 3, 6, 6]
-1.870000000000001
+<pre>[0, 5, 5, 0, 5, 0]
+-5.8241000000000005
 </pre>
 </div>
 </div>
@@ -13477,7 +13478,7 @@ $$v_{k+1}(s) \;\; \longleftarrow \;\; R(s) + \gamma \sum_{s' \in S} p\left(s' \m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [4]:</div>
+<div class="prompt input_prompt">In [9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># [C1 C2 C3 Pass Pub FB Sleep] = [0 1 2 3 4 5 6]</span>
@@ -13497,6 +13498,7 @@ $$v_{k+1}(s) \;\; \longleftarrow \;\; R(s) + \gamma \sum_{s' \in S} p\left(s' \m
 <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span>
 
 <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
+
 <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="o">-</span> <span class="n">gamma</span><span class="o">*</span><span class="n">P</span><span class="p">)</span><span class="o">.</span><span class="n">I</span><span class="o">*</span><span class="n">R</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </pre></div>
@@ -13532,17 +13534,17 @@ $$v_{k+1}(s) \;\; \longleftarrow \;\; R(s) + \gamma \sum_{s' \in S} p\left(s' \m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [5]:</div>
+<div class="prompt input_prompt">In [11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
 
 <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">R</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">P</span><span class="o">*</span><span class="n">v</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>    
 </pre></div>
 
     </div>
@@ -13559,12 +13561,12 @@ $$v_{k+1}(s) \;\; \longleftarrow \;\; R(s) + \gamma \sum_{s' \in S} p\left(s' \m
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[[-5.01272786]
- [ 0.94265541]
- [ 4.08702138]
+<pre>[[-5.01073295]
+ [ 0.9428713 ]
+ [ 4.08727922]
  [10.        ]
- [ 1.90839268]
- [-7.63760653]
+ [ 1.90900857]
+ [-7.63401027]
  [ 0.        ]]
 </pre>
 </div>
@@ -13584,17 +13586,17 @@ $$v_{k+1}(s) \;\; \longleftarrow \;\; R(s) + \gamma \sum_{s' \in S} p\left(s' \m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [6]:</div>
+<div class="prompt input_prompt">In [12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">gamma</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">R</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">P</span><span class="o">*</span><span class="n">v</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>  
 </pre></div>
 
     </div>
@@ -13611,12 +13613,12 @@ $$v_{k+1}(s) \;\; \longleftarrow \;\; R(s) + \gamma \sum_{s' \in S} p\left(s' \m
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[[-12.4182877 ]
- [  1.47030894]
- [  4.33713371]
+<pre>[[-11.32491882]
+ [  1.58863104]
+ [  4.47845046]
  [ 10.        ]
- [  0.84103688]
- [-22.31800952]
+ [  1.17859723]
+ [-20.34696584]
  [  0.        ]]
 </pre>
 </div>
@@ -13628,7 +13630,7 @@ $$v_{k+1}(s) \;\; \longleftarrow \;\; R(s) + \gamma \sum_{s' \in S} p\left(s' \m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [7]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="nx">javascript</span>
@@ -13636,32 +13638,6 @@ $$v_{k+1}(s) \;\; \longleftarrow \;\; R(s) + \gamma \sum_{s' \in S} p\left(s' \m
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="eb6c3c2f-81f0-4550-b976-8c1c90fcecf4"></div>
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-var element = $('#eb6c3c2f-81f0-4550-b976-8c1c90fcecf4');
-$.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
-
-</script>
-</div>
-
-</div>
-
 </div>
 </div>
 

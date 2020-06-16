@@ -13117,7 +13117,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><br><br>
-<font size="6"><b>Fixed-Point Iteration and Dynamic Programming</b></font></p>
+<font size="6"><b>Dynamic Programming</b></font></p>
 <p><br></p>
 <div class="pull-right">
 By Prof. Seungchul Lee<br>
@@ -13254,8 +13254,39 @@ Industrial AI Lab at POSTECH
 <div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">'Hello class'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Hello class
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>    
+    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13265,7 +13296,7 @@ Industrial AI Lab at POSTECH
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [4]:</div>
+<div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">foo</span><span class="p">(</span><span class="s1">'Hello class'</span><span class="p">)</span>
@@ -13296,27 +13327,12 @@ Industrial AI Lab at POSTECH
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">foo_recursion</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="si">{s}</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
-    <span class="n">foo_recursion</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>                    
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 <div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Do not run. It falls into infinite loop.</span>
-
-<span class="c1">#foo_recursion('Hello Class')</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">foo_recursion</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">foo_recursion</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13329,14 +13345,9 @@ Industrial AI Lab at POSTECH
 <div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># base line</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Do not run. It falls into infinite loop.</span>
 
-<span class="k">def</span> <span class="nf">foo_recursion_correct</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">'Hi! </span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-        <span class="n">foo_recursion_correct</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># foo_recursion('Hello class')</span>
 </pre></div>
 
     </div>
@@ -13347,6 +13358,26 @@ Industrial AI Lab at POSTECH
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># base case</span>
+
+<span class="k">def</span> <span class="nf">foo_recursion_correct</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Hi </span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+        <span class="n">foo_recursion_correct</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">foo_recursion_correct</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
@@ -13366,13 +13397,13 @@ Industrial AI Lab at POSTECH
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Hi! 
+<pre>Hi 
 
-Hi! 
+Hi 
 
-Hi! 
+Hi 
 
-Hi! 
+Hi 
 
 </pre>
 </div>
@@ -13385,7 +13416,7 @@ Hi!
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.2.-Factorial-example">1.2. Factorial example<a class="anchor-link" href="#1.2.-Factorial-example">¶</a></h2><ul>
+<h2 id="1.2.-Factorial-Example">1.2. Factorial Example<a class="anchor-link" href="#1.2.-Factorial-Example">¶</a></h2><ul>
 <li>factorial example <ul>
 <li>$n! = n\cdot(n-1) \cdots 2\cdot 1$</li>
 </ul>
@@ -13397,16 +13428,47 @@ Hi!
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [9]:</div>
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>range(0, 5)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
 
 <span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    
-<span class="nb">print</span> <span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>    
+    <span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>    
+
+<span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13434,14 +13496,14 @@ Hi!
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [10]:</div>
+<div class="prompt input_prompt">In [12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">fac</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="mi">1</span>    
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="n">fac</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>    
+        <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="n">fac</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13451,7 +13513,7 @@ Hi!
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [11]:</div>
+<div class="prompt input_prompt">In [13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># recursive</span>
@@ -13468,7 +13530,7 @@ Hi!
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[11]:</div>
+    <div class="prompt output_prompt">Out[13]:</div>
 
 
 
@@ -13497,7 +13559,7 @@ $$
 F_1 &amp;= F_2 = 1 \\
 F_n &amp;= F_{n-1} + F_{n-2}
 \end{align*}
-$$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class="anchor-link" href="#2.1.-Naive-Recursive-algorithm">¶</a></h2>$$
+$$<h2 id="2.1.-Naive-Recursive-Algorithm">2.1. Naive Recursive Algorithm<a class="anchor-link" href="#2.1.-Naive-Recursive-Algorithm">¶</a></h2>$$
 \begin{align*}
 \text{fib}(n):&amp;\\
 &amp;\text{if } n \leq 2:\; f = 1\\
@@ -13507,7 +13569,7 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 <p><br>
 <img src="data:image/png;base64,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" width="300">
 <br></p>
-<h2 id="2.2.-Memorized-DP-algorithm">2.2. Memorized DP algorithm<a class="anchor-link" href="#2.2.-Memorized-DP-algorithm">¶</a></h2>$$
+<h2 id="2.2.-Memorized-DP-Algorithm">2.2. Memorized DP Algorithm<a class="anchor-link" href="#2.2.-Memorized-DP-Algorithm">¶</a></h2>$$
 \begin{align*}
 \text{memo }= [\;]&amp;\\
 \text{fib}(n):&amp;\\
@@ -13533,7 +13595,7 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [12]:</div>
+<div class="prompt input_prompt">In [14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%html</span>
@@ -13575,74 +13637,16 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [13]:</div>
+<div class="prompt input_prompt">In [15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># naive Fibonacci</span>
 
 <span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="mi">1</span>    
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>    
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fib</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[14]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>55</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Memorized DP Fibonacci</span>
-
-<span class="k">def</span> <span class="nf">mfib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">memo</span>
-    
-    <span class="k">if</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        
-    <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mfib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">mfib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13655,11 +13659,7 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 <div class="prompt input_prompt">In [16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">memo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-<span class="n">mfib</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fib</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13678,7 +13678,7 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>55.0</pre>
+<pre>55</pre>
 </div>
 
 </div>
@@ -13690,6 +13690,67 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In [17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Memorized DP Fibonacci</span>
+
+<span class="k">def</span> <span class="nf">mfib</span><span class="p">(</span><span class="n">memo</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>        
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="mi">1</span>    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mfib</span><span class="p">(</span><span class="n">memo</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">mfib</span><span class="p">(</span><span class="n">memo</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">memo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">mfib</span><span class="p">(</span><span class="n">memo</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[18]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>55.0</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">memo</span>
@@ -13705,13 +13766,13 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[17]:</div>
+    <div class="prompt output_prompt">Out[19]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array([ 0.,  0.,  2.,  3.,  5.,  8., 13., 21., 34., 55.])</pre>
+<pre>array([ 1.,  1.,  2.,  3.,  5.,  8., 13., 21., 34., 55.])</pre>
 </div>
 
 </div>
@@ -13722,11 +13783,10 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [18]:</div>
+<div class="prompt input_prompt">In [20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="o">%</span><span class="k">timeit</span> fib(30)
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">timeit</span> fib(30)
 </pre></div>
 
     </div>
@@ -13743,7 +13803,7 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>179 ms ± 1.22 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre>185 ms ± 2.57 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </pre>
 </div>
 </div>
@@ -13754,11 +13814,23 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [19]:</div>
+<div class="prompt input_prompt">In [21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">memo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-<span class="o">%</span><span class="k">timeit</span> mfib(30)
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">memo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">timeit</span> mfib(memo, 30)
 </pre></div>
 
     </div>
@@ -13775,7 +13847,7 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>400 ns ± 7.86 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
+<pre>407 ns ± 14.4 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
 </pre>
 </div>
 </div>
@@ -13787,33 +13859,32 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2.3.2.-Climbing-a-stair">2.3.2. Climbing a stair<a class="anchor-link" href="#2.3.2.-Climbing-a-stair">¶</a></h3><p>You are climbing a stair case. Each time you can either make 1 step, 2 steps, or 3 steps. How many distinct ways can you climb if the stairs has $n = 30$ steps?</p>
+<h3 id="2.3.2.-Climbing-a-Stair">2.3.2. Climbing a Stair<a class="anchor-link" href="#2.3.2.-Climbing-a-Stair">¶</a></h3><p>You are climbing a stair case. Each time you can either make 1 step, 2 steps, or 3 steps. How many distinct ways can you climb if the stairs has $n = 30$ steps?</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [20]:</div>
+<div class="prompt input_prompt">In [23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="k">def</span> <span class="nf">stair</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">memo</span>
-    
-    <span class="k">if</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">stair</span><span class="p">(</span><span class="n">memo</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>        
         <span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
     <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">m</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
     <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">m</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">stair</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">stair</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">stair</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
-        
-    <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">stair</span><span class="p">(</span><span class="n">memo</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">stair</span><span class="p">(</span><span class="n">memo</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">stair</span><span class="p">(</span><span class="n">memo</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+    
+    <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
     <span class="k">return</span> <span class="n">m</span>
 </pre></div>
 
@@ -13824,13 +13895,44 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [21]:</div>
+<div class="prompt input_prompt">In [24]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="k">global</span> <span class="n">memo</span>
-<span class="n">memo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">global</span> <span class="n">memo</span>
 
+<span class="k">def</span> <span class="nf">stair</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>        
+        <span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">stair</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">stair</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">stair</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+    
+    <span class="n">memo</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+    <span class="k">return</span> <span class="n">m</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">global</span> <span class="n">memo</span>
+<span class="n">memo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">stair</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">memo</span><span class="p">)</span>
 </pre></div>
@@ -13849,7 +13951,7 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[ 0.  1.  2.  4.  7. 13.]
+<pre>[  1.   2.   4.   7.  13.  24.  44.  81. 149. 274.]
 </pre>
 </div>
 </div>
@@ -13861,7 +13963,7 @@ $$<h2 id="2.1.-Naive-Recursive-algorithm">2.1. Naive Recursive algorithm<a class
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2.3.3.-Knapsack-problem-using-Dynamic-Programming-(DP)">2.3.3. Knapsack problem using Dynamic Programming (DP)<a class="anchor-link" href="#2.3.3.-Knapsack-problem-using-Dynamic-Programming-(DP)">¶</a></h3><p>From MIT's <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-00-introduction-to-computer-science-and-programming-fall-2008/">Introduction to Computer Science and Programming</a></p>
+<h3 id="2.3.3.-Knapsack-Problem-using-Dynamic-Programming-(DP)">2.3.3. Knapsack Problem using Dynamic Programming (DP)<a class="anchor-link" href="#2.3.3.-Knapsack-Problem-using-Dynamic-Programming-(DP)">¶</a></h3><p>From MIT's <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-00-introduction-to-computer-science-and-programming-fall-2008/">Introduction to Computer Science and Programming</a></p>
 <p><strong>Knapsack problem</strong></p>
 <ul>
 <li><p>burglar (or thief) can carry at most 20 kg (i.e., maximum capacity = 20)</p>
@@ -13914,51 +14016,50 @@ $$
 \text{key ideas} = \text{original problem} \rightarrow \begin{cases} \text{subproblem} \rightarrow &amp; \begin{cases} \text{subproblem} \rightarrow \\ \text{subproblem} \rightarrow \end{cases}\\ \text{subproblem} \rightarrow &amp; \begin{cases} \text{subproblem} \rightarrow\\ \text{subproblem} \rightarrow\end{cases}\end{cases} 
 $$<p><br><br>
 Suppose we have the following function:</p>
-<p>$\quad$<code>[value, taken] = chooseBest(items(1:6),maxWeight)</code></p>
+<p>$\quad$<code>[value, taken] = chooseBest(items(0:5), maxWeight)</code></p>
 <p>1) item 1 is not taken</p>
-<p>$\quad$<code>[v_1,t_1] = chooseBest(items(2:6),maxWeight)</code></p>
+<p>$\quad$<code>[v_1, t_1] = chooseBest(items(1:5), maxWeight)</code></p>
 <p>2) item 1 is taken</p>
-<p>$\quad$<code>[v_2,t_2] = chooseBest(items(2:6),maxWeight - weights(1))</code></p>
-<p>$\quad\qquad\;\;\,$<code>v_2 = v_2 + values(1)</code></p>
-<p>$\qquad\quad\;\;\,$<code>t_2 = [items(1),t_2]</code></p>
+<p>$\quad$ <code>[v_2, t_2] = chooseBest(items(1:5), maxWeight - weights(1))</code></p>
+<p>$\quad \qquad \, \, $ <code>v_2 = values(1) + v_2</code></p>
+<p>$\qquad\quad \, \,$ <code>t_2 = [items(1), t_2]</code></p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [22]:</div>
+<div class="prompt input_prompt">In [26]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">chooseBest</span><span class="p">(</span><span class="n">items</span><span class="p">,</span><span class="n">maxWeight</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">weights</span>
-    <span class="k">global</span> <span class="n">values</span>
-    
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">global</span> <span class="n">weights</span>
+<span class="k">global</span> <span class="n">values</span>
+
+<span class="k">def</span> <span class="nf">chooseBest</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">maxWeight</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">maxWeight</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">taken</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">taken</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">first</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">first</span><span class="p">]</span>
         <span class="n">rest</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">first</span><span class="p">]</span>
         
         <span class="c1"># do not take the first item</span>
-        <span class="n">v1</span><span class="p">,</span><span class="n">t1</span> <span class="o">=</span> <span class="n">chooseBest</span><span class="p">(</span><span class="n">rest</span><span class="p">,</span><span class="n">maxWeight</span><span class="p">)</span>
-        
+        <span class="n">v1</span><span class="p">,</span> <span class="n">t1</span> <span class="o">=</span> <span class="n">chooseBest</span><span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">maxWeight</span><span class="p">)</span>
+                
         <span class="c1"># do take the first item</span>
-        <span class="n">v2</span><span class="p">,</span><span class="n">t2</span> <span class="o">=</span> <span class="n">chooseBest</span><span class="p">(</span><span class="n">rest</span><span class="p">,</span><span class="n">maxWeight</span> <span class="o">-</span> <span class="n">w</span><span class="p">)</span>
-        <span class="n">v2</span> <span class="o">=</span> <span class="n">v2</span> <span class="o">+</span> <span class="n">values</span><span class="p">[</span><span class="n">first</span><span class="p">]</span>
+        <span class="n">v2</span><span class="p">,</span> <span class="n">t2</span> <span class="o">=</span> <span class="n">chooseBest</span><span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">maxWeight</span> <span class="o">-</span> <span class="n">w</span><span class="p">)</span>
+        <span class="n">v2</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">+</span> <span class="n">v2</span>
         <span class="n">t2</span> <span class="o">=</span> <span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">+</span> <span class="n">t2</span>
         
-        <span class="k">if</span> <span class="n">maxWeight</span> <span class="o">-</span> <span class="n">w</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">v2</span> <span class="o">&gt;=</span> <span class="n">v1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">v2</span> <span class="o">&gt;=</span> <span class="n">v1</span> <span class="ow">and</span> <span class="n">maxWeight</span> <span class="o">-</span> <span class="n">w</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">v2</span>
             <span class="n">taken</span> <span class="o">=</span> <span class="n">t2</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">v1</span>
             <span class="n">taken</span> <span class="o">=</span> <span class="n">t1</span>
-        
-        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">taken</span>              
+            
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">taken</span>    
 </pre></div>
 
     </div>
@@ -13968,17 +14069,16 @@ Suppose we have the following function:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [23]:</div>
+<div class="prompt input_prompt">In [27]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">6</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">items</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
 <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">175</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span>
 
-<span class="n">items</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">maxWeight</span> <span class="o">=</span> <span class="mi">20</span>
 
-<span class="n">chooseBest</span><span class="p">(</span><span class="n">items</span><span class="p">,</span><span class="n">maxWeight</span><span class="p">)</span>
+<span class="n">chooseBest</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">maxWeight</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13991,7 +14091,7 @@ Suppose we have the following function:</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[23]:</div>
+    <div class="prompt output_prompt">Out[27]:</div>
 
 
 
@@ -14008,7 +14108,7 @@ Suppose we have the following function:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [24]:</div>
+<div class="prompt input_prompt">In [28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="nx">javascript</span>
@@ -14031,10 +14131,10 @@ Suppose we have the following function:</p>
 
 
 
-<div id="b0ed117b-f792-4d20-a4e6-6b24657d4e51"></div>
+<div id="993b2e3f-d448-42b7-a91c-1af06fa1b728"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#b0ed117b-f792-4d20-a4e6-6b24657d4e51');
+var element = $('#993b2e3f-d448-42b7-a91c-1af06fa1b728');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
