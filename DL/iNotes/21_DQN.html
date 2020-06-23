@@ -13153,7 +13153,7 @@ Industrial AI Lab at POSTECH
 <h1 id="1.-Deep-Q-Learning-(DQN)">1. Deep Q-Learning (DQN)<a class="anchor-link" href="#1.-Deep-Q-Learning-(DQN)">¶</a></h1><p><br></p>
 <p>Value iteration algorithm: use Bellman equation as an iterative update</p>
 <p><br>
-$$ Q_{k+1}(s,a) \; \leftarrow \; \mathbb{E}_{s' \sim P\left(s'\mid s,a\right)} \left[ R(s) + \gamma \max_{a}  Q_{k}\left(s',a'\right) \right]  $$
+$$ Q_{k+1}(s,a) \; \leftarrow \; \mathbb{E}_{s' \sim P\left(s'\mid s,a\right)} \left[ R(s) + \gamma \max_{a'}  Q_{k}\left(s',a'\right) \right]  $$
 <br></p>
 <p>$Q_k$ will converge to $Q_*$ as $k$ goes to $\infty$</p>
 <h2 id="1.1.-What-is-the-problem-with-this?">1.1. What is the problem with this?<a class="anchor-link" href="#1.1.-What-is-the-problem-with-this?">¶</a></h2><ul>
@@ -13232,7 +13232,7 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.3.-Linea-Function-Approximator">1.3. Linea Function Approximator<a class="anchor-link" href="#1.3.-Linea-Function-Approximator">¶</a></h2><p><br></p>
+<h2 id="1.3.-Linear-Function-Approximator">1.3. Linear Function Approximator<a class="anchor-link" href="#1.3.-Linear-Function-Approximator">¶</a></h2><p><br></p>
 $$Q_{\omega}(s,a) = \omega_0 f_0(s,a) + \omega_1 f_1(s,a) + \cdots + \omega_n f_n(s,a)$$<p><br></p>
 <ul>
 <li>Exact $Q$</li>
@@ -13243,7 +13243,7 @@ $$Q(s,a) \;\leftarrow \; Q(s,a) + \alpha \, [\text{difference}] $$<ul>
 $$\omega_i \;\leftarrow\; \omega_i + \alpha \, [\text{difference}] \, f_i(s,a)$$<p><br><br></p>
 <p><strong>Example: linear regression</strong></p>
 <p><br></p>
-$$\ell = \frac{1}{2} \sum_i \left(y_i - \hat{y}_i  \right)^2$$<p><br></p>
+$$\ell = \frac{1}{2} \left(y - \hat{y}  \right)^2$$<p><br></p>
 <ul>
 <li>difference</li>
 </ul>
@@ -13252,7 +13252,7 @@ $$y - \hat{y} = y - \left(\omega_0 f_0(x) + \omega_1 f_1(x) + \cdots + \omega_n 
 </ul>
 $$
 \begin{align*}
-\frac{\partial \ell(\omega)}{\partial \omega_k} &amp;= \left(y - \sum_i \omega_i f_i(x) \right)f_k(x)\\ \\
+\frac{\partial \ell(\omega)}{\partial \omega_k} &amp;= - \left(y - \sum_i \omega_i f_i(x) \right)f_k(x)\\ \\
 \omega_k \;&amp;\leftarrow\; \omega_i + \alpha \left(y - \sum_i \omega_i f_i(x) \right)f_k(x) \\ \\
 \omega_k \;&amp;\leftarrow\; \omega_i + \alpha \, \left[\text{difference} \right] \,f_k(x)
 \end{align*}$$
@@ -13333,7 +13333,7 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="2.-DQN-with-Gym-Environment">2. DQN with Gym Environment<a class="anchor-link" href="#2.-DQN-with-Gym-Environment">¶</a></h1>
+<h1 id="2.-Q-Network-with-Gym-Environment">2. Q Network with Gym Environment<a class="anchor-link" href="#2.-Q-Network-with-Gym-Environment">¶</a></h1>
 </div>
 </div>
 </div>
@@ -13342,15 +13342,7 @@ $$
 <div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-
-<span class="kn">from</span> <span class="nn">IPython</span> <span class="k">import</span> <span class="n">display</span>
-<span class="kn">import</span> <span class="nn">random</span>
-
-<span class="kn">import</span> <span class="nn">gym</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># !pip install gym</span>
 </pre></div>
 
     </div>
@@ -13363,31 +13355,15 @@ $$
 <div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">'CartPole-v0'</span><span class="p">)</span>
-<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">gym</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[3]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>array([ 0.01008043, -0.03464294,  0.02750901, -0.01812668])</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -13397,7 +13373,7 @@ $$
 <div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_actions</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">'CartPole-v1'</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13410,21 +13386,12 @@ $$
 <div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_memory</span> <span class="o">=</span> <span class="mi">5000</span>
-
-<span class="n">n_states</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">n_Q_value</span> <span class="o">=</span> <span class="mi">2</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_input</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 4</span>
+<span class="n">n_actions</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span> <span class="c1"># 2</span>
+<span class="n">n_output</span> <span class="o">=</span> <span class="n">n_actions</span>
 
 <span class="n">n_hidden1</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">n_hidden2</span> <span class="o">=</span> <span class="mi">100</span>
-
-<span class="n">epsilon_max</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.99</span>
-
-<span class="n">LR</span> <span class="o">=</span> <span class="mf">2e-4</span>
-<span class="n">max_episodes</span> <span class="o">=</span> <span class="mi">30000</span>
-<span class="n">n_training_per_sampling</span> <span class="o">=</span> <span class="mi">200</span>
-<span class="n">n_batch</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">n_hidden2</span> <span class="o">=</span> <span class="mi">50</span>
 </pre></div>
 
     </div>
@@ -13437,9 +13404,8 @@ $$
 <div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ph_states</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_states</span><span class="p">])</span>
-<span class="n">ph_Q_target</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">[</span><span class="n">n_batch</span><span class="p">])</span>
-<span class="n">ph_action</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="p">[</span><span class="n">n_batch</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_output</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13452,134 +13418,17 @@ $$
 <div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s1">'weights'</span><span class="p">):</span>
-    <span class="n">w_hidden1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">'hidden1'</span><span class="p">,</span> <span class="p">[</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_hidden1</span><span class="p">],</span> <span class="n">initializer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random_normal_initializer</span><span class="p">(</span><span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
-    <span class="n">w_hidden2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">'hidden2'</span><span class="p">,</span> <span class="p">[</span><span class="n">n_hidden1</span><span class="p">,</span> <span class="n">n_hidden2</span><span class="p">],</span> <span class="n">initializer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random_normal_initializer</span><span class="p">(</span><span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
-    <span class="n">w_output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">'output'</span><span class="p">,</span> <span class="p">[</span><span class="n">n_hidden2</span><span class="p">,</span> <span class="n">n_Q_value</span><span class="p">],</span> <span class="n">initializer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random_normal_initializer</span><span class="p">(</span><span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'hidden1'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_input</span><span class="p">,</span> <span class="n">n_hidden1</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)),</span>
+    <span class="s1">'hidden2'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_hidden1</span><span class="p">,</span> <span class="n">n_hidden2</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)),</span>
+    <span class="s1">'output'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_hidden2</span><span class="p">,</span> <span class="n">n_output</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
+<span class="p">}</span>
 
-<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s1">'biases'</span><span class="p">):</span>
-    <span class="n">b_hidden1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">'hidden1'</span><span class="p">,</span> <span class="p">[</span><span class="n">n_hidden1</span><span class="p">],</span> <span class="n">initializer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random_normal_initializer</span><span class="p">(</span><span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
-    <span class="n">b_hidden2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">'hidden2'</span><span class="p">,</span> <span class="p">[</span><span class="n">n_hidden2</span><span class="p">],</span> <span class="n">initializer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random_normal_initializer</span><span class="p">(</span><span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
-    <span class="n">b_output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">'output'</span><span class="p">,</span> <span class="p">[</span><span class="n">n_Q_value</span><span class="p">],</span> <span class="n">initializer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random_normal_initializer</span><span class="p">(</span><span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">net</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
-    <span class="n">hidden1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">w_hidden1</span><span class="p">),</span> <span class="n">b_hidden1</span><span class="p">)</span>
-    <span class="n">hidden1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">hidden1</span><span class="p">)</span>
-    
-    <span class="n">hidden2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">hidden1</span><span class="p">,</span> <span class="n">w_hidden2</span><span class="p">),</span> <span class="n">b_hidden2</span><span class="p">)</span>
-    <span class="n">hidden2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">hidden2</span><span class="p">)</span>
-    
-    <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">hidden2</span><span class="p">,</span> <span class="n">w_output</span><span class="p">),</span> <span class="n">b_output</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">output</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">ph_states</span><span class="p">)</span>
-
-<span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">([</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">ph_Q_target</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">action</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">action</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">ph_action</span><span class="p">))])</span>
-
-<span class="n">optm</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">LR</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
-<span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">())</span>
-
-<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">'CartPole-v0'</span><span class="p">)</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-
-<span class="n">memory</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">history_frame</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">history_loss</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="k">for</span> <span class="n">episode</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_episodes</span><span class="p">):</span>
-    <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
-        
-        <span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon_max</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">episode</span><span class="o">/</span><span class="mi">50</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-        
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
-            <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">Q_pred</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">ph_states</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]})</span>
-            <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q_pred</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="n">next_state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
-      
-        <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">190</span><span class="p">:</span> <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span> <span class="n">reward</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">reward</span> <span class="o">=</span> <span class="mi">0</span>
-                     
-        <span class="n">memory</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span> <span class="n">done</span><span class="p">])</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">next_state</span>
-              
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">memory</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">n_memory</span><span class="p">:</span>
-            <span class="n">memory</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
-    
-    <span class="n">history_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">history_frame</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">'avg frame of last 10 episode: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">history_frame</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:])))</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">history_frame</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:])</span> <span class="o">&gt;</span> <span class="mi">195</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">'Loss: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span><span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">ph_states</span><span class="p">:</span><span class="n">batch_state</span><span class="p">,</span> <span class="n">ph_Q_target</span><span class="p">:</span> <span class="n">batch_Q_target</span><span class="p">,</span> <span class="n">ph_action</span><span class="p">:</span> <span class="n">batch_action</span><span class="p">})))</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">'Epsilon: </span><span class="si">{:.2f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epsilon</span><span class="p">))</span>
-            <span class="k">break</span>
-        
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_training_per_sampling</span><span class="p">):</span>
-        <span class="n">mini_batch</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">memory</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_batch</span><span class="p">)]</span>
-
-        <span class="n">batch_state</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">batch_action</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">batch_Q_target</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span><span class="n">done</span> <span class="ow">in</span> <span class="n">mini_batch</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">done</span><span class="p">:</span> 
-                <span class="n">batch_Q_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span> 
-                <span class="n">batch_Q_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reward</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">ph_states</span><span class="p">:</span> <span class="n">next_state</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]})))</span>
-            
-            <span class="n">batch_state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-            <span class="n">batch_action</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
-
-        <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">optm</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">ph_states</span><span class="p">:</span><span class="n">batch_state</span><span class="p">,</span> <span class="n">ph_Q_target</span><span class="p">:</span> <span class="n">batch_Q_target</span><span class="p">,</span> <span class="n">ph_action</span><span class="p">:</span> <span class="n">batch_action</span><span class="p">})</span>
-        
-    <span class="n">my_loss</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span><span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">ph_states</span><span class="p">:</span><span class="n">batch_state</span><span class="p">,</span> <span class="n">ph_Q_target</span><span class="p">:</span> <span class="n">batch_Q_target</span><span class="p">,</span> <span class="n">ph_action</span><span class="p">:</span> <span class="n">batch_action</span><span class="p">})</span>
-    <span class="n">history_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">my_loss</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'Loss: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">my_loss</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'Epsilon: </span><span class="si">{:.2f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epsilon</span><span class="p">))</span>
+<span class="n">biases</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'hidden1'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_hidden1</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)),</span>
+    <span class="s1">'hidden2'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_hidden2</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)),</span>
+    <span class="s1">'output'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_output</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
+<span class="p">}</span>
 </pre></div>
 
     </div>
@@ -13596,96 +13445,9 @@ $$
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Loss: 0.0722566768527031
-Epsilon: 0.50
-Loss: 0.019042452797293663
-Epsilon: 0.49
-Loss: 0.034736599773168564
-Epsilon: 0.48
-Loss: 0.04224886745214462
-Epsilon: 0.47
-Loss: 0.02191724255681038
-Epsilon: 0.46
-Loss: 0.0025080260820686817
-Epsilon: 0.45
-Loss: 0.021504027768969536
-Epsilon: 0.45
-Loss: 0.033824000507593155
-Epsilon: 0.44
-Loss: 0.012959971092641354
-Epsilon: 0.43
-avg frame of last 10 episode: 36.3
-Loss: 0.052935924381017685
-Epsilon: 0.42
-avg frame of last 10 episode: 39.6
-Loss: 0.016658972948789597
-Epsilon: 0.42
-avg frame of last 10 episode: 39.1
-Loss: 0.01675938069820404
-Epsilon: 0.41
-avg frame of last 10 episode: 42.2
-Loss: 0.006480582524091005
-Epsilon: 0.40
-avg frame of last 10 episode: 44.2
-Loss: 0.0057737259194254875
-Epsilon: 0.40
-avg frame of last 10 episode: 43.9
-Loss: 0.0094408318400383
-Epsilon: 0.39
-avg frame of last 10 episode: 45.8
-Loss: 0.008619039319455624
-Epsilon: 0.38
-avg frame of last 10 episode: 46.7
-Loss: 0.00949073676019907
-Epsilon: 0.38
-avg frame of last 10 episode: 47.1
-Loss: 0.0008196822018362582
-Epsilon: 0.37
-avg frame of last 10 episode: 50.5
-Loss: 0.011242996901273727
-Epsilon: 0.37
-avg frame of last 10 episode: 59.4
-Loss: 0.013221831060945988
-Epsilon: 0.36
-avg frame of last 10 episode: 75.2
-Loss: 0.0009754810016602278
-Epsilon: 0.36
-avg frame of last 10 episode: 89.6
-Loss: 0.0010232626227661967
-Epsilon: 0.35
-avg frame of last 10 episode: 94.8
-Loss: 0.0006891496595926583
-Epsilon: 0.35
-avg frame of last 10 episode: 109.4
-Loss: 0.0007051907596178353
-Epsilon: 0.34
-avg frame of last 10 episode: 122.0
-Loss: 0.0005916483933106065
-Epsilon: 0.34
-avg frame of last 10 episode: 136.2
-Loss: 0.02551320008933544
-Epsilon: 0.33
-avg frame of last 10 episode: 150.3
-Loss: 0.0014685796340927482
-Epsilon: 0.33
-avg frame of last 10 episode: 166.6
-Loss: 0.0007353397668339312
-Epsilon: 0.32
-avg frame of last 10 episode: 178.1
-Loss: 0.0015323614934459329
-Epsilon: 0.32
-avg frame of last 10 episode: 186.3
-Loss: 0.0025336144026368856
-Epsilon: 0.32
-avg frame of last 10 episode: 186.3
-Loss: 0.0010797895956784487
-Epsilon: 0.31
-avg frame of last 10 episode: 186.3
-Loss: 0.0005968824261799455
-Epsilon: 0.31
-avg frame of last 10 episode: 197.0
-Loss: 0.0005968824261799455
-Epsilon: 0.30
+<pre>WARNING:tensorflow:From c:\users\iai\appdata\local\programs\python\python37\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
 </pre>
 </div>
 </div>
@@ -13696,39 +13458,91 @@ Epsilon: 0.30
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [11]:</div>
+<div class="prompt input_prompt">In [8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">'CartPole-v0'</span><span class="p">)</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-
-<span class="n">prob_rand_action</span> <span class="o">=</span> <span class="mf">0.4</span>
-
-<span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">'rgb_array'</span><span class="p">))</span>
-
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="n">img</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">'rgb_array'</span><span class="p">))</span>
-    <span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">())</span>
-    <span class="n">display</span><span class="o">.</span><span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">prob_rand_action</span><span class="p">:</span>
-        <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">Q_pred</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">ph_states</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]})</span>
-        <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q_pred</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Qnet</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">biases</span><span class="p">):</span>
+    <span class="n">hidden1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="s1">'hidden1'</span><span class="p">]),</span> <span class="n">biases</span><span class="p">[</span><span class="s1">'hidden1'</span><span class="p">])</span>
+    <span class="n">hidden1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">hidden1</span><span class="p">)</span>
     
-    <span class="n">state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="n">hidden2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">hidden1</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="s1">'hidden2'</span><span class="p">]),</span> <span class="n">biases</span><span class="p">[</span><span class="s1">'hidden2'</span><span class="p">])</span>
+    <span class="n">hidden2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">hidden2</span><span class="p">)</span>
     
-    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">2.7</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.45</span><span class="p">:</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">hidden2</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="s1">'output'</span><span class="p">]),</span> <span class="n">biases</span><span class="p">[</span><span class="s1">'output'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">output</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Qpred</span> <span class="o">=</span> <span class="n">Qnet</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">biases</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">Qpred</span><span class="p">))</span>
+
+<span class="n">LR</span> <span class="o">=</span> <span class="mf">0.001</span>
+<span class="n">optm</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">LR</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+<span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+<span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="k">for</span> <span class="n">episode</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">501</span><span class="p">):</span>
+
+    <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>        
+    <span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
         
-    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Frame: </span><span class="si">{}</span><span class="s1">, action: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">action</span><span class="p">))</span>
-    <span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
-    
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">state</span><span class="p">})</span>                
+
+        <span class="c1"># Exploration vs. Exploitation for action            </span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>        
+            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+
+        <span class="c1"># next state and reward</span>
+        <span class="n">next_state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  
+        
+        <span class="k">if</span> <span class="n">done</span><span class="p">:</span>        
+            <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">200</span>
+            <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span>
+        <span class="k">else</span><span class="p">:</span>                        
+            <span class="n">next_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
+            <span class="n">Q_next</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">next_state</span><span class="p">})</span>
+            <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q_next</span><span class="p">)</span>
+
+        <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">optm</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Q</span><span class="p">})</span>
+        
+        <span class="n">state</span> <span class="o">=</span> <span class="n">next_state</span>                    
+        
+    <span class="k">if</span> <span class="n">episode</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Episode: </span><span class="si">{}</span><span class="s2"> steps: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">episode</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>  
+        
 <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 
@@ -13745,14 +13559,44 @@ Epsilon: 0.30
     <div class="prompt"></div>
 
 
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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%0A">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Episode: 0 steps: 11
+Episode: 100 steps: 34
+Episode: 200 steps: 59
+Episode: 300 steps: 82
+Episode: 400 steps: 258
+Episode: 500 steps: 134
+</pre>
+</div>
 </div>
 
 </div>
+</div>
 
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+    
+    <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">state</span><span class="p">})</span>  
+    <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+    
+    <span class="n">next_state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">next_state</span>
+        
+<span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -13760,7 +13604,280 @@ Epsilon: 0.30
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="3.-Other-Tutorials">3. Other Tutorials<a class="anchor-link" href="#3.-Other-Tutorials">¶</a></h1><p><br></p>
+<h1 id="3.-DQN-with-Gym-Environment">3. DQN with Gym Environment<a class="anchor-link" href="#3.-DQN-with-Gym-Environment">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span>
+
+<span class="kn">import</span> <span class="nn">gym</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">'CartPole-v1'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_input</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 4</span>
+<span class="n">n_actions</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span> <span class="c1"># 2</span>
+<span class="n">n_output</span> <span class="o">=</span> <span class="n">n_actions</span>
+
+<span class="n">n_hidden1</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_hidden2</span> <span class="o">=</span> <span class="mi">50</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_output</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'hidden1'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_input</span><span class="p">,</span> <span class="n">n_hidden1</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)),</span>
+    <span class="s1">'hidden2'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_hidden1</span><span class="p">,</span> <span class="n">n_hidden2</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)),</span>
+    <span class="s1">'output'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_hidden2</span><span class="p">,</span> <span class="n">n_output</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="n">biases</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'hidden1'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_hidden1</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)),</span>
+    <span class="s1">'hidden2'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_hidden2</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)),</span>
+    <span class="s1">'output'</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">([</span><span class="n">n_output</span><span class="p">],</span> <span class="n">stddev</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">))</span>
+<span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">DQN</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">biases</span><span class="p">):</span>
+    <span class="n">hidden1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="s1">'hidden1'</span><span class="p">]),</span> <span class="n">biases</span><span class="p">[</span><span class="s1">'hidden1'</span><span class="p">])</span>
+    <span class="n">hidden1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">hidden1</span><span class="p">)</span>
+    
+    <span class="n">hidden2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">hidden1</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="s1">'hidden2'</span><span class="p">]),</span> <span class="n">biases</span><span class="p">[</span><span class="s1">'hidden2'</span><span class="p">])</span>
+    <span class="n">hidden2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">hidden2</span><span class="p">)</span>
+    
+    <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">hidden2</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="s1">'output'</span><span class="p">]),</span> <span class="n">biases</span><span class="p">[</span><span class="s1">'output'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">output</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Qpred</span> <span class="o">=</span> <span class="n">DQN</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">biases</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">Qpred</span><span class="p">))</span>
+
+<span class="n">LR</span> <span class="o">=</span> <span class="mf">0.001</span>
+<span class="n">optm</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">LR</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+<span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+<span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+
+<span class="n">replay_buffer</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">n_buffer</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">n_batch</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="k">for</span> <span class="n">episode</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2001</span><span class="p">):</span>
+        
+    <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>                        
+        
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])})</span> 
+        
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>                          
+            <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+        
+        <span class="n">next_state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span> 
+        
+        <span class="k">if</span> <span class="n">done</span><span class="p">:</span>        
+            <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">200</span>
+            <span class="n">next_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+      
+        <span class="n">replay_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span> <span class="n">done</span><span class="p">])</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">replay_buffer</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">n_buffer</span><span class="p">:</span>            
+            <span class="n">replay_buffer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="n">state</span> <span class="o">=</span> <span class="n">next_state</span>                        
+        
+    <span class="k">if</span> <span class="n">episode</span> <span class="o">%</span> <span class="n">n_batch</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+         
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">replay_buffer</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n_batch</span><span class="p">:</span>    
+                <span class="k">break</span>
+                
+            <span class="n">minibatch</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">replay_buffer</span><span class="p">,</span> <span class="n">n_batch</span><span class="p">)</span>
+
+            <span class="n">x_stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_input</span><span class="p">)</span>
+            <span class="n">y_stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_output</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span> <span class="n">done</span> <span class="ow">in</span> <span class="n">minibatch</span><span class="p">:</span>                
+
+                <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])})</span> 
+
+                <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
+                    <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">action</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span>                        
+                <span class="k">else</span><span class="p">:</span>                    
+                    <span class="n">Q_next</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])})</span>               
+                    <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">action</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q_next</span><span class="p">)</span>
+
+                <span class="n">x_stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">x_stack</span><span class="p">,</span> <span class="n">state</span><span class="p">])</span>
+                <span class="n">y_stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">y_stack</span><span class="p">,</span> <span class="n">Q</span><span class="p">])</span>
+
+            <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">optm</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">x_stack</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">y_stack</span><span class="p">})</span>                
+
+    <span class="k">if</span> <span class="n">episode</span> <span class="o">%</span> <span class="mi">200</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Episode: </span><span class="si">{}</span><span class="s2"> steps: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">episode</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>
+        
+<span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>   
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Episode: 1 steps: 11
+Episode: 201 steps: 56
+Episode: 401 steps: 59
+Episode: 601 steps: 38
+Episode: 801 steps: 37
+Episode: 1001 steps: 31
+Episode: 1201 steps: 19
+Episode: 1401 steps: 42
+Episode: 1601 steps: 278
+Episode: 1801 steps: 229
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+    
+    <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">state</span><span class="p">})</span>  
+    <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+    
+    <span class="n">next_state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">next_state</span>
+        
+<span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="4.-Other-Tutorials">4. Other Tutorials<a class="anchor-link" href="#4.-Other-Tutorials">¶</a></h1><p><br></p>
 <ul>
 <li>Sutton and Barto book<ul>
 <li><a href="http://incompleteideas.net/book/the-book-2nd.html">http://incompleteideas.net/book/the-book-2nd.html</a></li>
@@ -13791,7 +13908,7 @@ Epsilon: 0.30
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [12]:</div>
+<div class="prompt input_prompt">In [21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="nx">javascript</span>
@@ -13814,10 +13931,10 @@ Epsilon: 0.30
 
 
 
-<div id="f0189002-9396-4007-a6d7-d25a63a6f769"></div>
+<div id="d206ba42-385c-4352-8e5d-18ff74cd34ce"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#f0189002-9396-4007-a6d7-d25a63a6f769');
+var element = $('#d206ba42-385c-4352-8e5d-18ff74cd34ce');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
