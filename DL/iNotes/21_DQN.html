@@ -13017,45 +13017,6 @@ ul.typeahead-list  > li > a.pull-right {
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
-<style type="text/css">
-    
-/* Temporary definitions which will become obsolete with Notebook release 5.0 */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-bold { font-weight: bold; }
-
-    </style>
 
 
 <style type="text/css">
@@ -13352,7 +13313,7 @@ $$
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [3]:</div>
+<div class="prompt input_prompt">In [26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -13435,26 +13396,6 @@ $$
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>WARNING:tensorflow:From c:\users\iai\appdata\local\programs\python\python37\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
-Instructions for updating:
-Colocations handled automatically by placer.
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -13502,14 +13443,24 @@ Colocations handled automatically by placer.
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
 <span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
 <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+</pre></div>
 
-<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
-<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span>
+    </div>
+</div>
+</div>
 
-<span class="k">for</span> <span class="n">episode</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">501</span><span class="p">):</span>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
 
-    <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>        
-    <span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">episode</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">801</span><span class="p">):</span>
+    
+    <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>        
     
     <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
     
@@ -13517,31 +13468,33 @@ Colocations handled automatically by placer.
         
         <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
-        <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">state</span><span class="p">})</span>                
-
-        <span class="c1"># Exploration vs. Exploitation for action            </span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">state</span><span class="p">})</span>
+            
+        <span class="c1"># Exploration vs. Exploitation for action       </span>
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>        
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
 
         <span class="c1"># next state and reward</span>
-        <span class="n">next_state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  
-        
+        <span class="n">next_state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> 
+                
         <span class="k">if</span> <span class="n">done</span><span class="p">:</span>        
-            <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">200</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">200</span>        
             <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span>
-        <span class="k">else</span><span class="p">:</span>                        
+                 
+        <span class="k">else</span><span class="p">:</span>                                               
             <span class="n">next_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
-            <span class="n">Q_next</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">next_state</span><span class="p">})</span>
-            <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q_next</span><span class="p">)</span>
+            <span class="n">next_Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">next_state</span><span class="p">})</span>
+            <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">next_Q</span><span class="p">)</span>
 
         <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">optm</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Q</span><span class="p">})</span>
         
-        <span class="n">state</span> <span class="o">=</span> <span class="n">next_state</span>                    
-        
+        <span class="n">state</span> <span class="o">=</span> <span class="n">next_state</span>
+
     <span class="k">if</span> <span class="n">episode</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"Episode: </span><span class="si">{}</span><span class="s2"> steps: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">episode</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>  
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Episode: </span><span class="si">{}</span><span class="s2"> steps: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">episode</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>
         
 <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
@@ -13560,12 +13513,15 @@ Colocations handled automatically by placer.
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Episode: 0 steps: 11
-Episode: 100 steps: 34
-Episode: 200 steps: 59
-Episode: 300 steps: 82
-Episode: 400 steps: 258
-Episode: 500 steps: 134
+<pre>Episode: 0 steps: 10
+Episode: 100 steps: 55
+Episode: 200 steps: 32
+Episode: 300 steps: 51
+Episode: 400 steps: 61
+Episode: 500 steps: 77
+Episode: 600 steps: 109
+Episode: 700 steps: 208
+Episode: 800 steps: 228
 </pre>
 </div>
 </div>
@@ -13576,7 +13532,7 @@ Episode: 500 steps: 134
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [11]:</div>
+<div class="prompt input_prompt">In [12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
@@ -13587,13 +13543,26 @@ Episode: 500 steps: 134
     <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
     
     <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
-    <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">state</span><span class="p">})</span>  
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">state</span><span class="p">})</span>
     <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
     
     <span class="n">next_state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">next_state</span>
         
 <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sess</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13610,7 +13579,7 @@ Episode: 500 steps: 134
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [12]:</div>
+<div class="prompt input_prompt">In [14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -13631,7 +13600,7 @@ Episode: 500 steps: 134
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [13]:</div>
+<div class="prompt input_prompt">In [15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">'CartPole-v1'</span><span class="p">)</span>
@@ -13644,7 +13613,7 @@ Episode: 500 steps: 134
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [14]:</div>
+<div class="prompt input_prompt">In [16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_input</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 4</span>
@@ -13662,7 +13631,7 @@ Episode: 500 steps: 134
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [15]:</div>
+<div class="prompt input_prompt">In [17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])</span>
@@ -13676,7 +13645,7 @@ Episode: 500 steps: 134
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [16]:</div>
+<div class="prompt input_prompt">In [18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
@@ -13699,7 +13668,7 @@ Episode: 500 steps: 134
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [17]:</div>
+<div class="prompt input_prompt">In [19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">DQN</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">biases</span><span class="p">):</span>
@@ -13720,7 +13689,7 @@ Episode: 500 steps: 134
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [18]:</div>
+<div class="prompt input_prompt">In [20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Qpred</span> <span class="o">=</span> <span class="n">DQN</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">biases</span><span class="p">)</span>
@@ -13737,19 +13706,29 @@ Episode: 500 steps: 134
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [19]:</div>
+<div class="prompt input_prompt">In [21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
 <span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
 <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+</pre></div>
 
-<span class="n">replay_buffer</span> <span class="o">=</span> <span class="p">[]</span>
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">replay_buffer</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">n_buffer</span> <span class="o">=</span> <span class="mi">5000</span>
 <span class="n">n_batch</span> <span class="o">=</span> <span class="mi">10</span>
 
 <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
-<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span>
 
 <span class="k">for</span> <span class="n">episode</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2001</span><span class="p">):</span>
         
@@ -13760,10 +13739,11 @@ Episode: 500 steps: 134
     
     <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>                        
         
-        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-        
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>        
         <span class="n">Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])})</span> 
         
+        <span class="c1"># Exploration vs. Exploitation for action </span>
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
             <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>                          
@@ -13773,7 +13753,7 @@ Episode: 500 steps: 134
         
         <span class="k">if</span> <span class="n">done</span><span class="p">:</span>        
             <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">200</span>
-            <span class="n">next_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="c1">#next_state = np.zeros(state.shape)</span>
       
         <span class="n">replay_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span> <span class="n">done</span><span class="p">])</span>
         
@@ -13801,8 +13781,8 @@ Episode: 500 steps: 134
                 <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
                     <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">action</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span>                        
                 <span class="k">else</span><span class="p">:</span>                    
-                    <span class="n">Q_next</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])})</span>               
-                    <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">action</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q_next</span><span class="p">)</span>
+                    <span class="n">next_Q</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Qpred</span><span class="p">,</span> <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_input</span><span class="p">])})</span>               
+                    <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">action</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">next_Q</span><span class="p">)</span>
 
                 <span class="n">x_stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">x_stack</span><span class="p">,</span> <span class="n">state</span><span class="p">])</span>
                 <span class="n">y_stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">y_stack</span><span class="p">,</span> <span class="n">Q</span><span class="p">])</span>
@@ -13829,16 +13809,16 @@ Episode: 500 steps: 134
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Episode: 1 steps: 11
-Episode: 201 steps: 56
-Episode: 401 steps: 59
-Episode: 601 steps: 38
-Episode: 801 steps: 37
-Episode: 1001 steps: 31
-Episode: 1201 steps: 19
-Episode: 1401 steps: 42
-Episode: 1601 steps: 278
-Episode: 1801 steps: 229
+<pre>Episode: 1 steps: 9
+Episode: 201 steps: 35
+Episode: 401 steps: 43
+Episode: 601 steps: 42
+Episode: 801 steps: 39
+Episode: 1001 steps: 67
+Episode: 1201 steps: 64
+Episode: 1401 steps: 101
+Episode: 1601 steps: 102
+Episode: 1801 steps: 103
 </pre>
 </div>
 </div>
@@ -13849,7 +13829,7 @@ Episode: 1801 steps: 229
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [20]:</div>
+<div class="prompt input_prompt">In [23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
@@ -13867,6 +13847,19 @@ Episode: 1801 steps: 229
     <span class="n">state</span> <span class="o">=</span> <span class="n">next_state</span>
         
 <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sess</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13908,7 +13901,7 @@ Episode: 1801 steps: 229
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [21]:</div>
+<div class="prompt input_prompt">In [25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="nx">javascript</span>
@@ -13931,10 +13924,10 @@ Episode: 1801 steps: 229
 
 
 
-<div id="d206ba42-385c-4352-8e5d-18ff74cd34ce"></div>
+<div id="fe44f053-eb12-4653-aa48-66c137ec5cd1"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#d206ba42-385c-4352-8e5d-18ff74cd34ce');
+var element = $('#fe44f053-eb12-4653-aa48-66c137ec5cd1');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
