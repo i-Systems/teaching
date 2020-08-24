@@ -13140,7 +13140,7 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.1.-Modeling-Example">1.1. Modeling Example<a class="anchor-link" href="#1.1.-Modeling-Example">¶</a></h2><p>Manufacturer produces two products P and Q with machine A or B.</p>
+<h2 id="1.1.-Modeling-Example">1.1. Modeling Example<a class="anchor-link" href="#1.1.-Modeling-Example">¶</a></h2><p>Manufacturer produces two products P and Q with machine A and B.</p>
 <p>time of producing each unit of P</p>
 <ul>
 <li>in machine A: 50 min</li>
@@ -13174,8 +13174,8 @@ $$\begin{align}
 \max_{x} \quad &amp; (30+x-75)+(90+y-95) \\
 \text{subject to} \quad &amp; 50x+24y \leq 40 \times 60\\
 &amp; 30x + 33y  \leq 35 \times 60\\
-&amp; x \leq 75-30\\
-&amp; y  \leq 95-90
+&amp; x \geq 75-30\\
+&amp; y  \geq 95-90
 \end{align}
 $$
 </div>
@@ -14319,7 +14319,7 @@ y =
 <br></p>
 $$ x_i =
 \begin{cases}
-1 \quad \text{if two nodes are connected (welded).}\\
+1 \quad \text{if two nodes are connected.}\\
 0 \\
 \end{cases}
 $$<p><br></p>
@@ -14831,10 +14831,10 @@ $<span class="p">.</span><span class="n">getScript</span><span class="p">(</span
 
 
 
-<div id="691b9e3b-a725-4ae0-936c-e0bb4d173064"></div>
+<div id="fdc54414-816f-408c-9d78-6778950fe730"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#691b9e3b-a725-4ae0-936c-e0bb4d173064');
+var element = $('#fdc54414-816f-408c-9d78-6778950fe730');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 </script>
 </div>
