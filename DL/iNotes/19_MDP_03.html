@@ -13056,6 +13056,20 @@ ul.typeahead-list  > li > a.pull-right {
 .ansi-bold { font-weight: bold; }
 
     </style>
+<style type="text/css">
+    div.CodeMirror,
+div.CodeMirror pre { /*코드 블록*/
+font-family: D2Coding, Consolas;
+font-size: 12pt;
+line-height: 120%;
+}
+.output_result pre { /*출력결과-맨마지막 출력*/
+font-family: D2Coding, Consolas;
+}
+.output_stdout pre { /*출력결과-긴출력, 중간출력*/
+font-family: D2Coding, Consolas;
+}
+    </style>
 
 
 <style type="text/css">
@@ -13325,13 +13339,6 @@ $$ v_{\pi} (s) \; \leftarrow \; R(s) + \gamma \sum_{s' \in S} P\left(s' \mid s, 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-$$v_{\pi} = R + \gamma  \, P^{\pi} \,v_{\pi}  \quad \implies \quad v_{\pi} = (I - \gamma  \,P^{\pi})^{-1}R $$
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In [1]:</div>
@@ -13354,7 +13361,6 @@ $$v_{\pi} = R + \gamma  \, P^{\pi} \,v_{\pi}  \quad \implies \quad v_{\pi} = (I 
 
 <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
 <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="n">gamma</span><span class="o">*</span><span class="n">P</span><span class="p">)</span><span class="o">.</span><span class="n">I</span><span class="o">*</span><span class="n">R</span>
-
 <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </pre></div>
 
@@ -13384,13 +13390,6 @@ $$v_{\pi} = R + \gamma  \, P^{\pi} \,v_{\pi}  \quad \implies \quad v_{\pi} = (I 
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-$$ v_{\pi} (s) \; \leftarrow \; R(s) + \gamma \sum_{s' \in S} P\left(s' \mid s, a \right) \;v_{\pi} \left(s' \right)$$
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In [2]:</div>
@@ -13398,10 +13397,10 @@ $$ v_{\pi} (s) \; \leftarrow \; R(s) + \gamma \sum_{s' \in S} P\left(s' \mid s, 
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">R</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">P</span><span class="o">*</span><span class="n">v</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>    
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13420,7 +13419,7 @@ $$ v_{\pi} (s) \; \leftarrow \; R(s) + \gamma \sum_{s' \in S} P\left(s' \mid s, 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>[[ 0.        ]
  [ 0.        ]
- [18.17562716]
+ [18.18181818]
  [10.        ]]
 </pre>
 </div>
@@ -13538,22 +13537,29 @@ $$ v_{\pi} (s) \; \leftarrow \; R(s) + \gamma \sum_{s' \in S} P\left(s' \mid s, 
 <li>The optimal state-value functin $v_*(s)$ is the maximum value function over all policies</li>
 </ul>
 <p><br></p>
-$$
-\begin{align*}
-v_*(s) &amp;= \max_{\pi} v_{\pi}(s) \\
-&amp; = \max_a q_{\pi}(s,a) \\
-&amp; = \max_a \left( R(s) + \gamma \sum_{s' \in S} P(s' \mid s,a) v_{\pi}(s') \right)\\
-&amp; = R(s) + \gamma \max_a \sum_{s' \in S} P(s' \mid s,a) v_{\pi}(s')
-\end{align*}$$<p><br></p>
+$$v_*(s) = \max_{\pi} v_{\pi}(s)$$<p><br></p>
 <ul>
 <li>The optimal action-value functin $q_*(s,a)$ is the maximum action-value function over all policies</li>
 </ul>
 <p><br></p>
+$$q_*(s,a) = \max_{\pi} q_{\pi}(s,a)$$<p><br></p>
+<ul>
+<li>Bellman Optimality Equations</li>
+</ul>
+<p><br></p>
+$$
+\begin{align*}
+v_*(s) &amp;= \max_a q_{*}(s,a) \\
+&amp; = \max_a \left( R(s) + \gamma \sum_{s' \in S} P(s' \mid s,a) v_{*}(s') \right)\\
+&amp; = R(s) + \gamma \max_a \sum_{s' \in S} P(s' \mid s,a) v_{*}(s')
+\end{align*}$$<p><br></p>
 $$
 \begin{align*}
 q_*(s,a) &amp;= \max_{\pi} q_{\pi}(s,a) \\
 &amp; =  \max_{\pi} \left( R(s) + \gamma \sum_{s' \in S} P(s' \mid s,a) v_{\pi}(s') \right) \\
-&amp; = R(s) + \gamma \sum_{s' \in S} P(s' \mid s,a) \max_{\pi} v_{\pi}(s') 
+&amp; = R(s) + \gamma \sum_{s' \in S} P(s' \mid s,a) \max_{\pi} v_{\pi}(s') \\
+&amp; = R(s) + \gamma \sum_{s' \in S} P(s' \mid s,a) v_{*}(s') \\
+&amp; = R(s) + \gamma \sum_{s' \in S} P(s' \mid s,a) \max_{a'} q_{*}(s',a')
 \end{align*}
 $$<p><br></p>
 <h3 id="2.3.2.-Optimal-Policy">2.3.2. Optimal Policy<a class="anchor-link" href="#2.3.2.-Optimal-Policy">¶</a></h3><ul>
@@ -13771,10 +13777,7 @@ $$\pi(s) \leftarrow \arg\max_{a} \sum_{s' \in S}P \left(s' \mid s,a \right) v_{\
 <div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-
-<span class="n">P</span> <span class="o">=</span> <span class="p">{</span>    
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="p">{</span>    
     <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> 
         <span class="mi">1</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]},</span>
     <span class="mi">1</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span> 
@@ -13786,14 +13789,25 @@ $$\pi(s) \leftarrow \arg\max_{a} \sum_{s' \in S}P \left(s' \mid s,a \right) v_{\
 <span class="p">}</span>
 
 <span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-
 <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
+
+<span class="n">States</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">Actions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$\sum_{s' \in S} p\left(s\ \mid s,a\right) \;v \left(s' \right)$$
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -13828,29 +13842,20 @@ $$\pi(s) \leftarrow \arg\max_{a} \sum_{s' \in S}P \left(s' \mid s,a \right) v_{\
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-$$\sum_{s' \in S} p\left(s'\ \mid s,a\right) \;v \left(s' \right)$$
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In [9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># compute the above summation</span>
-<span class="c1"># s = 2, a = 0</span>
 
 <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
 
-<span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span>
-
+<span class="n">temp</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
-    <span class="n">tmp</span> <span class="o">+=</span> <span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span> <span class="o">+</span> <span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13914,7 +13919,7 @@ $$\sum_{s' \in S} p\left(s'\ \mid s,a\right) \;v \left(s' \right)$$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3.1.-Value-Iteration">3.1. Value Iteration<a class="anchor-link" href="#3.1.-Value-Iteration">¶</a></h2>$$v (s) \; \leftarrow \; R(s) + \gamma \max_{a} \sum_{s' \in S} P\left(s' \mid s,a\right) \;v \left(s' \right), \quad \forall s \in S$$
+<h2 id="3.1.-Value-Iteration">3.1. Value Iteration<a class="anchor-link" href="#3.1.-Value-Iteration">¶</a></h2>$$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{\pi}\left(s'\right)$$
 </div>
 </div>
 </div>
@@ -13925,17 +13930,16 @@ $$\sum_{s' \in S} p\left(s'\ \mid s,a\right) \;v \left(s' \right)$$
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># optimal value fuction</span>
 
-<span class="c1"># v = [0]*4</span>
-<span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
 
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">States</span><span class="p">:</span>
         <span class="n">q_0</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">q_1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="nb">max</span><span class="p">(</span><span class="n">q_0</span><span class="p">,</span> <span class="n">q_1</span><span class="p">)</span>
     
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>    
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13966,61 +13970,15 @@ $$\sum_{s' \in S} p\left(s'\ \mid s,a\right) \;v \left(s' \right)$$
 <div class="prompt input_prompt">In [12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># shorten</span>
-
-<span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
-
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
-        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="nb">max</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">])</span>
-    
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>    
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[31.58508953413495, 38.60400287377479, 44.02416232966445, 54.20158563176306]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-$$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{*}\left(s'\right)$$
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># optimal policy</span>
+
 <span class="c1"># once v computed</span>
 
 <span class="n">optPolicy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
-<span class="c1"># optPolicy = [0, 0, 0, 0]</span>
 
-<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">States</span><span class="p">:</span>
     <span class="n">q_0</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">q_1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">q_1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>   
     
     <span class="n">optPolicy</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">([</span><span class="n">q_0</span><span class="p">,</span> <span class="n">q_1</span><span class="p">])</span>
 
@@ -14052,14 +14010,53 @@ $$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{*}\le
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In [13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># shorten</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">States</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="nb">max</span><span class="p">([</span><span class="nb">sum</span><span class="p">([</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">a</span><span class="p">]])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">Actions</span><span class="p">])</span>    
+    
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[31.58508953413495, 38.60400287377479, 44.02416232966445, 54.20158563176306]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In [14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">optPolicy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
 
-<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
-    <span class="n">optPolicy</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">])</span>
-    
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">States</span><span class="p">:</span>       
+    <span class="n">optPolicy</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">([</span><span class="nb">sum</span><span class="p">([</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">a</span><span class="p">]])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">Actions</span><span class="p">])</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="n">optPolicy</span><span class="p">)</span>    
 </pre></div>
 
@@ -14089,12 +14086,7 @@ $$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{*}\le
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3.2.-Policy-Iteration">3.2. Policy Iteration<a class="anchor-link" href="#3.2.-Policy-Iteration">¶</a></h2><p>$\quad$ 1. initialize policy $\hat{\pi}$ (e.g., randomly)</p>
-<p>$\quad$ 2. Compute a value function of policy, $v_{\pi}$ (e.g., via solving linear system or Bellman expectation equation iteratively)</p>
-<p>$\quad$ 3. Update $\pi$ to be <em>greedy</em> policy with respect to $v_{\pi}$
-<br><br></p>
-<p>$\quad$ 4. If policy $\pi$ changed in last iteration, return to step 2</p>
-
+<h2 id="3.2.-Policy-Iteration">3.2. Policy Iteration<a class="anchor-link" href="#3.2.-Policy-Iteration">¶</a></h2>
 </div>
 </div>
 </div>
@@ -14104,7 +14096,7 @@ $$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{*}\le
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">policy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+<span class="n">policy</span>
 </pre></div>
 
     </div>
@@ -14117,13 +14109,15 @@ $$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{*}\le
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[15]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[0 0 1 0]
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([1, 0, 1, 0])</pre>
 </div>
+
 </div>
 
 </div>
@@ -14137,11 +14131,10 @@ $$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{*}\le
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">cal_value</span><span class="p">(</span><span class="n">policy</span><span class="p">):</span>
     <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
-    
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">policy</span><span class="p">[</span><span class="n">s</span><span class="p">]])</span>
-    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">States</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">policy</span><span class="p">[</span><span class="n">s</span><span class="p">]])</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="n">q</span>
     <span class="k">return</span> <span class="n">v</span>
 </pre></div>
 
@@ -14155,8 +14148,8 @@ $$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{*}\le
 <div class="prompt input_prompt">In [17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v</span> <span class="o">=</span> <span class="n">cal_value</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">V_pi</span> <span class="o">=</span> <span class="n">cal_value</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">V_pi</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14173,7 +14166,7 @@ $$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{*}\le
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[0.0, 14.219558703350584, 16.398801416507762, 31.599019340779076]
+<pre>[29.362497240834138, 35.887497566214655, 39.36249766317196, 50.387497756266676]
 </pre>
 </div>
 </div>
@@ -14182,25 +14175,26 @@ $$\pi^*(s) = \arg\max_{a} \sum_{s' \in S}  p\left(s' \mid s,a\right) \, v_{*}\le
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-$$\pi(s) \leftarrow \arg\max_{a} \sum_{s' \in S}P \left(s' \mid s,a \right) v_{\pi}\left(s'\right)$$
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In [18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
-        <span class="n">policy</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">])</span>
-    
-    <span class="n">v</span> <span class="o">=</span> <span class="n">cal_value</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span> 
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span> 
+        <span class="n">values_temp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span> 
+            <span class="n">temp</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">action</span><span class="p">]:</span> 
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span> <span class="o">+</span> <span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">V_pi</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">values_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> 
 
-<span class="nb">print</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>    
+        <span class="n">policy</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">values_temp</span><span class="p">)</span> 
+        <span class="n">V_pi</span> <span class="o">=</span> <span class="n">cal_value</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+
+<span class="n">optPolicy</span> <span class="o">=</span> <span class="n">policy</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">optPolicy</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14244,14 +14238,8 @@ $$\pi(s) \leftarrow \arg\max_{a} \sum_{s' \in S}P \left(s' \mid s,a \right) v_{\
 <div class="prompt input_prompt">In [19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-<span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># [north, east, south, west]</span>
-
-<span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
-
-<span class="n">P</span> <span class="o">=</span> <span class="p">{</span>
-     <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.9</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.9</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)],</span> 
          <span class="mi">1</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> 
          <span class="mi">2</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> 
          <span class="mi">3</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.9</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">4</span><span class="p">)]},</span>
@@ -14296,6 +14284,12 @@ $$\pi(s) \leftarrow \arg\max_{a} \sum_{s' \in S}P \left(s' \mid s,a \right) v_{\
           <span class="mi">2</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.9</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">9</span><span class="p">)],</span> 
           <span class="mi">3</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">10</span><span class="p">)]}</span>
 <span class="p">}</span>
+
+<span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.9</span>
+
+<span class="n">States</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="n">Actions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># [north, east, south, west]</span>
 </pre></div>
 
     </div>
@@ -14312,11 +14306,11 @@ $$\pi(s) \leftarrow \arg\max_{a} \sum_{s' \in S}P \left(s' \mid s,a \right) v_{\
 
 <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">11</span>
 
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
-        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="nb">max</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">States</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span><span class="o">*</span><span class="nb">max</span><span class="p">([</span><span class="nb">sum</span><span class="p">([</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">a</span><span class="p">]])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">Actions</span><span class="p">])</span>  
     
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>   
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14351,9 +14345,9 @@ $$\pi(s) \leftarrow \arg\max_{a} \sum_{s' \in S}P \left(s' \mid s,a \right) v_{\
 
 <span class="n">optPolicy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">11</span>
 
-<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
-    <span class="n">optPolicy</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">])</span>
-    
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">States</span><span class="p">:</span>       
+    <span class="n">optPolicy</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">([</span><span class="nb">sum</span><span class="p">([</span><span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">trans</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">a</span><span class="p">]])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">Actions</span><span class="p">])</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="n">optPolicy</span><span class="p">)</span>    
 </pre></div>
 
@@ -14413,10 +14407,10 @@ $$\pi(s) \leftarrow \arg\max_{a} \sum_{s' \in S}P \left(s' \mid s,a \right) v_{\
 
 
 
-<div id="0fde5a59-efb6-4d9b-a4c9-9ad4db9cbbf7"></div>
+<div id="7f6bead1-60ba-43c3-97c5-7a1f7f80fabc"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#0fde5a59-efb6-4d9b-a4c9-9ad4db9cbbf7');
+var element = $('#7f6bead1-60ba-43c3-97c5-7a1f7f80fabc');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
