@@ -12947,13 +12947,8 @@ ul.typeahead-list  > li > a.pull-right {
 /*# sourceMappingURL=style.min.css.map */
     </style>
 <style type="text/css">
-    pre { line-height: 125%; }
-td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
-span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
-td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
-span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
-.highlight .hll { background-color: #ffffcc }
-.highlight { background: #f8f8f8; }
+    .highlight .hll { background-color: #ffffcc }
+.highlight  { background: #f8f8f8; }
 .highlight .c { color: #408080; font-style: italic } /* Comment */
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
@@ -13060,6 +13055,20 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 .ansi-bold { font-weight: bold; }
 
+    </style>
+<style type="text/css">
+    div.CodeMirror,
+div.CodeMirror pre { /*코드 블록*/
+font-family: D2Coding, Consolas;
+font-size: 12pt;
+line-height: 120%;
+}
+.output_result pre { /*출력결과-맨마지막 출력*/
+font-family: D2Coding, Consolas;
+}
+.output_stdout pre { /*출력결과-긴출력, 중간출력*/
+font-family: D2Coding, Consolas;
+}
     </style>
 
 
@@ -13198,7 +13207,12 @@ Industrial AI Lab at POSTECH
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="3.-Supervised-Learning-for-Segmentation">3. Supervised Learning for Segmentation<a class="anchor-link" href="#3.-Supervised-Learning-for-Segmentation">¶</a></h1><h2 id="3.1.-Segmented-(Labeled)-Images">3.1. Segmented (Labeled) Images<a class="anchor-link" href="#3.1.-Segmented-(Labeled)-Images">¶</a></h2><p>Download data from <a href="https://www.dropbox.com/s/24okrd00jfj5qot/FCN_lecture_data_files.zip?dl=1">here</a></p>
+<h1 id="3.-Supervised-Learning-for-Segmentation">3. Supervised Learning for Segmentation<a class="anchor-link" href="#3.-Supervised-Learning-for-Segmentation">¶</a></h1><h2 id="3.1.-Segmented-(Labeled)-Images">3.1. Segmented (Labeled) Images<a class="anchor-link" href="#3.1.-Segmented-(Labeled)-Images">¶</a></h2><p>Download data</p>
+<ul>
+<li><a href="https://www.dropbox.com/s/8eauz8nnill1n8c/images_training.npy?dl=1">images_training</a></li>
+<li><a href="https://www.dropbox.com/s/563go90a7qkioc7/images_testing.npy?dl=1">images_testing</a></li>
+<li><a href="https://www.dropbox.com/s/cydl62wezz5ie7a/seg_training.npy?dl=1">seg_training</a></li>
+</ul>
 
 </div>
 </div>
@@ -13738,10 +13752,10 @@ Epoch 5/5
 
 
 
-<div id="cd309301-8ad6-4512-a087-ac5c27dcec55"></div>
+<div id="fe084af3-5f56-4750-85f0-20b431d565c6"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#cd309301-8ad6-4512-a087-ac5c27dcec55');
+var element = $('#fe084af3-5f56-4750-85f0-20b431d565c6');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
