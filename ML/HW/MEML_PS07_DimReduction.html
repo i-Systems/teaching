@@ -13018,25 +13018,57 @@ ul.typeahead-list  > li > a.pull-right {
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
-    div.CodeMirror,
- 
-div.CodeMirror pre { 
- font-family: D2Coding, Consolas;
- font-size: 14pt;
- line-height: 120%;
- 
-}
- 
-.output_result pre { /*출력결과-맨마지막 출력*/
- font-family: D2Coding, Consolas;
- font-size: 12pt;
-}
- 
-.output_stdout pre { /*출력결과-긴출력, 중간출력*/
- font-family: D2Coding, Consolas;
- font-size: 12pt;
-}
+    
+/* Temporary definitions which will become obsolete with Notebook release 5.0 */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
 
+.ansi-bold { font-weight: bold; }
+
+    </style>
+<style type="text/css">
+    div.CodeMirror,
+div.CodeMirror pre { /*코드 블록*/
+font-family: D2Coding, Consolas;
+font-size: 12pt;
+line-height: 120%;
+}
+.output_result pre { /*출력결과-맨마지막 출력*/
+font-family: D2Coding, Consolas;
+}
+.output_stdout pre { /*출력결과-긴출력, 중간출력*/
+font-family: D2Coding, Consolas;
+}
     </style>
 
 
@@ -13111,7 +13143,7 @@ Industrial AI Lab at POSTECH
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Problem-01">Problem 01<a class="anchor-link" href="#Problem-01">¶</a></h1><p>In statistics, it is important to understand the characteristics of population, sample and distributions.</p>
+<h1 id="Problem-01"><font color="red">Problem 01</font><a class="anchor-link" href="#Problem-01">¶</a></h1><p>In statistics, it is important to understand the characteristics of population, sample and distributions.</p>
 <p>1) Plot a histogram of 100,000 data points that are randomly generated from the uniform distribution.</p>
 
 </div>
@@ -13264,25 +13296,7 @@ Industrial AI Lab at POSTECH
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Problem-03">Problem 03<a class="anchor-link" href="#Problem-03">¶</a></h1><p>Show that minimizing the sum of squared errors maximizes the variance in the PCA.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Problem-04">Problem 04<a class="anchor-link" href="#Problem-04">¶</a></h1><p>1) What is the relationship between PCA and SVD?</p>
-<p>2) Explain how SVD can do low rank approximation.</p>
-<p>3) Derive Fisher discriminant analysis from scratch.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Problem-05">Problem 05<a class="anchor-link" href="#Problem-05">¶</a></h1><p>Download the data <a href="https://www.dropbox.com/s/jes6kls021e6mm3/x_reg_and_y_reg_reg_pca.zip?dl=1">reg_pca_data</a>, and plot datas in x, y plane.</p>
+<h1 id="Problem-03"><font color="red">Problem 03</font><a class="anchor-link" href="#Problem-03">¶</a></h1><p>Download the data <a href="https://www.dropbox.com/s/jes6kls021e6mm3/x_reg_and_y_reg_reg_pca.zip?dl=1">reg_pca_data</a>, and plot datas in x, y plane.</p>
 
 </div>
 </div>
@@ -13372,7 +13386,25 @@ Industrial AI Lab at POSTECH
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Problem-06">Problem 06<a class="anchor-link" href="#Problem-06">¶</a></h1>
+<h1 id="Problem-04"><font color="red">Problem 04</font><a class="anchor-link" href="#Problem-04">¶</a></h1><p>Show that minimizing the sum of squared errors maximizes the variance in the PCA.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Problem-05">Problem 05<a class="anchor-link" href="#Problem-05">¶</a></h1><p>1) What is the relationship between PCA and SVD?</p>
+<p>2) Explain how SVD can do low rank approximation.</p>
+<p>3) Derive Fisher discriminant analysis from scratch.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Problem-06"><font color="red">Problem 06</font><a class="anchor-link" href="#Problem-06">¶</a></h1>
 </div>
 </div>
 </div>
@@ -13589,7 +13621,7 @@ Industrial AI Lab at POSTECH
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Problem-08">Problem 08<a class="anchor-link" href="#Problem-08">¶</a></h1><p>Recall that PCA transforms (zero-mean) data into low-dimensional reconstructions that lie in the span of the top $k$ eigenvectors of the sample covariance matrix. Let $U_k$ denote the $d\times k$ matrix of the top $k$ eigenvectors of the covariance matrix ($U_k$ is a truncated version of $U$, which is the matrix of eigenvectors of the covariance matrix).</p>
+<h1 id="Problem-08"><font color="red">Problem 08</font><a class="anchor-link" href="#Problem-08">¶</a></h1><p>Recall that PCA transforms (zero-mean) data into low-dimensional reconstructions that lie in the span of the top $k$ eigenvectors of the sample covariance matrix. Let $U_k$ denote the $d\times k$ matrix of the top $k$ eigenvectors of the covariance matrix ($U_k$ is a truncated version of $U$, which is the matrix of eigenvectors of the covariance matrix).</p>
 <p>There are two approaches to computing the low-dimensional reconstruction $\omega \in \mathbb{R}^k$ of a data point $x \in \mathbb{R}^d$:</p>
 <ol>
 <li><p>Solve a least squares problem to minimize the reconstruction error</p>
@@ -13945,10 +13977,10 @@ $$\Phi(x) = \begin{bmatrix}\ \text{feature1}\\ \text{feature2} \end{bmatrix}$$
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># fill out the blank</span>
 
-<span class="n">feature_T_shirt_top_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span> <span class="p">,</span><span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="n">feature_Trouser_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(,</span> <span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="n">feature_T_shirt_top_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(,</span>  <span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="n">feature_Trouser_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(,</span> <span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">feature_T_shirt_top_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span> <span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">feature_Trouser_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span> <span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">feature_T_shirt_top_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span> <span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">feature_Trouser_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span> <span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -14057,12 +14089,12 @@ $$\Phi(x) = \begin{bmatrix}\ \text{feature1}\\ \text{feature2} \end{bmatrix}$$
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">prj_yp</span><span class="p">,</span> <span class="s1">'k'</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">'FDA(LDA) projection line'</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">clf_yp</span><span class="p">,</span> <span class="s1">'g'</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">'FDA(LDA) classification boundary'</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'equal'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Feature 1'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Feature 2'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Feature 1'</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Feature 2'</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
