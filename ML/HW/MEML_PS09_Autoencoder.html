@@ -12947,13 +12947,8 @@ ul.typeahead-list  > li > a.pull-right {
 /*# sourceMappingURL=style.min.css.map */
     </style>
 <style type="text/css">
-    pre { line-height: 125%; }
-td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
-span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
-td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
-span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
-.highlight .hll { background-color: #ffffcc }
-.highlight { background: #f8f8f8; }
+    .highlight .hll { background-color: #ffffcc }
+.highlight  { background: #f8f8f8; }
 .highlight .c { color: #408080; font-style: italic } /* Comment */
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
@@ -13061,6 +13056,20 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .ansi-bold { font-weight: bold; }
 
     </style>
+<style type="text/css">
+    div.CodeMirror,
+div.CodeMirror pre { /*코드 블록*/
+font-family: D2Coding, Consolas;
+font-size: 12pt;
+line-height: 120%;
+}
+.output_result pre { /*출력결과-맨마지막 출력*/
+font-family: D2Coding, Consolas;
+}
+.output_stdout pre { /*출력결과-긴출력, 중간출력*/
+font-family: D2Coding, Consolas;
+}
+    </style>
 
 
 <style type="text/css">
@@ -13134,6 +13143,13 @@ Industrial AI Lab at POSTECH
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Problem-1"><font color="red">Problem 1</font><a class="anchor-link" href="#Problem-1">¶</a></h1><p>1) Make an autoencoder model where latent space is 10-D with the MNIST dataset.</p>
+<p>Download files</p>
+<ul>
+<li><a href="https://www.dropbox.com/s/6wyex7jq4ytg4mv/mnist_train_images_rev.npy?dl=1">MNIST train images</a></li>
+<li><a href="https://www.dropbox.com/s/yff4ryrcexipyef/mnist_train_labels_rev.npy?dl=1">MNIST train labels</a></li>
+<li><a href="https://www.dropbox.com/s/idnf01630uyrf0n/mnist_test_images_rev.npy?dl=1">MNIST test images</a></li>
+<li><a href="https://www.dropbox.com/s/wm89ev3caoy63zq/mnist_test_labels_rev.npy?dl=1">MNIST test labels</a></li>
+</ul>
 
 </div>
 </div>
@@ -13143,7 +13159,21 @@ Industrial AI Lab at POSTECH
 <div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## write your code here</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="n">mnist_train_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_train_images_rev.npy'</span><span class="p">)</span>
+<span class="n">mnist_train_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_train_labels_rev.npy'</span><span class="p">)</span>
+<span class="n">mnist_test_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_test_images_rev.npy'</span><span class="p">)</span>
+<span class="n">mnist_test_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/mnist_test_labels_rev.npy'</span><span class="p">)</span>
+
+<span class="n">train_labels</span> <span class="o">=</span> <span class="n">mnist_train_labels</span>
+<span class="n">train_imgs</span> <span class="o">=</span> <span class="n">mnist_train_images</span>
+<span class="n">test_labels</span> <span class="o">=</span> <span class="n">mnist_test_labels</span>
+<span class="n">test_imgs</span> <span class="o">=</span> <span class="n">mnist_test_images</span>
+
+<span class="c1">## write your code here</span>
 <span class="c1">#</span>
 </pre></div>
 
@@ -13187,7 +13217,7 @@ Industrial AI Lab at POSTECH
 <div class="prompt input_prompt">In [8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPClassifier</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="k">import</span> <span class="n">MLPClassifier</span>
 
 <span class="c1">## write your code here</span>
 <span class="c1">#</span>
@@ -13222,7 +13252,7 @@ Industrial AI Lab at POSTECH
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="k">import</span> <span class="n">Axes3D</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/pca_autoencoder.npy'</span><span class="p">)</span>
@@ -13273,7 +13303,7 @@ Industrial AI Lab at POSTECH
 <div class="prompt input_prompt">In [11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="k">import</span> <span class="n">PCA</span>
 
 <span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">pca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -13379,10 +13409,10 @@ Industrial AI Lab at POSTECH
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPClassifier</span>
-<span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPRegressor</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="k">import</span> <span class="n">MLPClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="k">import</span> <span class="n">MLPRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">accuracy_score</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 
 <span class="n">x_total</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'./data_files/Alphabet_Handwritten_1000_images.npy'</span><span class="p">)</span>
@@ -13597,7 +13627,7 @@ Industrial AI Lab at POSTECH
 <div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="k">import</span> <span class="n">KMeans</span>
 
 <span class="c1">## write your code here</span>
 <span class="c1">#</span>
@@ -13676,7 +13706,7 @@ Industrial AI Lab at POSTECH
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Problem-4"><font color="red">Problem 4</font><a class="anchor-link" href="#Problem-4">¶</a></h1><p>The encoder part of an autoencoder is well known as a dimensionality reduction operator. This problem will ask you to implement the autoencoder algorithm for face data. The given data consists of 100 pictures of human faces with size of (50,40), we will apply an autoencoder to this dataset.</p>
-<p>Download data from <a href="https://www.dropbox.com/s/w5komt606tkw9v5/pca_faces.npy?dl=1">here</a>.</p>
+<p>Download data from <a href="https://www.dropbox.com/s/sane44unargfi0t/pca_faces.npy?dl=1">here</a>.</p>
 
 </div>
 </div>
