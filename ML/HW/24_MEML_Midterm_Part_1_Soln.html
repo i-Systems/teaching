@@ -13117,7 +13117,7 @@ Industrial AI Lab at KAIST
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Problem-01">Problem 01<a class="anchor-link" href="#Problem-01">&#182;</a></h1><p>Find $J$ of the below optimization problem with the following objective function and constraint. ($x,\omega, \omega_0 \in \mathbb{R}^n$)</p>
+<h1 id="Problem-01">Problem 01<a class="anchor-link" href="#Problem-01">&#182;</a></h1><p>Find $J$ of the below optimization problem with the following objective function and constraint. ($x,\omega\in \mathbb{R}^n,  \omega_0\in \mathbb{R}$)</p>
 <br>
 $$
 \begin{align*}
@@ -13148,11 +13148,20 @@ J = \;\min_x \quad &amp; \rVert x \lVert_2\\
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<br>
-$$ \begin{align*} \vec x^* &amp; =J^{*}\frac{\vec \omega}{\lVert \omega \rVert} \\ \\
-\omega_0 + \omega^Tx  &amp; = \omega_0 + \omega^T\left(J^{*}\frac{\omega}{\lVert \omega \rVert}\right)  \\
-&amp; =  \omega_0 + J^{*}\lVert \omega \rVert = 0 \\ \\
-\therefore J^{*} &amp; = -\frac{\omega_0}{\lVert \omega \rVert}\end{align*}$$
+<p>The optimal $x^*$ that minimizes $\|x\|_2$:</p>
+$$
+   \omega^T x^* + \omega_0 = 0
+   \\
+   x^* = -\omega_0 \frac{\omega}{\|\omega\|^2}
+$$<p>Calculation of $J^*$:
+$$
+   J^* = \|x^*\|_2 = \left\|-\omega_0 \frac{\omega}{\|\omega\|^2}\right\|_2
+   \\
+   J^* = \left| \omega_0 \right| \left\|\frac{\omega}{\|\omega\|^2}\right\|_2
+   \\
+   J^* = \frac{|\omega_0|}{\|\omega\|}
+$$</p>
+
 </div>
 </div>
 </div>
