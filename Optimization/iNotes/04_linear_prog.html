@@ -13110,10 +13110,39 @@ Industrial AI Lab at KAIST
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=PoPN1KE0nyOT"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="1.-Linear-Programming-(LP)">1. Linear Programming (LP)<a class="anchor-link" href="#1.-Linear-Programming-(LP)">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=FexkF-LAnvAz">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">YouTubeVideo</span>
+<span class="n">YouTubeVideo</span><span class="p">(</span><span class="s1">'maFgxXOWO9k'</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="s2">"560"</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="s2">"315"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt output_prompt">Out[ ]:</div>
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe allowfullscreen="" frameborder="0" height="315" src="https://www.youtube.com/embed/maFgxXOWO9k" width="560"></iframe>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=TVSiHoS4XnNP"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="1.-Linear-Programming-(LP)">1. Linear Programming (LP)<a class="anchor-link" href="#1.-Linear-Programming-(LP)">¶</a></h1><p><strong>Standard Form</strong></p>
+<p><strong>Standard Form</strong></p>
 <br/>
 <p>$$
 \begin{align*}
@@ -13238,10 +13267,96 @@ x\\
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=osFHqh4kv2PU"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The Procedures of Optimization</p>
+<ol>
+<li><p>The process of identifying objective function, variables, and constraints for a given problem (known as "modeling”)</p>
+</li>
+<li><p>Once the model has been formulated, optimization algorithm can be used to find its solutions</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=R7i-1CG3vimb"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Modeling Example</strong></p>
+<ul>
+<li>Manufacturer produces two parts P and Q with machine A and B.</li>
+<li>Time of producing each unit of P<ul>
+<li>in machine A: 50 min</li>
+<li>in machine B: 30 min</li>
+</ul>
+</li>
+<li>Time of producing each unit of Q<ul>
+<li>in machine A: 24 min</li>
+<li>in machine B: 33 min</li>
+</ul>
+</li>
+<li>Working plan for a week<ul>
+<li>40 hrs of work on machine A</li>
+<li>35 hrs of work on machine B</li>
+</ul>
+</li>
+<li>The week starts with<ul>
+<li>stock of 30 units of P</li>
+<li>stock of 90 units of Q</li>
+<li>demand of 75 units of P</li>
+<li>demand of 95 units of Q</li>
+</ul>
+</li>
+</ul>
+<p>Question: how to plan the production to end the week with the maximum stock?</p>
+<br/>
+<p><strong>Solution</strong></p>
+<p>Define decision variables</p>
+<ul>
+<li>$x$ = unit of P to be produced</li>
+<li>$y$ = unit of Q to be produced</li>
+</ul>
+<br/>
+<p>Optimization Problem (Actually this problem is IP)</p>
+<br/>
+<p>$$\begin{align*}
+\max \quad &amp;(30 + x - 75) + (90 + y - 95) \\\\
+\text{subject to} \quad &amp; 50x + 24y \leq 40 \times 60 \\
+&amp; 30x + 33y \leq 35 \times 60 \\
+&amp; x \geq 75 - 30 \\
+&amp; y \geq 95 - 90 \\
+&amp; \color{red}{x,y \in \mathbb{Z}}
+\end{align*}$$</p>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=UqBFgQnX90Ot"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.2.-Python-Implementation">1.2. Python Implementation<a class="anchor-link" href="#1.2.-Python-Implementation">¶</a></h2>
+<h2 id="1.2.-Solving-LP-using-Python">1.2. Solving LP using Python<a class="anchor-link" href="#1.2.-Solving-LP-using-Python">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=hD3id4Lfn-kL">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">YouTubeVideo</span>
+<span class="n">YouTubeVideo</span><span class="p">(</span><span class="s1">'maFgxXOWO9k?si=5eWT-ojNbd2Bi-Ea&amp;amp;start=801'</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="s2">"560"</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="s2">"315"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt output_prompt">Out[ ]:</div>
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe allowfullscreen="" frameborder="0" height="315" src="https://www.youtube.com/embed/maFgxXOWO9k?si=5eWT-ojNbd2Bi-Ea&amp;start=801" width="560"></iframe>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -13431,10 +13546,39 @@ Optimal x: [[2.74980481e-10]
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7SDg3Ad8oiqU"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="2.-More-Examples">2. More Examples<a class="anchor-link" href="#2.-More-Examples">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=I-zDizEgog-U">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">YouTubeVideo</span>
+<span class="n">YouTubeVideo</span><span class="p">(</span><span class="s1">'maFgxXOWO9k?si=gEBtrBZkUHLR7sdx&amp;amp;start=1249'</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="s2">"560"</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="s2">"315"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt output_prompt">Out[ ]:</div>
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe allowfullscreen="" frameborder="0" height="315" src="https://www.youtube.com/embed/maFgxXOWO9k?si=gEBtrBZkUHLR7sdx&amp;start=1249" width="560"></iframe>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=wOuzgtb_FaF7"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="2.-More-Examples">2. More Examples<a class="anchor-link" href="#2.-More-Examples">¶</a></h1><p>Now we know what linear programming (LP) is and how to find solutions using numerical computations. The next step, of course, is to explore the theory behind the algorithm. However, let's first look at more examples, and then examine the steps of solving LP problems in detail.</p>
+<p>Now we know what linear programming (LP) is and how to find solutions using numerical computations. The next step, of course, is to explore the theory behind the algorithm. However, let's first look at more examples, and then examine the steps of solving LP problems in detail.</p>
 </div>
 </div>
 </div>
@@ -14161,7 +14305,7 @@ r^T=C^T_N-C^T_BB^{-1}N=\begin{bmatrix}-1&amp;0\end{bmatrix} - \begin{bmatrix}0&a
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=T-Z61JV9L9Qq">
 <div class="input">
-<div class="prompt input_prompt">In [1]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="nx">javascript</span>
@@ -14174,9 +14318,9 @@ r^T=C^T_N-C^T_BB^{-1}N=\begin{bmatrix}-1&amp;0\end{bmatrix} - \begin{bmatrix}0&a
 <div class="output">
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_subarea output_javascript" id="944ecb4a-73d6-419c-9d9a-83f1f00f4358">
+<div class="output_subarea output_javascript" id="81aba189-4a03-4dba-ad19-1cd330166c7e">
 <script type="text/javascript">
-var element = $('#944ecb4a-73d6-419c-9d9a-83f1f00f4358');
+var element = $('#81aba189-4a03-4dba-ad19-1cd330166c7e');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
