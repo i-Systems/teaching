@@ -13181,19 +13181,15 @@ Example: If $ f(x) = 2x $, then the operator yields $ F(x) = x^2 + C $.</br></br
 Example: Orthogonal projection in Hilbert spaces, used in signal processing and numerical methods.</br></p>
 </li>
 <li><p>Fourier Transform and Laplace Transform: Map a function from the time/spatial domain to the frequency domain.</p>
-<ul>
-<li>Fourier Transform:<br>
-$$
-f(x) \to \{F}(j\omega) = \int_{-\infty}^{\infty} f(x) e^{-j 2\pi \omega x} dx
-$$</br></li>
-<li>Laplace Transform:<br>
-$$
-f(t) \to F(s) = \int_0^\infty f(t) e^{-st} dt
-$$<br>
-These transformations are widely used in signal processing, differential equations, and control theory.</br></br></li>
-</ul>
 </li>
 </ol>
+<ul>
+<li>Fourier Transform:<br>
+$$ f(x) \to F(j\omega) = \int_{-\infty}^{\infty} f(x) e^{-j 2\pi \omega x} dx$$</br></li>
+<li>Laplace Transform:<br>
+$$f(t) \to F(s) = \int_0^\infty f(t) e^{-st} dt$$<br>
+These transformations are widely used in signal processing, differential equations, and control theory.</br></br></li>
+</ul>
 <br/>
 <p><strong>Can Neural Networks Learn Operators?</strong></p>
 <p>Deep Neural Operators (DNOs) extend the concept of operators by learning mappings between function spaces. Their theoretical foundation is supported by the universal approximation theorem for operators, which ensures that neural networks can approximate function-to-function mappings with sufficient capacity.</p>
@@ -16531,9 +16527,9 @@ $$</p>
 <div class="output">
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_subarea output_javascript" id="e4b7a83e-ec27-422b-b296-c545bb2f2131">
+<div class="output_subarea output_javascript" id="fd00c0da-1702-4e51-ae33-cb41922391eb">
 <script type="text/javascript">
-var element = $('#e4b7a83e-ec27-422b-b296-c545bb2f2131');
+var element = $('#fd00c0da-1702-4e51-ae33-cb41922391eb');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
