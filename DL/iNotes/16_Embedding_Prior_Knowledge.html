@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>16_Embedding_Prior_Knowledge</title><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
-
+<html lang="en">
+<head><meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>16_Embedding_Prior_Knowledge</title><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script><script type="module">
+  import mermaid from 'https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.1/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
 <style type="text/css">
   pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -25,6 +27,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
 .highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
 .highlight .gr { color: #E40000 } /* Generic.Error */
 .highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
 .highlight .gi { color: #008400 } /* Generic.Inserted */
@@ -81,23 +84,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
   </style>
-<style type="text/css">
-  div.CodeMirror,
-div.CodeMirror pre { /*코드 블록*/
-font-family: D2Coding, Consolas;
-font-size: 12pt;
-line-height: 120%;
-}
-.output_result pre { /*출력결과-맨마지막 출력*/
-font-family: D2Coding, Consolas;
-}
-.output_stdout pre { /*출력결과-긴출력, 중간출력*/
-font-family: D2Coding, Consolas;
-}
-  </style>
-
-
-
 <style type="text/css">
 /*!
 *
@@ -13063,9 +13049,9 @@ div#notebook {
 }
 </style>
 <!-- Load mathjax -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"> </script>
-    <!-- MathJax configuration -->
-    <script type="text/x-mathjax-config">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"> </script>
+<!-- MathJax configuration -->
+<script type="text/x-mathjax-config">
     init_mathjax = function() {
         if (window.MathJax) {
         // MathJax loaded
@@ -13095,17 +13081,16 @@ div#notebook {
     }
     init_mathjax();
     </script>
-    <!-- End of mathjax configuration --></head>
+<!-- End of mathjax configuration --></head>
 <body>
-  <div tabindex="-1" id="notebook" class="border-box-sizing">
-    <div class="container" id="notebook-container">
-
+<main>
+<div class="border-box-sizing" id="notebook" tabindex="-1">
+<div class="container" id="notebook-container">
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><br><br>
-<font size='6'><b>Embedding Prior Knowledge into Neural Networks</b></font><br><br></p>
-
+<p><br/><br/>
+<font size="6"><b>Embedding Prior Knowledge into Neural Networks</b></font><br/><br/></p>
 </div>
 </div>
 </div>
@@ -13113,9 +13098,8 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Table of Contents</p>
-<br>
-<div id='toc'></div>
-
+<br/>
+<div id="toc"></div>
 </div>
 </div>
 </div>
@@ -13124,362 +13108,452 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In many scientific and engineering problems, purely data-driven learning is insufficient. Physical systems are governed by underlying structure, including conservation laws, symmetries, boundary conditions, and causality. Incorporating such structure into neual networks significantly improves data efficiency, generalization, and physical consistency.</p>
 <p>This section presents systematic ways to embed prior knowledge such as constraints and structure, into neural networks.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<br>
-<h1 id="1.-Hard-vs.-Soft-Constraints">1. Hard vs. Soft Constraints<a class="anchor-link" href="#1.-Hard-vs.-Soft-Constraints">&#182;</a></h1><h2 id="1.1.-Soft-Constraints">1.1. Soft Constraints<a class="anchor-link" href="#1.1.-Soft-Constraints">&#182;</a></h2><p>Soft constraints incorporate requirements into the training loss as penalty terms. Instead of forcing the network to satisfy a constraint exactly, we add an extra term to the loss that increases whenever the constraint is violated. The network then learns to reduce this penalty during training.</p>
+<br/>
+<h1 id="1.-Hard-vs.-Soft-Constraints">1. Hard vs. Soft Constraints<a class="anchor-link" href="#1.-Hard-vs.-Soft-Constraints">¶</a></h1><p>Constraints on neural network outputs arise from many sources: physical laws, mathematical requirements, conservation principles, and symmetry properties. Regardless of their origin, the key question is how strongly the constraint must be enforced. This leads to two fundamentally different approaches.</p>
+<p>A useful way to think about this is in terms of <strong>prior knowledge</strong> and <strong>enforcement level</strong>. When we have strong, exact prior knowledge (e.g., a boundary condition that must hold precisely), hard enforcement is appropriate. When the prior knowledge is approximate, uncertain, or too complex to encode architecturally, soft enforcement provides a flexible alternative. The choice between the two is therefore not just a matter of implementation convenience, but reflects how confident we are in the constraint and how costly a violation would be.</p>
+<br/>
+<h2 id="1.1.-Soft-Constraints">1.1. Soft Constraints<a class="anchor-link" href="#1.1.-Soft-Constraints">¶</a></h2><p>Soft constraints incorporate requirements into the training loss as penalty terms. Instead of forcing the network to satisfy a constraint exactly, we add an extra term to the loss that increases whenever the constraint is violated. The network then learns to reduce this penalty during training.</p>
 <p>For example, if we want the output to satisfy some requirement $\mathcal{C}$, the loss becomes</p>
-<br>
-$$
+<br/>
+<p>$$
 \mathcal{L}(\theta) = \mathcal{L}_{\mathrm{data}}(\theta) + \lambda \, \mathcal{R}(\theta)
-$$<br>
+$$</p>
+<br/>
 <p>where $\mathcal{R}(\theta) \geq 0$ measures the degree of violation and $\lambda &gt; 0$ controls how strongly the constraint is enforced.</p>
 <p>The main advantage is that soft constraints are easy to implement and applicable to almost any differentiable constraint. The main limitation is that satisfaction is only approximate: the network reduces the penalty but is never forced to eliminate it entirely.</p>
-<br>
-<h2 id="1.2.-Hard-Constraints">1.2. Hard Constraints<a class="anchor-link" href="#1.2.-Hard-Constraints">&#182;</a></h2><p>Hard constraints enforce requirements directly through the network architecture, so that the output always satisfies the constraint exactly, regardless of the parameter values $\theta$.</p>
+<br/>
+<h2 id="1.2.-Hard-Constraints">1.2. Hard Constraints<a class="anchor-link" href="#1.2.-Hard-Constraints">¶</a></h2><p>Hard constraints enforce requirements directly through the network architecture, so that the output always satisfies the constraint exactly, regardless of the parameter values $\theta$.</p>
 <p>Instead of penalizing violations, the network is redesigned so that producing a violating output is structurally impossible. This is typically achieved in one of two ways.</p>
-<br>
+<br/>
 <p><strong>(1) Output parameterization</strong> passes the raw network output $v(x)$ through a fixed transformation that maps it into the constraint-satisfying set.</p>
 <p>For example, if the output must be non-negative:</p>
-<br>
-$$
+<br/>
+<p>$$
 \hat{v}(x) = \exp\!\left(v(x)\right)
-$$<br>
+$$</p>
+<br/>
 <p><strong>(2) Projection</strong> applies a correction step after the raw output is computed, mapping it onto the constraint-satisfying set.</p>
 <p>For example, if the output must satisfy a zero-mean condition $\int_\Omega v(x)\,dx = 0$, the raw output $v$ is corrected by subtracting its mean:</p>
-<br>
-$$
+<br/>
+<p>$$
 \hat{v}(x) = v(x) - \frac{1}{|\Omega|}\int_\Omega v(y)\,dy
-$$<br>
+$$</p>
+<br/>
 <p>which guarantees $\int_\Omega \hat{v}(x)\,dx = 0$ exactly, regardless of what $\tilde{v}$ produces.</p>
-<br>
+<br/>
 <p>The main advantage is exact satisfaction at every point, for every input, at every stage of training and inference. The main limitation is construction difficulty: not every constraint has a simple architectural encoding.</p>
-
+<br/>
+<h2 id="1.3.-Choosing-Between-Hard-and-Soft">1.3. Choosing Between Hard and Soft<a class="anchor-link" href="#1.3.-Choosing-Between-Hard-and-Soft">¶</a></h2><p>In practice, the two approaches are often combined. The decision of which to use for a given constraint depends on three factors.</p>
+<p><strong>Certainty of the prior knowledge.</strong> If the constraint is exact and known with certainty (e.g., a Dirichlet boundary condition or a conservation law), hard enforcement is appropriate. If the constraint is approximate, domain-dependent, or derived from uncertain physical assumptions, soft enforcement is more robust.</p>
+<p><strong>Cost of violation.</strong> In safety-critical or physically interpretable settings, even a small constraint violation may be unacceptable. Hard enforcement eliminates this risk entirely. In exploratory or data-rich settings, approximate satisfaction via soft constraints may be sufficient.</p>
+<p><strong>Architectural tractability.</strong> Not every constraint admits a clean hard encoding. Complex constraints, nonlinear invariants, or constraints that involve interactions between multiple outputs may be difficult or impossible to encode exactly. In such cases, soft enforcement is the only practical option.</p>
+<p>A common and effective strategy is to apply hard constraints wherever an exact architectural encoding is available, and soft constraints for the remainder. This hybrid approach preserves the flexibility of penalty-based training while guaranteeing satisfaction of the most critical structural requirements.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<br>
-<h1 id="2.-Positivity-Constraint">2. Positivity Constraint<a class="anchor-link" href="#2.-Positivity-Constraint">&#182;</a></h1><p><strong>Positivity constraint</strong> requires that the output is always non-negative:</p>
-<br>
-$$
+<h1 id="2.-Positivity-and-Negativity-Constraints">2. Positivity and Negativity Constraints<a class="anchor-link" href="#2.-Positivity-and-Negativity-Constraints">¶</a></h1><p>A <strong>positivity constraint</strong> requires that the output is always non-negative:</p>
+<br/>
+<p>$$
 f(x) \geq 0 \quad \forall x
-$$<br>
+$$</p>
+<br/>
 <p>This arises naturally in many engineering problems. For example, stress intensity factors, energy densities, and material stiffness values are all quantities that must be non-negative by physical definition.</p>
-<br>
+<br/>
+<h2 id="2.1.-Enforcing-Positivity">2.1. Enforcing Positivity<a class="anchor-link" href="#2.1.-Enforcing-Positivity">¶</a></h2><br/>
 <p><strong>(1) Output transformation.</strong> Pass the raw network output $v(x)$ through a strictly positive function:</p>
-<br>
-$$
-\begin{align*}
-\hat{f}(x) &amp;= \sigma(v(x)) \\
-\hat{f}(x) &amp;= \exp(v)\\
-\hat{f}(x) &amp;= \log(1 + \exp(v))
-\end{align*}
-$$<br>
+<br/>
+<p>$$
+\hat{f}(x) = \exp(v(x))
+$$</p>
+<br/>
+<p>or the softplus variant:</p>
+<br/>
+<p>$$
+\hat{f}(x) = \log(1 + \exp(v(x)))
+$$</p>
+<br/>
 <p>The exponential is the simplest but can produce very large values. Softplus behaves linearly for large inputs and is more stable during training.</p>
-<br>
+<br/>
 <p><strong>(2) Soft enforcement.</strong> Add a penalty term to the loss that penalizes negative outputs:</p>
-<br>
-$$
+<br/>
+<p>$$
 \mathcal{L}_{\mathrm{pos}}(\theta) = \frac{1}{N} \sum_{j=1}^{N} \left[ \max\left(0, -f(x_j)\right) \right]^2
-$$<br>
+$$</p>
+<br/>
 <p>This term is zero when the output is non-negative everywhere and grows quadratically with the magnitude of any violation. As with all soft constraints, satisfaction is only approximate.</p>
-<br>
-<p>Among the two strategies, output transformation is the simplest and most reliable, providing exact positivity at negligible computational cost. Soft enforcement is easy to implement but provides no exact guarantee. The combined positivity and conservation approach is appropriate when both constraints must hold simultaneously.</p>
-
+<p>Output transformation is the simplest and most reliable approach for both cases, providing exact constraint satisfaction at negligible computational cost. Soft enforcement is easy to implement but provides no exact guarantee.</p>
+<br/>
+<h2 id="2.2.-Extending-to-Negativity-Constraints">2.2. Extending to Negativity Constraints<a class="anchor-link" href="#2.2.-Extending-to-Negativity-Constraints">¶</a></h2><p>By reversing the sign convention, the same ideas apply directly to a <strong>negativity constraint</strong>, which requires the output to be always non-positive:</p>
+<br/>
+<p>$$
+f(x) \leq 0 \quad \forall x
+$$</p>
+<br/>
+<p>This arises in problems where the output represents a quantity that is bounded above by zero, such as a compressive stress component, a dissipation rate expressed as a negative quantity, or a signed distance function restricted to the interior of a domain.</p>
+<br/>
+<p><strong>(1) Output transformation.</strong> Apply a strictly negative function to the raw output:</p>
+<br/>
+<p>$$
+\hat{f}(x) = -\exp(v(x))
+$$</p>
+<br/>
+<p>or equivalently:</p>
+<br/>
+<p>$$
+\hat{f}(x) = -\log(1 + \exp(v(x)))
+$$</p>
+<br/>
+<p>Both are always negative regardless of $v(x)$, so the constraint is satisfied by construction.</p>
+<br/>
+<p><strong>(2) Soft enforcement.</strong> Penalize positive outputs:</p>
+<br/>
+<p>$$
+\mathcal{L}_{\mathrm{neg}}(\theta) = \frac{1}{N} \sum_{j=1}^{N} \left[ \max\left(0, f(x_j)\right) \right]^2
+$$</p>
+<br/>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<br>
-<h1 id="3.-Monotonicity-Constraint">3. Monotonicity Constraint<a class="anchor-link" href="#3.-Monotonicity-Constraint">&#182;</a></h1><p><strong>Monotonicity constraint</strong> requires that the output increases as the input increases:</p>
-<br>
-$$
+<h1 id="3.-Monotonicity-Constraint">3. Monotonicity Constraint<a class="anchor-link" href="#3.-Monotonicity-Constraint">¶</a></h1><p>A monotonicity constraint requires that the output changes consistently in one direction as the input increases. There are two cases:</p>
+<p><strong>Monotone increasing</strong> requires that the output increases as the input increases:</p>
+<br/>
+<p>$$
 x_1 \leq x_2 \implies f(x_1) \leq f(x_2)
-$$<br>
-<p>This arises naturally in many engineering problems. For example, the deflection of a beam increases monotonically as the applied load increases, or the fatigue life decreases monotonically as the stress amplitude increases.</p>
-<p>There are three main strategies for enforcing monotonicity.</p>
-<br>
-<p><strong>(1) Non-negative derivative.</strong> Enforce monotonicity by ensuring the derivative of the output with respect to the input is always non-negative. This can be achieved by parameterizing the network such that:</p>
-<br>
-$$
+$$</p>
+<br/>
+<p>For example, the deflection of a beam increases monotonically as the applied load increases.</p>
+<p><strong>Monotone decreasing</strong> requires that the output decreases as the input increases:</p>
+<br/>
+<p>$$
+x_1 \leq x_2 \implies f(x_1) \geq f(x_2)
+$$</p>
+<br/>
+<p>For example, the fatigue life of a material decreases monotonically as the stress amplitude increases.</p>
+<p>Note that a monotone decreasing function can always be written as $f(x) = -h(x)$ where $h$ is monotone increasing. Therefore, all strategies below are described for the increasing case, and the decreasing case follows by negating the output.</p>
+<br/>
+<h2 id="3.1.-Strategies-for-Enforcing-Monotone-Increasing">3.1. Strategies for Enforcing Monotone Increasing<a class="anchor-link" href="#3.1.-Strategies-for-Enforcing-Monotone-Increasing">¶</a></h2><p><strong>(1) Non-negative derivative.</strong> Enforce monotonicity by ensuring the derivative of the output is always non-negative:</p>
+<br/>
+<p>$$
 \frac{\partial f}{\partial x} \geq 0
-$$<br>
-<p>One way to achieve this is to pass the derivative through a non-negative activation such as softplus or exponential, and integrate to recover the output:</p>
-<br>
-$$
+$$</p>
+<br/>
+<p>One way to achieve this is to pass the derivative through a non-negative activation and integrate to recover the output:</p>
+<br/>
+<p>$$
 f(x) = f(x_0) + \int_{x_0}^{x} \exp(g(t)) \, dt
-$$<br>
+$$</p>
+<br/>
 <p>where $g$ is an unconstrained network. Since $\exp(g(t)) &gt; 0$ always, the integral is strictly increasing in $x$.</p>
-<br>
+<br/>
 <p><strong>(2) Monotone architecture.</strong> Constrain all weights in the network to be non-negative, and use only non-decreasing activation functions such as ReLU or sigmoid. A network with non-negative weights and non-decreasing activations is guaranteed to be monotone with respect to its input.</p>
-<br>
+<br/>
 <p><strong>(3) Soft enforcement.</strong> Add a penalty term to the loss that penalizes violations of monotonicity at sampled input pairs $x_1 \leq x_2$:</p>
-<br>
-$$
+<br/>
+<p>$$
 \mathcal{L}_{\mathrm{mono}}(\theta) = \frac{1}{N} \sum_{i=1}^{N} \left[ \max\left(0, \, f(x_1^i) - f(x_2^i)\right) \right]^2
-$$<br>
-<p>This term is zero when monotonicity is satisfied and grows quadratically with the magnitude of any violation. As with all soft constraints, satisfaction is only approximate.</p>
-<br>
-<p>Among the three strategies, the non-negative derivative approach provides the strongest guarantee and is the most flexible, since it places no restrictions on the network architecture beyond the final integration step. The monotone architecture approach is simpler but more restrictive, as constraining all weights to be non-negative limits the expressive power of the network. Soft enforcement is the easiest to implement but provides no exact guarantee.</p>
-
+$$</p>
+<br/>
+<p>This term is zero when monotonicity is satisfied and grows quadratically with the magnitude of any violation.</p>
+<br/>
+<h2 id="3.2.-Extending-to-Monotone-Decreasing">3.2. Extending to Monotone Decreasing<a class="anchor-link" href="#3.2.-Extending-to-Monotone-Decreasing">¶</a></h2><p>For a monotone decreasing constraint, the same three strategies apply with the sign reversed.</p>
+<br/>
+<p><strong>(1) Non-positive derivative.</strong></p>
+<br/>
+<p>$$
+f(x) = f(x_0) - \int_{x_0}^{x} \exp(g(t)) \, dt
+$$</p>
+<br/>
+<p><strong>(2) Monotone architecture.</strong> Constrain all weights to be non-positive, or equivalently apply the monotone increasing architecture to $-f(x)$.</p>
+<br/>
+<p><strong>(3) Soft enforcement.</strong> Penalize violations of the decreasing condition:</p>
+<br/>
+<p>$$
+\mathcal{L}_{\mathrm{mono}}(\theta) = \frac{1}{N} \sum_{i=1}^{N} \left[ \max\left(0, \, f(x_2^i) - f(x_1^i)\right) \right]^2
+$$</p>
+<br/>
+<h2 id="3.3.-Summary">3.3. Summary<a class="anchor-link" href="#3.3.-Summary">¶</a></h2><p>Among the three strategies, the non-negative derivative approach provides the strongest guarantee and is the most flexible. The monotone architecture approach is simpler but more restrictive, as constraining all weights limits the expressive power of the network. Soft enforcement is the easiest to implement but provides no exact guarantee.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<br>
-<h1 id="4.-Boundary-and-Initial-Conditions">4. Boundary and Initial Conditions<a class="anchor-link" href="#4.-Boundary-and-Initial-Conditions">&#182;</a></h1><p>For a PDE problem, the output must satisfy prescribed boundary or initial conditions. Instead of penalizing violations, we can enforce them exactly through output parameterization.</p>
-<br>
-<p><strong>Boundary conditions</strong></p>
-<p>Suppose the output must satisfy $v(x) = g(x)$ on $\partial\Omega$. We construct the network output as</p>
-<br>
-$$
+<h1 id="4.-Boundary-and-Initial-Conditions">4. Boundary and Initial Conditions<a class="anchor-link" href="#4.-Boundary-and-Initial-Conditions">¶</a></h1><p>For a PDE problem, the output must satisfy prescribed boundary or initial conditions. Instead of penalizing violations, we can enforce them exactly through output parameterization.</p>
+<br/>
+<h2 id="4.1.-Boundary-Conditions">4.1. Boundary Conditions<a class="anchor-link" href="#4.1.-Boundary-Conditions">¶</a></h2><p>Suppose the output must satisfy $v(x) = g(x)$ on $\partial\Omega$. We construct the network output as</p>
+<br/>
+<p>$$
 \hat{v}(x) = g(x) + s(x)\,v(x)
-$$<br>
+$$</p>
+<br/>
 <p>where $s(x)$ is a masking function satisfying $s(x) = 0$ on $\partial\Omega$ and $s(x) &gt; 0$ inside $\Omega$. Since $s(x)$ vanishes on the boundary, we have $\hat{v}(x) = g(x)$ on $\partial\Omega$ exactly, for any network output $v(x)$.</p>
-<br>
-<p><strong>Initial conditions</strong></p>
-<p>For time-dependent problems, suppose the output must satisfy $v(x, 0) = v_0(x)$. The same idea applies with a temporal masking function:</p>
-<br>
-$$
+<p>The choice of masking function depends on the domain geometry. For the unit interval $\Omega = (0, 1)$, the simplest choice is:</p>
+<br/>
+<p>$$
+s(x) = x(1-x)
+$$</p>
+<br/>
+<p>This satisfies $s(0) = 0$ and $s(1) = 0$ exactly, and $s(x) &gt; 0$ for all $x \in (0, 1)$. For example, if the boundary conditions are homogeneous $g(x) = 0$, the parameterized output becomes:</p>
+<br/>
+<p>$$
+\hat{v}(x) = x(1-x)\,v(x)
+$$</p>
+<br/>
+<p>The network $v(x)$ can output anything it likes, but the final output always vanishes at both endpoints. For higher-dimensional domains, the masking function generalizes naturally. On the unit square $\Omega = (0,1)^2$:</p>
+<br/>
+<p>$$
+s(x_1, x_2) = x_1(1-x_1)\,x_2(1-x_2)
+$$</p>
+<br/>
+<p>which vanishes on all four edges by construction.</p>
+<br/>
+<h2 id="4.2.-Initial-Conditions">4.2. Initial Conditions<a class="anchor-link" href="#4.2.-Initial-Conditions">¶</a></h2><p>For time-dependent problems, suppose the output must satisfy $v(x, 0) = v_0(x)$. The same idea applies with a temporal masking function:</p>
+<br/>
+<p>$$
 \hat{v}(x, t) = v_0(x) + \tau(t)\,v(x, t)
-$$<br>
+$$</p>
+<br/>
 <p>where $\tau(0) = 0$ and $\tau(t) &gt; 0$ for $t &gt; 0$. A common choice is $\tau(t) = t$. At $t = 0$, the second term vanishes and $\hat{v}(x, 0) = v_0(x)$ exactly.</p>
-<br>
-<p>In both cases, the network $v$ is free to learn any function, while the constraint is satisfied by construction.</p>
-
+<p>Other choices of $\tau(t)$ are possible depending on the problem. For example:</p>
+<br/>
+<p>$$
+\tau(t) = 1 - e^{-\alpha t}, \qquad \alpha &gt; 0
+$$</p>
+<br/>
+<p>which also satisfies $\tau(0) = 0$ and grows smoothly for $t &gt; 0$. The parameter $\alpha$ controls how quickly the network contribution is switched on relative to the initial condition.</p>
+<br/>
+<h2 id="4.3.-Summary">4.3. Summary<a class="anchor-link" href="#4.3.-Summary">¶</a></h2><p>In both cases, the parameterization separates the constraint-carrying part (the known boundary or initial value) from the free part (the network output). The network $v$ is free to learn any function on the interior or for $t &gt; 0$, while the constraint is satisfied by construction at the boundary or at $t = 0$.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<br>
-<h1 id="5.-Conservation-Laws-and-Invariants">5. Conservation Laws and Invariants<a class="anchor-link" href="#5.-Conservation-Laws-and-Invariants">&#182;</a></h1><p>Conservation laws require that some quantity computed from the output remains fixed. A common example is a global integral constraint:</p>
-<br>
-$$
+<br/>
+<h1 id="5.-Conservation-Laws-and-Invariants">5. Conservation Laws and Invariants<a class="anchor-link" href="#5.-Conservation-Laws-and-Invariants">¶</a></h1><p>Conservation laws require that some quantity computed from the output remains fixed. A common example is a global integral constraint:</p>
+<br/>
+<p>$$
 \int_\Omega v(x)\,dx = C
-$$<br>
+$$</p>
+<br/>
 <p>where $C$ is a prescribed constant such as total mass or total energy.</p>
-<br>
+<br/>
 <p><strong>Soft enforcement</strong> adds the violation as a penalty term:</p>
-<br>
-$$
+<br/>
+<p>$$
 \mathcal{L}(\theta) = \mathcal{L}_{\mathrm{data}}(\theta) + \lambda\left(\int_\Omega \mathcal{G}_\theta(u)(x)\,dx - C\right)^2
-$$<br>
+$$</p>
+<br/>
 <p><strong>Hard enforcement</strong> corrects the raw output by an additive shift:</p>
-<br>
-$$
+<br/>
+<p>$$
 \hat{v}(x) = \tilde{v}(x) + \frac{C - \int_\Omega \tilde{v}(y)\,dy}{|\Omega|}
-$$<br>
+$$</p>
+<br/>
 <p>which guarantees $\int_\Omega \hat{v}(x)\,dx = C$ exactly for any $\tilde{v}$.</p>
-<br>
+<br/>
 <p>When the conserved quantity must also be non-negative, such as a probability density, both positivity and normalization can be enforced simultaneously via the continuous softmax:</p>
-<br>
-$$
+<br/>
+<p>$$
 \hat{v}(x) = \frac{\exp(\tilde{v}(x))}{\int_\Omega \exp(\tilde{v}(y))\,dy}
-$$<br>
+$$</p>
+<br/>
 <p>which guarantees $\hat{v}(x) &gt; 0$ everywhere and $\int_\Omega \hat{v}(x)\,dx = 1$ exactly.</p>
-<br>
-
+<br/>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<br>
-<h1 id="6.-Equivariance-and-Symmetry">6. Equivariance and Symmetry<a class="anchor-link" href="#6.-Equivariance-and-Symmetry">&#182;</a></h1><p>Many neural networks are asked to learn mappings that respect symmetries. If we rotate or translate the input, the output should rotate or translate accordingly. Embedding this structure into the network improves data efficiency and guarantees consistent predictions under transformed inputs.</p>
-<br>
-<h2 id="6.1.-Equivariance">6.1. Equivariance<a class="anchor-link" href="#6.1.-Equivariance">&#182;</a></h2><p>Let $f$ be a neural network and $T$ a transformation (e.g., rotation, translation, reflection). <strong>Equivariance</strong> requires that the network commutes with the transformation:</p>
-<br>
-$$
+<br/>
+<h1 id="6.-Equivariance-and-Symmetry">6. Equivariance and Symmetry<a class="anchor-link" href="#6.-Equivariance-and-Symmetry">¶</a></h1><p>Many neural networks are asked to learn mappings that respect symmetries. If we rotate or translate the input, the output should rotate or translate accordingly. Embedding this structure into the network improves data efficiency and guarantees consistent predictions under transformed inputs.</p>
+<br/>
+<h2 id="6.1.-Equivariance">6.1. Equivariance<a class="anchor-link" href="#6.1.-Equivariance">¶</a></h2><p>Let $f$ be a neural network and $T$ a transformation (e.g., rotation, translation, reflection). <strong>Equivariance</strong> requires that the network commutes with the transformation:</p>
+<br/>
+<p>$$
 f(T x) = T\,f(x)
-$$<br>
+$$</p>
+<br/>
 <p>This means transforming the input and then applying the network gives the same result as applying the network and then transforming the output.</p>
 <p>For example, consider a network that predicts the velocity field of a fluid. If we rotate the entire flow configuration by 90 degrees, the predicted velocity field should also rotate by 90 degrees. As another example, if a network predicts the temperature distribution given a heat source, shifting the heat source to the right should shift the entire predicted temperature field by the same amount. In both cases, equivariance guarantees the correct response automatically, without retraining.</p>
-<br>
+<br/>
 <p>There are three main strategies for enforcing equivariance.</p>
 <p><strong>(1) Group-equivariant layers</strong> build the symmetry directly into the network by constructing weight-sharing patterns that commute with the transformation. The canonical example is the convolution layer, which is equivariant to translations: shifting the input shifts the output by the same amount. For rotational equivariance, group convolutional networks extend this idea by sharing weights across rotated versions of each filter.</p>
-<br>
+<br/>
 <p><strong>(2) Output symmetrization</strong> enforces equivariance by post-processing the raw network output. For a finite set of transformations $\{T_1, T_2, \ldots, T_n\}$:</p>
-<br>
-$$
+<br/>
+<p>$$
 \hat{f}(x) = \frac{1}{n} \sum_{i=1}^{n} T_i^{-1} f(T_i x)
-$$<br>
+$$</p>
+<br/>
 <p>This guarantees exact equivariance for any network $f$ without modifying the architecture, but requires evaluating the network $n$ times per input.</p>
-<br>
+<br/>
 <p><strong>(3) Data augmentation</strong> exposes the network to transformed versions of each training example. Given a training pair $(x_i, y_i)$, augmented pairs are generated as $(T x_i,\; T y_i)$ for various transformations $T$. This encourages equivariant behavior without modifying the architecture, but provides only approximate equivariance rather than exact equivariance for every input.</p>
-<br>
+<br/>
 <p>Among the three strategies, group-equivariant layers provide the strongest guarantee. Data augmentation is the easiest to implement but the weakest. Output symmetrization sits in between: it is easy to apply and guarantees exact equivariance, but requires multiple forward passes.</p>
-<br>
-<h2 id="6.2.-Symmetry">6.2. Symmetry<a class="anchor-link" href="#6.2.-Symmetry">&#182;</a></h2><p>Consider a clamped-clamped beam defined on $x \in [-L/2, L/2]$, with the origin at the center. Given a load $q(x)$, the network predicts the deflection $v(x)$.</p>
+<br/>
+<h2 id="6.2.-Symmetry">6.2. Symmetry<a class="anchor-link" href="#6.2.-Symmetry">¶</a></h2><p>Consider a clamped-clamped beam defined on $x \in [-L/2, L/2]$, with the origin at the center. Given a load $q(x)$, the network predicts the deflection $v(x)$.</p>
 <p>Now suppose the load is symmetric about the center:</p>
-<br>
-$$
+<br/>
+<p>$$
 q(-x) = q(x)
-$$<br>
+$$</p>
+<br/>
 <p>Then the deflection must also be symmetric:</p>
-<br>
-$$
+<br/>
+<p>$$
 v(-x) = v(x)
-$$<br>
+$$</p>
+<br/>
 <p>This is exactly even symmetry equivariance. However, a network $f$ trained without any symmetry constraint may not satisfy this, even for a symmetric load.</p>
-<br>
+<br/>
 <p><strong>Applying output symmetrization:</strong></p>
 <ol>
 <li>Pass the original load $q(x)$ through the network to obtain $f(q(x))$.</li>
 <li>Pass the flipped load $q(-x)$ through the network to obtain $f(q(-x))$.</li>
 <li>Average the two results:</li>
 </ol>
-<br>
-$$
+<br/>
+<p>$$
 \hat{v}(x) = \frac{f(q(x)) + f(q(-x))}{2}
-$$<br>
+$$</p>
+<br/>
 <p>Even if the network $f$ has not learned the symmetry at all, the final output $\hat{v}(x)$ always satisfies $\hat{v}(-x) = \hat{v}(x)$. Symmetry of the deflection is guaranteed by construction, at the cost of two forward passes instead of one.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<br>
-<h1 id="7.-Invariance-and-Symmetry">7. Invariance and Symmetry<a class="anchor-link" href="#7.-Invariance-and-Symmetry">&#182;</a></h1><h2 id="7.1.-Invariance">7.1. Invariance<a class="anchor-link" href="#7.1.-Invariance">&#182;</a></h2><p><strong>Invariance</strong> is the special case where the output is unchanged by the transformation:</p>
-<br>
-$$
+<br/>
+<h1 id="7.-Invariance-and-Symmetry">7. Invariance and Symmetry<a class="anchor-link" href="#7.-Invariance-and-Symmetry">¶</a></h1><h2 id="7.1.-Invariance">7.1. Invariance<a class="anchor-link" href="#7.1.-Invariance">¶</a></h2><p><strong>Invariance</strong> is the special case where the output is unchanged by the transformation:</p>
+<br/>
+<p>$$
 f(Tx) = f(x)
-$$<br>
-<p>This is appropriate when the output is a scalar quantity that does not depend on orientation or position. For example, a network that predicts the total energy of a molecule should return the same value regardless of how the molecule is rotated or translated in space, since total energy is a physical scalar. Similarly, a network that classifies an image as &quot;cat&quot; or &quot;not cat&quot; should return the same label whether the image is shifted left or right by a few pixels.</p>
+$$</p>
+<br/>
+<p>This is appropriate when the output is a scalar quantity that does not depend on orientation or position. For example, a network that predicts the total energy of a molecule should return the same value regardless of how the molecule is rotated or translated in space, since total energy is a physical scalar. Similarly, a network that classifies an image as "cat" or "not cat" should return the same label whether the image is shifted left or right by a few pixels.</p>
 <p>The key distinction is: if the output is a field or a vector that has a direction, equivariance is the right requirement. If the output is a single number with no directional dependence, invariance is the right requirement.</p>
-<br>
+<br/>
 <p>There are three main strategies.</p>
 <p><strong>(1) Invariant input features</strong> transform the raw input into features that are unchanged by the transformation, before passing them into the network. For example, if the network should be invariant to rotation, one can use pairwise distances between points as input features, since distances do not change under rotation. The network then operates entirely on invariant quantities and its output is automatically invariant.</p>
-<br>
+<br/>
 <p><strong>(2) Pooling over transformations</strong> computes the network output for all transformed versions of the input and aggregates them into a single value. For example, to enforce invariance over a finite set of transformations $\{T_1, T_2, \ldots, T_n\}$:</p>
-<br>
-$$
+<br/>
+<p>$$
 \hat{f}(x) = \frac{1}{n} \sum_{i=1}^{n} f(T_i x)
-$$<br>
+$$</p>
+<br/>
 <p>Since the sum is taken over all transformations, the result is the same regardless of which transformation was applied to the input. Max pooling can be used in place of averaging:</p>
-<br>
-$$
+<br/>
+<p>$$
 \hat{f}(x) = \max_{i} \, f(T_i x)
-$$<br>
+$$</p>
+<br/>
 <p><strong>(3) Data augmentation</strong> exposes the network to transformed versions of each training example. Given a training pair $(x_i, y_i)$ where $y_i$ is a scalar label, augmented pairs are generated as:</p>
-<br>
-$$
+<br/>
+<p>$$
 (T x_i,\; y_i)
-$$<br>
+$$</p>
+<br/>
 <p>Note that unlike the equivariant case, the label $y_i$ is kept unchanged, since invariance means the output should not change when the input is transformed. This encourages invariant behavior without modifying the architecture, but provides only approximate invariance rather than exact invariance for every input.</p>
 <p>Among the three strategies, invariant input features provide the strongest and most efficient guarantee since the invariance is built into the representation itself. Pooling over transformations is exact but requires multiple forward passes. Data augmentation is the easiest to implement but the weakest.</p>
-<br>
-<h2 id="7.2.-Symmetry">7.2. Symmetry<a class="anchor-link" href="#7.2.-Symmetry">&#182;</a></h2><p>Consider a clamped-clamped beam defined on $x \in [-L/2, L/2]$. Given a load $q(x)$, the network predicts the total strain energy:</p>
-<br>
-$$
+<br/>
+<h2 id="7.2.-Symmetry">7.2. Symmetry<a class="anchor-link" href="#7.2.-Symmetry">¶</a></h2><p>Consider a clamped-clamped beam defined on $x \in [-L/2, L/2]$. Given a load $q(x)$, the network predicts the total strain energy:</p>
+<br/>
+<p>$$
 E = \int_{-L/2}^{L/2} \frac{1}{2} EI \left(\frac{d^2 v}{dx^2}\right)^2 dx
-$$<br>
+$$</p>
+<br/>
 <p>Now suppose the load is antisymmetric about the center:</p>
-<br>
-$$
+<br/>
+<p>$$
 q(-x) = -q(x)
-$$<br>
+$$</p>
+<br/>
 <p>The deflection $v(x)$ will be antisymmetric as well, $v(-x) = -v(x)$, but the total strain energy remains unchanged. This is because the energy depends on the squared curvature, which is always non-negative regardless of the sign of the deflection:</p>
-<br>
-$$
+<br/>
+<p>$$
 E[q(-x)] = E[q(x)]
-$$<br>
+$$</p>
+<br/>
 <p>This is exactly <strong>invariance</strong>: flipping the load left-to-right does not change the total strain energy. The output is a scalar with no directional dependence, so it should be the same for both $q(x)$ and $q(-x)$.</p>
 <p>A network that predicts total strain energy should therefore satisfy:</p>
-<br>
-$$
+<br/>
+<p>$$
 f(q(-x)) = f(q(x))
-$$<br>
+$$</p>
+<br/>
 <p>If this is not enforced, the network may predict different energy values for $q(x)$ and $q(-x)$, which is physically inconsistent. Two strategies can enforce this invariance by construction.</p>
-<br>
+<br/>
 <p><strong>(1) Invariant input features.</strong> Symmetrize the input before passing it to the network:</p>
-<br>
-$$
+<br/>
+<p>$$
 \tilde{q}(x) = q(x) + q(-x)
-$$<br>
+$$</p>
+<br/>
 <p>Since $\tilde{q}(-x) = \tilde{q}(x)$ always holds, the network receives only symmetric inputs and its output is automatically invariant. The network never sees the antisymmetric part of the load, which carries no information about the total strain energy.</p>
-<br>
+<br/>
 <p><strong>(2) Output symmetrization.</strong> Pass both the original and flipped load through the network and average the results:</p>
-<br>
-$$
+<br/>
+<p>$$
 \hat{E} = \frac{f(q(x)) + f(q(-x))}{2}
-$$<br>
+$$</p>
+<br/>
 <p>Since the output is a scalar, no inverse transformation is needed after averaging. Even if the network $f$ has not learned the invariance at all, the final output $\hat{E}$ always satisfies $\hat{E}[q(-x)] = \hat{E}[q(x)]$. Invariance is guaranteed by construction, at the cost of two forward passes instead of one.</p>
-<br>
+<br/>
 <p><strong>(3) Data augmentation.</strong> Expose the network to both the original and flipped versions of each training example. Given a training pair $(q_i, E_i)$ where $E_i$ is the total strain energy, an augmented pair is generated as:</p>
-<br>
-$$
+<br/>
+<p>$$
 (q_i(-x),\; E_i)
-$$<br>
+$$</p>
+<br/>
 <p>Since the total strain energy is invariant under load flipping, the label $E_i$ is kept unchanged. The network is trained on both $(q_i(x), E_i)$ and $(q_i(-x), E_i)$ simultaneously, which encourages it to produce the same energy prediction for both inputs.</p>
 <p>Unlike invariant input features and output symmetrization, data augmentation does not guarantee exact invariance. The network is encouraged to learn the invariance from the training data, but may still produce slightly different predictions for $q(x)$ and $q(-x)$ on unseen examples. It is the easiest strategy to implement, requiring no modification to the network architecture or the inference procedure.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-python"><pre><span></span><span class="o">%%</span><span class="n">javascript</span>
-<span class="err">$</span><span class="o">.</span><span class="n">getScript</span><span class="p">(</span><span class="s1">&#39;https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js&#39;</span><span class="p">)</span>
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="o">%%</span><span class="n">javascript</span>
+<span class="err">$</span><span class="o">.</span><span class="n">getScript</span><span class="p">(</span><span class="s1">'https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js'</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="bdf3e72b-874f-460f-9de2-e8df4b37c271" class="output_subarea output_javascript ">
+<div class="prompt"></div>
+<div class="output_subarea output_javascript" id="fded2811-d07a-47d4-a886-89a486e09a36">
 <script type="text/javascript">
-var element = $('#bdf3e72b-874f-460f-9de2-e8df4b37c271');
+var element = $('#fded2811-d07a-47d4-a886-89a486e09a36');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
 </div>
-
-</div>
-
 </div>
 </div>
-
 </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
+</main>
 </body>
-
-
-
-
-
-
-
 </html>
