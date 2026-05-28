@@ -13384,6 +13384,7 @@ $$<br>
 <p>For example, consider a network that predicts the velocity field of a fluid. If we rotate the entire flow configuration by 90 degrees, the predicted velocity field should also rotate by 90 degrees. As another example, if a network predicts the temperature distribution given a heat source, shifting the heat source to the right should shift the entire predicted temperature field by the same amount. In both cases, equivariance guarantees the correct response automatically, without retraining.</p>
 <br>
 <p>There are three main strategies for enforcing equivariance.</p>
+<br>
 <p><strong>(1) Group-equivariant layers</strong> build the symmetry directly into the network by constructing weight-sharing patterns that commute with the transformation. The canonical example is the convolution layer, which is equivariant to translations: shifting the input shifts the output by the same amount. For rotational equivariance, group convolutional networks extend this idea by sharing weights across rotated versions of each filter.</p>
 <br>
 <p><strong>(2) Output symmetrization</strong> enforces equivariance by post-processing the raw network output. For a finite set of transformations $\{T_1, T_2, \ldots, T_n\}$:</p>
@@ -13463,30 +13464,25 @@ $$<br>
 $$
 E = \int_{-L/2}^{L/2} \frac{1}{2} EI \left(\frac{d^2 v}{dx^2}\right)^2 dx
 $$<br>
-<p>Now suppose the load is antisymmetric about the center:</p>
-<br>
-$$
-q(-x) = -q(x)
-$$<br>
-<p>The deflection $v(x)$ will be antisymmetric as well, $v(-x) = -v(x)$, but the total strain energy remains unchanged. This is because the energy depends on the squared curvature, which is always non-negative regardless of the sign of the deflection:</p>
+<p>Now suppose the load is flipped left-to-right: $q(-x)$. Although the deflection field changes when the load is flipped, the total strain energy remains unchanged:</p>
 <br>
 $$
 E[q(-x)] = E[q(x)]
 $$<br>
-<p>This is exactly <strong>invariance</strong>: flipping the load left-to-right does not change the total strain energy. The output is a scalar with no directional dependence, so it should be the same for both $q(x)$ and $q(-x)$.</p>
-<p>A network that predicts total strain energy should therefore satisfy:</p>
+<p>This is because the total strain energy is a scalar that depends only on the magnitude of the curvature integrated over the domain, not on its spatial orientation. Flipping the load produces a flipped deflection field, but the integrated squared curvature is the same.</p>
+<p>This is exactly <strong>invariance</strong>: the output is a scalar with no directional dependence, so it should be the same for both $q(x)$ and $q(-x)$. A network that predicts total strain energy should therefore satisfy:</p>
 <br>
 $$
 f(q(-x)) = f(q(x))
 $$<br>
-<p>If this is not enforced, the network may predict different energy values for $q(x)$ and $q(-x)$, which is physically inconsistent. Two strategies can enforce this invariance by construction.</p>
+<p>If this is not enforced, the network may predict different energy values for $q(x)$ and $q(-x)$, which is physically inconsistent. Three strategies can enforce this invariance by construction.</p>
 <br>
 <p><strong>(1) Invariant input features.</strong> Symmetrize the input before passing it to the network:</p>
 <br>
 $$
 \tilde{q}(x) = q(x) + q(-x)
 $$<br>
-<p>Since $\tilde{q}(-x) = \tilde{q}(x)$ always holds, the network receives only symmetric inputs and its output is automatically invariant. The network never sees the antisymmetric part of the load, which carries no information about the total strain energy.</p>
+<p>Since $\tilde{q}(-x) = \tilde{q}(x)$ always holds, the network receives only symmetric inputs and its output is automatically invariant.</p>
 <br>
 <p><strong>(2) Output symmetrization.</strong> Pass both the original and flipped load through the network and average the results:</p>
 <br>
@@ -13531,9 +13527,9 @@ $$<br>
 
 
 
-<div id="eefa337a-9f04-4038-8db3-29a680c61cc4" class="output_subarea output_javascript ">
+<div id="cdd90bb2-f127-4754-b562-5ef0b751018e" class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#eefa337a-9f04-4038-8db3-29a680c61cc4');
+var element = $('#cdd90bb2-f127-4754-b562-5ef0b751018e');
 $.getScript('https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js')
 
 </script>
