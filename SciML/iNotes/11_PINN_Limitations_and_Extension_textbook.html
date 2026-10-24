@@ -13119,7 +13119,7 @@ div#notebook {
 <li><a href="#section-3-6">Lab: Material Interface with Gradient Discontinuity</a></li>
 </ol>
 </li>
-<li><a href="#section-4">Limitation 3: Time</a><ol>
+<li><a href="#section-4">Limitation 3: Challenges in Time-Dependent Problems</a><ol>
 <li><a href="#section-4-1">Why Standard PINNs Ignore Time Order</a></li>
 <li><a href="#section-4-2">Causal PINN</a></li>
 <li><a href="#section-4-3">Lab: 1D Allen–Cahn Equation</a></li>
@@ -13143,7 +13143,8 @@ div#notebook {
 <li>explain why high-frequency solutions, singular / sharp-gradient structures, and gradient discontinuities are difficult for a standard global PINN,</li>
 <li>describe how Fourier feature embedding, enrichment, and domain decomposition modify the representation of difficult solution structures,</li>
 <li>explain why full-domain transient training does not automatically enforce the physical order of information propagation,</li>
-<li>distinguish causal weighting from sequential time marching, and</li>
+<li>distinguish causal weighting from sequential time marching,</li>
+<li>explain why a decaying solution weights its own residual loss towards early times, and how dividing out the known decay removes that weighting, and</li>
 <li>interpret the demonstrations as examples of how PINN limitations can be mitigated through changes in sampling, representation, and training order.</li>
 </ul>
 </div>
@@ -14445,7 +14446,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=8219803d"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Everything else stays as it was: the same network architecture behind the embedding, the same initialization, the same collocation points, boundary condition, loss, optimizer and number of iterations. Whatever changes in the result is due to the input representation alone.</p>
+<p>Everything else stays as it was: the same network architecture behind the embedding, the same initialization scheme, the same way of sampling the collocation points, and the same boundary condition, loss, optimizer and number of iterations. Whatever changes in the result is due to the input representation alone.</p>
 <br/>
 <p>The choice of $K$ matters. The features must reach at least the frequency of the solution, here $10$ cycles, and here $K = 16$ is used, so that the target frequency lies comfortably inside the range. A much larger $K$ would hand the network frequencies it does not need and make the fit noisier.</p>
 </div>
@@ -14690,7 +14691,7 @@ Fourier PINN Relative L2 Error : 0.062004
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=3726477d"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the top row the naive model is a smooth curve at epoch $500$, a smooth curve with a few bumps at $2000$, and not much more at $10000$; the oscillation is arriving, but at a rate that would need far more iterations than anyone would give it. In the bottom row the Fourier-feature model already has the ten waves at epoch $500$ and spends the rest of the run sharpening them. The two models have the same architecture, the same starting weights and the same loss; the difference is that one of them was handed the frequency it needed and the other had to build it.</p>
+<p>In the top row the naive model is a smooth curve at epoch $500$, a smooth curve with a few bumps at $2000$, and not much more at $10000$; the oscillation is arriving, but at a rate that would need far more iterations than anyone would give it. In the bottom row the Fourier-feature model already has the ten waves at epoch $500$ and spends the rest of the run sharpening them. The two models have the same architecture, the same initialization scheme and the same loss; the difference is that one of them was handed the frequency it needed and the other had to build it.</p>
 </div>
 </div>
 </div>
@@ -14963,14 +14964,6 @@ $$</p>
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/usr/local/lib/python3.13/dist-packages/torch/autograd/graph.py:869: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:335.)
-  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
-</pre>
-</div>
-</div>
 <div class="output_area">
 <div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
@@ -15421,6 +15414,10 @@ $$</p>
                          <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Tanh</span><span class="p">(),</span>
                          <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
+<span class="k">def</span><span class="w"> </span><span class="nf">derivative</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">create_graph</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">df</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+
 <span class="k">def</span><span class="w"> </span><span class="nf">tensor</span><span class="p">(</span><span class="n">Y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
@@ -15475,11 +15472,7 @@ $$</p>
 <div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">derivative</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">create_graph</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">df</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">df</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
-
-<span class="n">model</span> <span class="o">=</span> <span class="n">new_pinn</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">new_pinn</span><span class="p">()</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5001</span><span class="p">):</span>
@@ -97325,7 +97318,7 @@ RU5ErkJggg==\
 <p>The residual of the Allen–Cahn equation is</p>
 <br/>
 <p>$$
-r_\theta = u_{\theta, t} + 5u_\theta^3 - 5u_\theta - \nu\,u_{\theta, xx} ,
+r_\theta = \frac{\partial u_\theta}{\partial t} + 5u_\theta^3 - 5u_\theta - \nu\,\frac{\partial^2 u_\theta}{\partial x^2} ,
 $$</p>
 <br/>
 <p>and the initial condition is a penalty,</p>
@@ -97340,6 +97333,7 @@ $$</p>
 \mathcal{L}_{\mathrm{Naive}} = \mathcal{L}_{\mathrm{PDE}} + 100\,\mathcal{L}_{\mathrm{IC}} ,
 $$</p>
 <br/>
+<p>with the large weight on the initial condition so that the start of the trajectory is pinned down firmly; nothing in this objective says in which order the rest of the interval is to be learned.</p>
 </div>
 </div>
 </div>
@@ -149352,7 +149346,7 @@ AAAAAElFTkSuQmCC\
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=72b232e8"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.5.2.-Naive-and-Time-Marching-Formulations">4.5.2. Naive and Time-Marching Formulations<a class="anchor-link" href="#4.5.2.-Naive-and-Time-Marching-Formulations">¶</a></h3><p>Both models use the same network and the same residual $r_\theta = u_{\theta, t} + \beta\,u_{\theta, x}$. For the naive model the loss is</p>
+<h3 id="4.5.2.-Naive-and-Time-Marching-Formulations">4.5.2. Naive and Time-Marching Formulations<a class="anchor-link" href="#4.5.2.-Naive-and-Time-Marching-Formulations">¶</a></h3><p>Both models use the same network and the same residual $r_\theta = \dfrac{\partial u_\theta}{\partial t} + \beta\,\dfrac{\partial u_\theta}{\partial x}$. For the naive model the loss is</p>
 <br/>
 <p>$$
 \mathcal{L} = \mathcal{L}_{\mathrm{PDE}} + \mathcal{L}_{\mathrm{IC}} + \mathcal{L}_{\mathrm{BC}} ,
@@ -149994,7 +149988,7 @@ $$</p>
 <br/>
 <p>which equals $a(x)$ at $t = 0$ and vanishes at both ends whatever the network returns. Only the equation residual is left in the loss, so the comparison isolates the effect of this section from the loss weighting treated in <strong>Regularization, MAP Estimation, and Loss Weighting</strong>.</p>
 <br/>
-<p>The collocation times are drawn uniformly on $(0, T]$, on purpose. Crowding the points at early times, as in the Allen-Cahn laboratory, would hide the effect under a second one.</p>
+<p>The collocation times are drawn uniformly on $(0, T]$, on purpose. Crowding the points at early times would hide the effect under a second one.</p>
 </div>
 </div>
 </div>
@@ -150231,7 +150225,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=2ae92c52"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A relative error of one is the error of predicting zero everywhere. The dashed line marks it: above that line a prediction is worse than no prediction at all.</p>
+<p>A relative error of one is the error of predicting zero everywhere; above that level a prediction is worse than no prediction at all.</p>
 </div>
 </div>
 </div>
@@ -150271,7 +150265,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=D5LsE9E-yu6E"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The curves make the same point at a glance. The red curve is flat and low until $t \approx 0.1$ and then rises almost as a straight line on the logarithmic axes, heading for the dashed line that marks no prediction at all. The blue curve is flat from beginning to end. The crossing of the two near $t = 0.1$ is where the solution has fallen to about a third of its initial size, which is where the weight $e^{-2\lambda t}$ has dropped below one tenth.</p>
+<p>The curves make the same point at a glance. The red curve is flat and low until $t \approx 0.1$ and then rises almost as a straight line on the logarithmic axes, heading for the level of no prediction at all. The blue curve is flat from beginning to end. The crossing of the two near $t = 0.1$ is where the solution has fallen to about a third of its initial size, which is where the weight $e^{-2\lambda t}$ has dropped below one tenth.</p>
 </div>
 </div>
 </div>
