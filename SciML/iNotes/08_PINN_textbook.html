@@ -13092,25 +13092,8 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><br/><br/>
-<font size="5"><b>Scientific Machine Learning:</b></font><br/><br/><br/>
+<font size="5"><b>Scientific Machine Learning:</b></font><br/>
 <font size="6"><b>Physics-informed Neural Networks (PINN)</b></font><br/><br/></p>
-<p>A physics-informed neural network is a neural network trained to satisfy a differential equation. Instead of, or in addition to, fitting data, its loss measures how badly the network output violates the governing equation, the boundary conditions and the initial conditions, with every derivative supplied by automatic differentiation. This notebook explains why a purely data-driven model needs physics, how the physics enters the loss, and how the resulting network solves forward and inverse problems with little or no data.</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<br/>
-<h2 id="Learning-Objectives">Learning Objectives<a class="anchor-link" href="#Learning-Objectives">¶</a></h2><p>After studying this notebook, you should be able to</p>
-<ul>
-<li>explain what a purely data-driven model gives up when data is scarce, place physics-informed learning on the two axes of how knowledge is represented and where it is injected, and state what the universal approximation theorem does and does not promise;</li>
-<li>write the physics-informed loss as a weighted sum of residuals of the governing equation at collocation points and of the initial and boundary conditions, and explain why the network must be differentiated with respect to its input;</li>
-<li>explain how observed data enter the same loss to turn an under-determined inverse problem into an over-determined one, and how unknown parameters become trainable tensors;</li>
-<li>implement a PINN by hand in PyTorch, with <code>requires_grad</code> on the input coordinate and <code>torch.autograd.grad(..., create_graph = True)</code> for the derivative, and predict the loss at initialisation from the equation before running anything;</li>
-<li>solve a fourth-order beam equation and a two-dimensional plane-stress problem with a PINN, read the residual and boundary terms in the training trace, and explain which fields the unit weighting neglects and how measured data repair them;</li>
-<li>set up an inverse problem as the same optimization with a longer decision vector, and explain the roles of data and prior knowledge in making it well posed.</li>
-</ul>
 </div>
 </div>
 </div>
@@ -13156,6 +13139,23 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
+<h2 id="Learning-Objectives">Learning Objectives<a class="anchor-link" href="#Learning-Objectives">¶</a></h2><p>After studying this notebook, you should be able to</p>
+<ul>
+<li>explain what a purely data-driven model gives up when data is scarce, place physics-informed learning on the two axes of how knowledge is represented and where it is injected, and state what the universal approximation theorem does and does not promise;</li>
+<li>write the physics-informed loss as a weighted sum of residuals of the governing equation at collocation points and of the initial and boundary conditions, explain why the network must be differentiated with respect to its input, and say why setting every weight to one is a modelling decision rather than a neutral default;</li>
+<li>say when a PINN is the right tool and when it is not, and in particular why a classical solver is preferable for a well-posed forward problem on a simple geometry;</li>
+<li>explain how observed data enter the same loss to turn an under-determined inverse problem into an over-determined one, and how unknown parameters become trainable tensors;</li>
+<li>implement a PINN by hand in PyTorch, with <code>requires_grad</code> on the input coordinate and <code>torch.autograd.grad(..., create_graph = True)</code> for the derivative, and predict the loss at initialisation from the equation before running anything;</li>
+<li>solve a fourth-order beam equation and a two-dimensional plane-stress problem with a PINN, read the residual and boundary terms in the training trace, and explain which fields the unit weighting neglects and how measured data repair them;</li>
+<li>set up an inverse problem as the same optimization with a longer decision vector, and explain the roles of data and prior knowledge in making it well posed.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p><br/><br/><br/></p>
 <p><a name="chapter-1"></a></p>
 <h1 id="1.-Why-Deep-Learning-Needs-Physics?">1. Why Deep Learning Needs Physics?<a class="anchor-link" href="#1.-Why-Deep-Learning-Needs-Physics?">¶</a></h1>
@@ -13165,7 +13165,6 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Overview</strong></p>
 <p>Consider the position of an engineer who wants to predict the temperature field inside a turbine blade. One option is to instrument blades, run them, record temperatures, and fit a model to the measurements. The other is to write down the heat equation, supply the material properties and the boundary conditions, and solve. The first approach needs data and no physics; the second needs physics and no data. Both have been available for decades, and the interesting question is what happens when the two are combined rather than chosen between.</p>
 <br/>
 <p>This section motivates that combination. It begins with an honest account of what data-driven modelling does well, because the case for physics-informed learning is not that machine learning fails, but that it fails in specific, identifiable ways when data is thin. It then organizes the space of possible combinations along two axes, namely how domain knowledge is represented and where in the learning pipeline it is injected, and locates PINNs at a particular point in that space. Finally it examines the theoretical result that makes the enterprise plausible at all, the universal approximation theorem, and is careful about what the theorem does and does not promise.</p>
@@ -13188,6 +13187,7 @@ div#notebook {
 <p>Physics-informed neural networks respond to these limitations by integrating domain knowledge directly into the model's training. The claim is threefold. Combining data-driven flexibility with established physical law improves accuracy and robustness, because the physics constrains the model in exactly the regions where data is absent. Enforcing known constraints mitigates data scarcity and class imbalance, because the governing equation holds everywhere in the domain, including at points where nothing was measured, and can therefore supply supervision there. And requiring outputs to be consistent with fundamental principles improves interpretability, because a solution that satisfies the governing equation can be reasoned about with the whole apparatus of the underlying science.</p>
 <br/>
 <p>By embedding prior knowledge from physics and engineering, PINNs aim at a framework that is simultaneously more generalizable, more interpretable, and more physically consistent than a purely data-driven one. The rest of this section makes that aim concrete, and Section 2 makes it computational.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13204,6 +13204,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Before building anything it is worth seeing the shape of the design space, because "add physics to the network" is not one idea but a family of them, and the members of the family differ in ways that matter. Two questions organize the family. First, in what form is the knowledge available? Second, at which point in the modelling pipeline is it inserted? The figure below arranges the possibilities along these two axes, with the network architectures listed on one side.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13235,6 +13236,7 @@ div#notebook {
 <p>The right column asks where the knowledge is inserted, and the three answers correspond to three quite different engineering practices. Feature engineering inserts knowledge into the inputs, by constructing quantities that the modeller knows to be relevant, such as a Reynolds number rather than separate velocity, length, and viscosity. Designing inserts knowledge into the architecture, by building the constraint into the structure of the model so that it cannot be violated. Regularizing inserts knowledge into the objective, by adding a penalty term that grows when the constraint is broken.</p>
 <br/>
 <p>The standard PINN of Sections 2 through 6 is a regularizing method: the governing equation appears as an additive penalty in the loss, and the network is free to violate it, merely at a cost. The hard-constraint method, which Regularization, MAP Estimation, and Loss Weighting takes up, is a designing method: the boundary condition is built into the functional form of the solution, so it holds exactly and no penalty is required. Keeping these two categories distinct will make the hard-constraint construction read as a natural alternative rather than a trick. <strong>Embedding Physical Knowledge into Neural Networks</strong> takes up the same taxonomy from a broader angle.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13290,6 +13292,7 @@ $$</p>
 <p>This matters here more than in any other notebook of the course, because a PINN's loss is built almost entirely from derivatives. In Section 5 we will differentiate the network four times. A network that matches the true deflection of a beam to within $10^{-4}$ everywhere may still have a completely wrong fourth derivative, so approximation in value alone would be no guarantee at all. Stronger versions of the approximation theorem do control derivatives, requiring correspondingly stronger smoothness of the activation function, and it is those versions rather than the elementary one that make the PINN construction theoretically sensible. This is a second reason, independent of the ReLU argument above, to prefer smooth activations here.</p>
 <br/>
 <p>The practical lesson is worth stating once and remembering: representability and findability are different questions, and only the second one is decided by your training loop.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13327,6 +13330,7 @@ $$</p>
 <p>Against these advantages stands one substantial disadvantage, which the laboratories will make plain: for a low-dimensional, well-posed forward problem with a regular geometry, a classical solver is faster, more accurate, and more reliable than a PINN. Section 3 states this openly, and it is the reason the second half of this notebook concentrates on inverse problems, where classical methods are far weaker and the comparison runs the other way.</p>
 <br/>
 <p>The idea is older than the current wave of interest. Two foundational works illustrate the line of development, the first proposing a neural algorithm for solving differential equations in 1990.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13345,6 +13349,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The second, from 1998, developed artificial neural networks for both ordinary and partial differential equations, and already contained the essential ingredients: a network taking the independent variables as input, derivatives obtained by differentiating the network, and a cost function assembled from the residual of the equation. What the modern formulation adds is not a new principle but a practical substrate, namely automatic differentiation as a standard, efficient, and reliable service provided by every deep learning framework, together with the optimizers and hardware that make training a large network routine.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13371,6 +13376,7 @@ $$</p>
 </ul>
 <br/>
 <p>This groundbreaking work explores how deep learning can be used for both forward and inverse problems in non-linear partial differential equations. Notice that forward and inverse problems appear together in its title, and that the two are handled by the same machinery. In the forward problem the equation is known completely and the solution is wanted; in the inverse problem part of the equation is unknown and observations of the solution are available. It is a genuine feature of the PINN formulation, and the subject of Section 3 and of the inverse problems in <strong>Physics-Informed Neural Networks: Labs</strong>, that moving from one to the other requires no new algorithm, only a longer list of trainable variables.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13405,6 +13411,7 @@ $$</p>
 </ul>
 <br/>
 <p>If you read only one thing beyond this notebook, the review is the better choice, because it places PINNs within the wider family of methods sketched in Section 1.1 rather than treating them as the whole subject.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13431,7 +13438,6 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Overview</strong></p>
 <p>We now build the object. The construction is short enough to state in one paragraph, and the rest of the section is spent making each piece of it precise.</p>
 <br/>
 <p>Let a neural network $u_\theta(x,t)$ take the independent variables of the problem as its inputs and return the unknown field as its output. Because the network is a composition of affine maps and smooth activations, it is a smooth function of $x$ and $t$, and its partial derivatives of any order can be computed exactly by automatic differentiation. Substitute those derivatives into the governing equation. The equation will not in general hold, and the amount by which it fails is a number, the residual, computable at any point of the domain we like. Square it, average it over a set of sampled points, add analogous terms measuring the violation of the initial and boundary conditions, and minimize the total over $\theta$. If the total reaches zero, the network satisfies the equation and its side conditions, and is therefore the solution.</p>
@@ -13473,6 +13479,7 @@ $$</p>
 <p>where $n$ denotes the outward normal to the boundary. The distinction is physical, not merely mathematical. A Dirichlet condition on temperature is a wall held at a fixed temperature by contact with a reservoir; a Neumann condition on temperature is a prescribed heat flux, and the homogeneous case $\partial T/\partial n = 0$ is a perfectly insulated wall. For the beam of Section 5 the two types appear together at a clamped end, where both the deflection and the slope are prescribed. For the plate of Section 6 the free edges are Neumann-type conditions on stress, which is itself built from derivatives of the displacement.</p>
 <br/>
 <p>Together, the equation, the initial condition, and the boundary conditions constitute a well-posed problem: there is exactly one $u$ satisfying all of them. That phrase <em>exactly one</em> is what makes the forward problem solvable with no data. When one of these ingredients goes missing, as it does when a boundary condition is unknown, uniqueness goes with it, and data must be brought in to restore it.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13574,6 +13581,7 @@ $$</p>
 <br/>
 <p><strong>A common misconception</strong></p>
 <p>Students sometimes describe a PINN as a network trained on solutions of the equation, perhaps generated by a conventional solver, with the equation used as a regularizer. That describes a different and also useful method, and it is closer to what Deep Neural Operators and Fourier Neural Operator will do, but it is not what is happening here. In a PINN there is no solver, there are no reference solutions, and the equation is not a regularizer on a data-fitting objective; it is the entire objective. The exact solutions that appear in the laboratories of Sections 4 and 5 are used only after training, to draw a comparison curve, and are never seen by the optimizer.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13589,7 +13597,6 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Overview</strong></p>
 <p>We have now seen PINNs as a neural network approach to forward problems, and it is worth stating plainly what the last two sections did not claim. For a well-posed forward problem on a simple geometry, the method offers no decisive advantage over conventional computational techniques. A finite element solver for the beam of Section 5 would return the answer in milliseconds, to more digits, with an error estimate and a convergence theory behind it, where the PINN needs a thousand gradient steps and gives none of those guarantees. Section 5 is worth doing because it teaches the mechanics on a problem whose exact solution we can write down, not because it is the way one should analyse a beam.</p>
 <br/>
 <p>The application of PINNs to inverse problems is a different matter, and it is the direction in which the method genuinely advances scientific computing. Inverse problems involve determining unknown parameters, unknown functions, or unknown physical laws from limited information. They are typically ill-posed, meaning that the available information does not determine a unique and stable answer, and this is not a defect of the solution method but a property of the problem. To obtain a usable answer, <font color="red">a combination of observed data and physical laws is essential</font>, and the PINN framework happens to be an unusually convenient place to combine them.</p>
@@ -13597,6 +13604,7 @@ $$</p>
 <p>One fact from linear algebra is worth having in mind for the whole of this section, and it can be stated in three sentences. A square non-singular system $Ax=b$ has exactly one solution, and it corresponds to the well-posed forward problem. An under-determined system, with fewer equations than unknowns, has infinitely many solutions, and an algorithm handed one will return a particular member of the family, typically the one of smallest norm, with no indication that others exist; that is the ill-posed inverse problem with insufficient data. An over-determined system, with more equations than unknowns, has in general no exact solution and is handled by least squares, returning the point that comes closest to satisfying everything at once. Adding observations to an ill-posed inverse problem moves it from the second situation towards the third, and the PINN loss, being a sum of squared residuals, is performing least squares in a non-linear setting. Section 5 in <strong>Physics-Informed Neural Networks: Labs</strong> stages that progression deliberately.</p>
 <br/>
 <p>PINNs with data therefore provide a framework for inverse problems that integrates data-driven evidence with physics-based constraints derived from the governing equations, and the hybrid is more stable and more accurate than either ingredient alone.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13682,6 +13690,7 @@ $$</p>
 <br/>
 <p><strong>Summary of the idea</strong></p>
 <p>A PINN alone cannot approximate the solution of an ill-posed problem. If observational data is available, however, it can be used to construct an over-determined system, and that is what makes the inverse problem tractable. <strong>Physics-Informed Neural Networks: Labs</strong> carries this out twice, once for unknown scalar parameters and once for an unknown boundary condition, and additionally shows what happens when prior structural knowledge, namely that the missing boundary temperature is constant, is added on top of the data.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13697,7 +13706,6 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Overview</strong></p>
 <p>We have discussed the fundamental theory behind physics-informed neural networks; now we build one. Section 4.1 implements a PINN by hand, with every derivative, every residual, and every gradient step written out explicitly.</p>
 <br/>
 <p>Doing it by hand first is not ceremony. A PINN implementation contains exactly one unfamiliar idea, namely differentiating the network output with respect to the network input, and once you have written those three lines yourself the rest of the notebook reads as variations on a theme. Every laboratory from Section 5 onward has the same skeleton: a helper that computes a derivative, a function that assembles the residual of the governing equation, one function per boundary condition, and a loop that squares everything, adds it up, and calls the optimizer. Learn the skeleton here and the later laboratories become exercises in translating physics rather than exercises in programming.</p>
@@ -13756,6 +13764,7 @@ $$</p>
 <p>Two features of this solution are worth noticing in advance, because they explain design decisions that follow. The solution oscillates with period $1$, and the training domain will be $t \in [0,2]$, so the network must represent two full periods. And the solution takes values between $1 - 1/2\pi \approx 0.841$ and $1 + 1/2\pi \approx 1.159$; it is centred on $1$, not on $0$, and its total variation is small compared with its mean. Predicting a nearly constant function with a small ripple on top is harder than it looks, because the loss is built from the derivative, where the ripple is everything and the constant contributes nothing.</p>
 <br/>
 <p>Make a neural network and loss functions like below:</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13773,8 +13782,8 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Import Library</strong></p>
 <p>The implementation uses PyTorch, whose automatic differentiation records operations as they are executed, so that gradients can be taken inside an ordinary Python loop with no separate graph-construction step, together with NumPy and Matplotlib for the arithmetic and the plotting.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13811,7 +13820,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Network and Hyper-parameters</strong></p>
+<br/>
 <p>The network takes one input, $t$, and returns one output, the predicted $u$. Between them are two hidden layers of thirty-two units with $\tanh$ activations. Before running the cell, work out the parameter count for yourself: the first layer holds $1 \times 32$ weights and $32$ biases, giving $64$; the second holds $32\times32 + 32 = 1056$; the output layer holds $32 \times 1 + 1 = 33$. The total is $1153$, which is what the printed count reports.</p>
 <br/>
 <p>Two choices here are physics-driven rather than conventional, and both are easy to pass over.</p>
@@ -13821,6 +13830,7 @@ $$</p>
 <p>The output layer has no activation at all. This is deliberate and not merely conventional: the target values lie near $1$, and a $\tanh$ output would be confined to $(-1,1)$, making the correct answer unreachable at every point where $u &gt; 1$, which is half the domain. A linear output layer places no restriction on the range. Keep this observation in mind when you reach Section 5, where the beam network <em>does</em> end with a $\tanh$ and gets away with it only because the true deflection never leaves $[-0.125, 0]$.</p>
 <br/>
 <p>The optimizer is Adam at a learning rate of $0.001$, the default throughout this notebook. From the optimizer's point of view this is an ordinary differentiable objective in $1153$ variables; nothing about the physics-informed setting changes how it works. One detail of its construction matters and matters again in every inverse problem: the optimizer holds a fixed list of the tensors it is allowed to update, here <code>NN.parameters()</code>, and anything not in that list is not trained however many gradients flow through it. Appending an unknown physical constant to that list is the whole difference between a forward and an inverse problem in code.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13876,7 +13886,7 @@ parameters: 1153
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define ODE System</strong></p>
+<br/>
 <p>Now the loss. Following Section 2, it has two terms.</p>
 <br/>
 <ul>
@@ -13902,6 +13912,7 @@ parameters: 1153
 <p>The cell that follows implements this, and one idea in it carries the whole method: the input coordinate $t$ is created with <code>requires_grad = True</code>, so that a graph connecting $t$ to the network output exists and can be walked backwards, and <code>torch.autograd.grad(u, t, ...)</code> walks it. Two arguments of that call matter. <code>grad_outputs = torch.ones_like(u)</code> asks for the derivative of each output with respect to its own input, which is what a pointwise network gives, and <code>create_graph = True</code> records the differentiation itself so that the loss built from $du_\theta/dt$ can be differentiated again with respect to the weights. Ordinarily one tracks the <em>weights</em>, because the weights are what will be updated. Here the <em>input</em> is tracked as well, not because $t$ will ever be updated, but because we want $du_\theta/dt$. This is the single most common omission in a first hand-written PINN, and it produces not a wrong answer but no answer at all.</p>
 <br/>
 <p>The rest of the function is arithmetic. The equation residual $du_\theta/dt - \cos 2\pi t$ is evaluated at all twenty collocation points at once and its mean square is $L_{\text{ODE}}$; the initial-condition error $u_\theta(0) - 1$ is a single number, since that condition is enforced at the one point $t=0$, and its square is $L_{IC}$. The two are added with no explicit $\lambda_I$, which is the equal weighting stated above.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -13928,13 +13939,14 @@ parameters: 1153
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Train &amp; Prediction</strong></p>
+<br/>
 <p>The training loop is ordinary gradient descent with one unusual feature: the collocation points are drawn afresh at every iteration, twenty of them uniformly distributed on $[0,2]$. The network therefore never sees the same set twice, and over three thousand iterations the domain is covered by sixty thousand distinct points. This is a cheap way of ensuring that the residual is small everywhere rather than at a fixed set of locations where the network could overfit, and it has a price that will become visible in the plotted loss curve. PINN: Limitations and Extensions discusses this and related sampling strategies at length.</p>
 <br/>
 <p>Two nested differentiations happen at every step, and separating them explicitly is worth the effort, since this is the one structural feature that distinguishes a PINN's training step from an ordinary one. The inner differentiation produces $du_\theta/dt$, the derivative of the output with respect to the input. The outer differentiation produces $\partial L/\partial\theta$, the derivative of the loss with respect to the weights, and because the loss contains $du_\theta/dt$, the second differentiation must pass <em>through</em> the first. That is second-order automatic differentiation, and it is what makes a derivative-based loss trainable at all; in PyTorch it is exactly what <code>create_graph = True</code> buys, and without it the inner derivative would be a constant to the outer <code>backward()</code>.</p>
 <br/>
 <p><strong>Predict the first printed number</strong></p>
 <p>Before running the cell, work out what the loss should be at iteration zero. The weights are freshly initialized, so the network output is close to zero everywhere and so is its derivative. With $u_\theta \approx 0$ we get $\text{IC\_loss} \approx 0 - 1 = -1$, contributing $1$ to the total. With $du_\theta/dt \approx 0$ the ODE residual is approximately $-\cos 2\pi t$, and the average of $\cos^2$ over a whole number of periods is $1/2$, contributing about $0.5$. The predicted initial loss is therefore about $1.5$.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14000,6 +14012,7 @@ parameters: 1153
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p>The printed values are $1.3936$ at iteration $0$, $0.3519$ at iteration $1000$, and $0.0004$ at iteration $2000$. The opening value confirms the prediction to two figures, which is the useful part: the arithmetic above was a genuine test of whether we understood what the loss measures, and it passed.</p>
 <br/>
 <p>The rest of the trace is the interesting part, and the plotted curve carries information the three printed numbers do not. For roughly the first fifteen hundred iterations the loss wanders noisily between about $0.2$ and $0.6$, declining but nowhere near zero; the value of $0.3519$ at iteration $1000$ means that the mean squared equation residual is still of the order it started from, and that the network has learned the level of the solution far better than its oscillation. Then, over a few hundred iterations, the loss drops by three orders of magnitude and settles near $4\times10^{-4}$, where it stays; the value of $0.0004$ at iteration $2000$ is the settled level. That shape, a long plateau followed by a sudden descent, is typical of PINNs on oscillatory solutions. The plateau is the network fitting the mean and the overall bend of $u$; the descent is the moment at which its derivative locks onto $\cos 2\pi t$. Nothing in the loss told us in advance when, or whether, that moment would come.</p>
@@ -14007,6 +14020,7 @@ parameters: 1153
 <p>The noise on the curve has an identifiable source: the collocation points are resampled at every iteration, so the quantity being plotted is not one fixed function evaluated at successive iterates but a fresh random estimate at each step. Twenty points is a small sample from which to estimate a mean square, and an unlucky draw that happens to concentrate near the steep parts of $\cos 2\pi t$ will report a larger loss than the previous iterate even though the weights improved. Under a fixed learning rate, a stochastic gradient method does not converge to a minimizer at all; it converges to a neighbourhood whose size is set by the product of the step size and the gradient noise, and then wanders inside it, which is what the flat tail of the curve shows. When you read a PINN loss curve, ask first whether the objective is fixed or resampled, because the two produce very different-looking plots for the same underlying progress.</p>
 <br/>
 <p>One more fact belongs here. The same six cells, run in the original version of this lab under a different framework whose default initialisation differs from PyTorch's, printed $1.4421$, $0.4021$ and $0.3037$ at the three checkpoints and never left the plateau in three thousand iterations. Same equation, same architecture, same optimizer, same step size, same iteration count; a different random starting point; a factor of a thousand in the final loss. Nothing here contradicts Section 1.2, and it is worth stating the relationship in the direction that actually holds. The universal approximation theorem guarantees that a network of this shape exists which makes this loss essentially zero. Whether a particular run finds it is a fact about the optimization, not about the representation, and it is exactly the gap between representability and findability that Section 1.2 warned about. Regularization, MAP Estimation, and Loss Weighting and PINN: Limitations and Extensions are devoted to closing it.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14046,11 +14060,13 @@ parameters: 1153
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p>The comparison plot places the exact solution and the network prediction on the same axes, and it should be read against the loss just discussed rather than in isolation.</p>
 <br/>
 <p>The relationship between a loss value and the corresponding picture is quantitative and runs in a direction students often get backwards. An error of amplitude $\varepsilon$ in a solution oscillating at angular frequency $2\pi$ produces an error of amplitude $2\pi\varepsilon$ in the derivative, so a derivative-based loss magnifies displacement errors by a factor of about six here. A PINN loss therefore looks worse than the corresponding picture, systematically and by a knowable factor, and a loss that has not reached zero can still correspond to a plot in which the two curves are close. The converse is the more important half: a plot in which the curves lie on top of one another is weak evidence, since it is blind to exactly the errors the loss is most sensitive to. Judge a PINN by its residual, and use the plot to see <em>where</em> the residual lives.</p>
 <br/>
 <p>That is the entire method, implemented in six cells. Everything that follows adds physics, not machinery.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14066,7 +14082,6 @@ parameters: 1153
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Overview</strong></p>
 <p>Having implemented a PINN by hand in PyTorch, we now extend our study to a more practical and familiar problem: the Euler beam bending problem, a fundamental topic in solid mechanics. This implementation uses PyTorch, and every laboratory from here to the end of the notebook is written in it directly, without a library in between.</p>
 <br/>
 <p>The Euler beam is a good next step for three reasons. It is a genuine engineering problem with a hundred and fifty years of history and a closed-form answer, so every number the network produces can be checked. It is fourth order, which stretches the automatic differentiation machinery in a way the first-order problem of Section 4 did not, and which makes concrete the remark in Section 2 that each additional derivative costs something. And its boundary conditions are of two different kinds at two different places, so the composite loss of Section 2 finally has all its parts.</p>
@@ -14088,6 +14103,7 @@ parameters: 1153
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This is a one-dimensional problem: the beam occupies the interval $x\in[0,1]$ and the unknown is its transverse deflection $y(x)$.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14176,6 +14192,7 @@ $$</p>
 <p>Since the deflection never leaves the interval $[-0.125,\, 0]$, keep that range in mind when the network architecture appears.</p>
 <br/>
 <p>Make a neural network and loss functions like below:</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14209,12 +14226,12 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Collocation Points</strong></p>
 <p>Twenty-five points, evenly spaced on $[0,1]$ with spacing $1/24 \approx 0.0417$, serve as the collocation set at which the equation residual will be enforced. The two ends, $x = 0$ and $x = 1$, are the boundary points.</p>
 <br/>
 <p>Three remarks. First, the points are laid out on a regular lattice rather than sampled at random, and unlike Section 4.1 they are computed once and reused for every epoch. This makes the objective a fixed function of the weights and the gradient exact rather than noisy, and it is the first of the differences that will explain this laboratory's much better convergence. Second, twenty-five points for a fourth-order equation is a small budget; it works here because the solution is a quartic polynomial, about as gentle a function as exists. Third, the two boundary points remain members of the collocation set, so the equation residual is enforced at $x=0$ and $x=1$ as well as the boundary conditions. Nothing is wrong with that: the equation does hold at the endpoints.</p>
 <br/>
 <p>The plot marks the interior points in blue and the two boundaries in red, which is a habit worth keeping in higher dimensions, where an error in constructing the boundary sets is otherwise invisible until training fails.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14251,7 +14268,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Network and Hyper-parameters</strong></p>
+<br/>
 <p>The network maps one input to one output through four hidden layers of thirty-two units with $\tanh$ activations, a little larger than the network of Section 4 and still very small by the standards of the rest of this course.</p>
 <br/>
 <p>The architecture contains one feature that should stop you: there is a $\tanh$ after the final linear layer. The output of this network is therefore confined to the interval $(-1,1)$.</p>
@@ -14259,6 +14276,7 @@ $$</p>
 <p>In Section 4.1 the same choice would have been fatal, because the solution there took values near $1.16$. Here it is survivable, because the true deflection lies in $[-0.125, 0]$, comfortably inside the reachable range. It is nevertheless a fragile choice, and worth understanding as a hazard rather than a technique. If the load $q$ were increased by a factor of ten, the true tip deflection would be $-1.25$ and no setting of the weights could produce it; the training would converge to something pressed against the saturation of the output $\tanh$, and the failure would look like a modelling error rather than an architectural one. A second, subtler cost is that $\tanh$ has small derivative when its argument is large, so gradients reaching the network through a saturated output layer are attenuated.</p>
 <br/>
 <p>The optimizer is Adam at $10^{-3}$, and every term of the composite loss will be a mean squared residual.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14291,7 +14309,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define a Function to Compute Derivatives</strong></p>
+<br/>
 <p>One short helper does all the work of this and every remaining laboratory. It returns the derivative of one tensor with respect to another, and it is the operation of Section 4.1 given a name. Two details of it carry the method.</p>
 <br/>
 <p>The differentiation is asked for at every collocation point at once, and the vector of ones passed to it extracts exactly the per-point derivatives. The reason this works is worth understanding once, properly: the underlying routine computes a vector-Jacobian product rather than a Jacobian, returning $g^{\top}\,\partial y/\partial t$ for a supplied vector $g$, and choosing $g = \mathbf{1}$ returns the column sums of the Jacobian. That looks like the wrong object until one notices that the network is applied <em>pointwise</em> to a batch, so the $i$-th output depends only on the $i$-th input, the Jacobian is diagonal, and each column sum collapses to its single surviving diagonal entry $\partial y_i/\partial t_i$. This same trick recurs in every PINN implementation in every framework.</p>
@@ -14299,6 +14317,7 @@ $$</p>
 <p>The differentiation is also asked to build a differentiable graph for itself. Without that, the returned derivative would carry no history, and asking for its derivative in turn, which is precisely what the fourth-order chain does next, would fail. It is also what allows the final loss, built from these derivatives, to be differentiated with respect to the network weights. Every higher-order derivative in this notebook depends on it.</p>
 <br/>
 <p>Any tensor with respect to which we intend to differentiate must be created with <code>requires_grad = True</code>, for the reason given in Section 4.1; the training cell below does this for the three point sets.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14317,7 +14336,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define PDE System</strong></p>
+<br/>
 <br/>
 <p>$$\frac{\partial^4 y}{\partial x^4} + q = 0,  \qquad \text{where} \quad x \in [0,1]$$</p>
 <br/>
@@ -14326,6 +14345,7 @@ $$</p>
 <p>This is where the cost of a high-order equation becomes visible. Each call extends the computational graph, so the graph differentiated at the end of the step is several times as deep as the network itself, and the memory and time per epoch scale accordingly. It is also where the smoothness requirement of Section 1.2 becomes non-negotiable: a ReLU network differentiated four times returns zero everywhere, so the residual would be identically $1$ and no amount of training would reduce it.</p>
 <br/>
 <p>Note finally that the residual is returned unsquared and unaveraged. Squaring and averaging happen in the training loop.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14351,7 +14371,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Boundary Condition</strong></p>
+<br/>
 <br/>
 <ul>
 <li>One Dirichlet boundary condition on the left boundary:</li>
@@ -14374,6 +14394,7 @@ $$</p>
 <p>The two functions below return the four residuals: at the left boundary, the value of the network and its first derivative; at the right boundary, its second and third derivatives. Because all four prescribed values are zero, each residual is simply the corresponding derivative of the network. Had the beam been clamped at a prescribed non-zero settlement $y(0) = \delta$, the residual would have been $y_\theta(0) - \delta$, following the pattern of Section 2 exactly; the homogeneous case merely makes the subtraction invisible.</p>
 <br/>
 <p>The homogeneity has a consequence for the training output that is worth predicting now. An untrained network produces values near zero, so all four boundary residuals begin small, and essentially all of the initial loss will come from the equation term.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14411,7 +14432,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Train</strong></p>
+<br/>
 <p>The three point sets are created as tracked tensors and the loop runs for a thousand and one epochs. Each epoch computes the equation residual on the twenty-five collocation points and the four boundary residuals, takes the mean square of each, and adds them:</p>
 <br/>
 <p>$$
@@ -14422,6 +14443,7 @@ $$</p>
 <br/>
 <p><strong>Predict the first printed line</strong></p>
 <p>At epoch $0$ the network output and all its derivatives are near zero, so $y'''' \approx 0$ and the residual is $0 + 1 = 1$, giving $\mathcal{L}_{\text{PDE}} \approx 1$. The four boundary residuals are near zero, so $\mathcal{L}_{\text{BC}} \approx 0$ and the total is about $1$.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14486,17 +14508,19 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p>The cell prints a total of $1.0029$ at epoch $0$, of which $0.9173$ is the equation term and $0.0855$ the boundary terms, which is the predicted split: the equation term near $1$ and dominant, the boundary terms small. (The equation term is somewhat below $1$ because the freshly initialised network's fourth derivative is not exactly zero.) By epoch $500$ the total is $0.0005$, and by epoch $1000$ it is $0.0001$, with both the equation and the boundary terms printing as $0.0000$ to four decimal places: the network satisfies the fourth-order equation and all four boundary conditions to about that accuracy.</p>
 <br/>
 <p>Compare this with Section 4.1, where a <em>first</em>-order equation, after three times as many iterations, was still reporting a loss around $0.35$ at its thousandth iteration, and did not leave that level until about iteration $1500$. The order of differentiation was clearly not the obstacle there. Three differences account for the contrast. The collocation points here are fixed rather than resampled, so the gradient is exact and Adam is minimizing a genuine function rather than chasing a moving target, and the loss printed here is correspondingly an exact value rather than a noisy estimate. The solution here is a quartic polynomial, smooth and monotone over the whole domain, whereas the solution in Section 4.1 oscillated through two full periods, and a network must work considerably harder to produce an oscillation than a bend. And this network is deeper, with four hidden layers against two. The general lesson, which PINN: Limitations and Extensions develops, is that PINN difficulty tracks the character of the solution and the conditioning of the optimization far more than it tracks the order of the equation.</p>
+<br/>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Exact Solution</strong></p>
 <p>The quartic verified in Section 5.1 is coded up for comparison. It is used only for plotting, after training is complete, and never enters the loss; the network was trained on the equation and the boundary conditions alone.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14515,8 +14539,9 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Result</strong></p>
+<br/>
 <p>The prediction is evaluated on a hundred points, four times as many as the network was trained on and at positions that mostly fall between the training points. This is the meaningful test. A model that had merely driven its residual to zero at twenty-five isolated locations, by whatever contortion, would betray itself on the finer grid; a model that has actually learned the solution will interpolate smoothly, because the true solution is smooth and so is the network.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14558,9 +14583,11 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p>The exact solution and the prediction are drawn on the same axes. Given a training loss of about $10^{-4}$, the two curves should be visually indistinguishable over the whole span, falling from zero at the clamped root to about $-0.125$ at the free tip.</p>
 <br/>
 <p>It is worth appreciating what has happened, because it is easy to lose sight of it among the code. A small network was shown no solution, no data, and no finite element mesh. It was shown a differential equation, four boundary conditions, and twenty-five bare coordinates. From those it recovered the deflection curve of a loaded cantilever, including the correct tip deflection $ql^4/8EI$, which is a result that took the nineteenth century some effort to establish. The supervision came entirely from the physics.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14576,7 +14603,6 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Overview</strong></p>
 <p>Every example so far has been one-dimensional: a single independent variable, a single unknown field. The thin plate is the first two-dimensional problem, and the step up costs more than an extra input. There are now two coupled unknown fields, the displacements $u$ and $v$; there are mixed partial derivatives; the boundary is a curve rather than two points, so each edge needs its own point set; and the boundary conditions are expressed in terms of stresses, which are themselves combinations of derivatives of the unknowns. Every one of these complications is handled by the machinery already built, which is the point of doing the problem.</p>
 <br/>
 <p>Section 6.2 solves the plate as a pure equation solver, with no data of any kind, and compares against a finite element solution. Section 6.3 then adds sensor data to the same model and measures the improvement. That comparison is the most valuable part of this section, and it is the cleanest demonstration in the notebook of what the data term actually contributes.</p>
@@ -14607,6 +14633,7 @@ $$</p>
 <p>These three assumptions are the plate analogue of the assumption that plane sections remain plane in beam theory, and they do the same work. They say that the displacement everywhere through the thickness is determined by the displacement of the mid-surface, so a three-dimensional elasticity problem collapses into a two-dimensional one posed on that surface. Without them the unknowns would be functions of three variables and the network would need a third input. They are accurate when the plate is thin, which is the case here: the thickness is $h = 1$ mm against a width of $20$ mm.</p>
 <br/>
 <p>A non-uniform stretching force is applied to a square elastic plate. Because both the geometry and the in-plane loading are symmetric about the two centre-lines, only one quarter of the plate need be considered, the yellow region in the figure below. This is standard practice in finite element analysis, and it is worth being precise about why it is legitimate and what replaces the material that has been removed. Symmetry of geometry and loading implies symmetry of the solution, and a symmetric displacement field has no component normal to a plane of symmetry: material on the symmetry plane cannot move across it, since the mirror-image material on the other side would have to move the opposite way. The removed three quarters are therefore replaced by exactly two conditions, $u = 0$ on the plane $x = 0$ and $v = 0$ on the plane $y = 0$. Those are the first two boundary conditions listed below, and reading them as symmetry conditions rather than as clamps is essential to understanding the problem.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14724,6 +14751,7 @@ $$</p>
 <p>Note that these last four conditions constrain stresses, not displacements, and stresses are built from first derivatives of $u$ and $v$. In the language of Section 2 they are Neumann-type conditions, and implementing them requires nothing new: the network is differentiated at the boundary points, the derivatives are assembled into the stress components using the constitutive relations above, and the result is compared against the prescribed value.</p>
 <br/>
 <p>The network and the loss terms are defined below.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14745,6 +14773,7 @@ $$</p>
 <p>A finite element solution of the same problem is shown below, giving the displacement components $u$ and $v$ and the stresses $\sigma_{xx}$ and $\sigma_{yy}$ over the quarter domain. We will solve the problem with a PINN and compare against it.</p>
 <br/>
 <p>Two habits of mind are worth adopting here. First, the finite element result is called the exact solution throughout this section, and it is not; it is a numerical approximation with its own discretization error, and it is being used as a reference because it is the best available answer, not because it is the truth. Second, look at the four fields before reading on and predict which will be hardest for the network. The plate is being pulled in $x$, so $u$ is the large, smooth, directly driven response, while $v$ is the smaller transverse contraction produced by the Poisson effect, an order of magnitude smaller and therefore contributing correspondingly less to a loss that weights all residuals equally. That prediction is confirmed in Section 6.3, where it turns out to be exactly the field the data term is needed for.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14772,8 +14801,8 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Select Device &amp; Define Properties</strong></p>
 <p>The first cell selects a device, since this laboratory is the one that benefits from a GPU; the second defines the material and geometric constants, which the residual and boundary functions will read. The constants are $E = 50$, $\nu = 0.3$, $a = b = 10$, $h = 1$ and $f = 1$, matching Section 6.1 in millimetre-megapascal units. Only $b$ is used in what follows, since the quarter domain is square.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14820,12 +14849,13 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Collocation Points</strong></p>
+<br/>
 <p>A $50 \times 50$ lattice on $[0,10]^2$ gives $2500$ interior collocation points, and the four edges are then extracted by testing each coordinate against $0$ or $b$, giving fifty points per edge.</p>
 <br/>
 <p>Note that the four corner points satisfy two edge tests each, so they appear in two of the boundary sets and are constrained twice. This is harmless, and it is in fact what one wants, since both conditions do hold at a corner.</p>
 <br/>
 <p>The scatter plot colours the interior grey and each edge differently. In two dimensions this check is no longer optional. An error in a boundary mask does not raise an exception; it silently produces a model that solves a different problem, and the plot is the cheapest way to catch it.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14878,7 +14908,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Network and Hyper-parameters</strong></p>
+<br/>
 <p>The network takes the two coordinates as input and returns the two displacement components as output, through six hidden layers of sixty-four $\tanh$ units. Three points of construction deserve comment.</p>
 <br/>
 <p>The two outputs are produced by one network with a shared trunk, not by two independent networks. This matters because the governing equations are coupled through the mixed derivative $\partial^2 v/\partial x\partial y$, so the two fields must be learned together in any case, and a shared representation is the natural choice.</p>
@@ -14886,6 +14916,7 @@ $$</p>
 <p>The weights are initialized by the Xavier, or Glorot, scheme, which scales the weight variance by the fan-in and fan-out of each layer so that the variance of the activations neither grows nor decays with depth. With six hidden layers this matters more than it did with two. The network is written as a class, because the pre-trained models loaded later in this section were saved as whole objects of this class and are unpickled against it.</p>
 <br/>
 <p>There is no activation after the final linear layer, so the outputs are unbounded. Contrast Section 5, where a final $\tanh$ was tolerable only because the answer happened to be small. Here the displacements are of order $0.1$ and the unbounded choice is simply correct.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14932,10 +14963,11 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Functions to Compute Physics Loss</strong></p>
+<br/>
 <p>The derivative helper is the two-dimensional version of the one from Section 5. The gradient with respect to the full input has two columns, so the helper slices out the two partial derivatives and returns them as a pair, $\partial/\partial x$ first and $\partial/\partial y$ second. Everything said in Section 5 about the vector of ones and about recording the differentiation applies unchanged; the tensor of ones is created on the same device as the model.</p>
 <br/>
 <p>Returning both partials at once has a pleasant consequence for second derivatives. Applying the helper to $\partial u/\partial x$ returns $\partial^2 u/\partial x^2$ and $\partial^2 u/\partial x \partial y$ in one call, so the mixed derivative is obtained for free alongside the pure one, and the residual function below exploits this.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -14957,7 +14989,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define PDE with Boundary Conditions</strong></p>
+<br/>
 <br/>
 <p>Governing equations (Föppl-von Kármán equations) for the isotropic elastic plate:</p>
 <br/>
@@ -14971,6 +15003,7 @@ $$</p>
 <p>The function below computes six second derivatives and assembles the two residuals. Read it with the derivation of Section 6.1 alongside and the correspondence is exact. One naming convention will otherwise confuse you: the $x$-displacement is called $w$ throughout the code, so a second derivative named <code>dw_xx</code> is $\partial^2 u/\partial x^2$ and not a derivative of any out-of-plane deflection. The letter $w$ conventionally denotes transverse deflection in plate theory, and it is used here for the in-plane $u$ instead.</p>
 <br/>
 <p>The residuals are returned unsquared, as before.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15002,6 +15035,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p>Two Dirichlet boundary conditions at $x = 0$ and $y = 0$ (B.C. ①, left, and B.C. ②, bottom):</p>
 <br/>
 <p>$$
@@ -15012,6 +15046,7 @@ u(x,y) &amp;= 0 \qquad \text{at} \quad x = 0 \text{: (left)}
 $$</p>
 <br/>
 <p>These are the simplest residuals in the notebook. Each evaluates the network on the relevant edge and returns the component that should vanish, discarding the other. Note that only one of the two displacement components is constrained on each edge: the left edge forbids motion <em>across</em> the symmetry plane but permits sliding <em>along</em> it, and a condition on $v$ there would be wrong, since material on the symmetry plane certainly does move in $y$ when the plate is stretched.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15037,6 +15072,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p>Two free boundary conditions at $y = \omega / 2$ (B.C. ③, top):</p>
 <br/>
 <p>$$
@@ -15071,6 +15107,7 @@ $$</p>
 <p>which is the non-uniform applied traction described in Section 6.1, equal to $1$ at $y=0$ and to $0$ at $y=b=10$.</p>
 <br/>
 <p>This cell is the clearest illustration in the notebook of a point worth stating explicitly. A conventional numerical method must treat a Neumann condition specially, because its discrete unknowns are nodal values and a derivative at the boundary has to be reconstructed from them by a one-sided formula. A PINN needs nothing of the kind. A stress boundary condition is written by differentiating the network at the boundary points and combining the derivatives with the constitutive law, which is the same operation used in the interior, applied to a different point set. <font color="red">In the PINN framework, a condition on a derivative is no harder than a condition on a value.</font></p>
+<br/>
 </div>
 </div>
 </div>
@@ -15111,7 +15148,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Train</strong></p>
+<br/>
 <p>The training loop assembles eight residual terms: two equation residuals over the $2500$ interior points, one on each of the two symmetry edges, two on the top edge, and two on the right edge. Each becomes a mean squared error against zero and all are added with unit weight, giving</p>
 <br/>
 <p>$$
@@ -15121,6 +15158,7 @@ $$</p>
 <p>Training a PINN can be computationally expensive and time-consuming. To facilitate experimentation and reproducibility, a trained model is provided below, so that the results can be evaluated and analysed without waiting for a long run. You may still run the loop yourself to watch the behaviour; the printed trace is from a run on a GPU.</p>
 <br/>
 <p>Before running anything, notice one consequence of the unit weighting that the discussion of Section 6.1 anticipated. The equation residuals are multiplied by $E/(1-\nu^2) \approx 54.9$, so a given displacement error contributes far more through the equilibrium terms than through the displacement boundary terms. The stress boundary conditions carry the same large factor. The transverse displacement $v$, being the small Poisson response, influences all of these only weakly, and it is therefore the field the optimizer has the least incentive to get right. Keep this in mind when the results appear.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15191,13 +15229,14 @@ Epoch: 10000 Loss: 0.0001 PDELoss: 0.0000 BCLoss: 0.0000
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Load the Model Parameters</strong></p>
+<br/>
 <p>The trained model will be used to avoid the long training time.</p>
 <ul>
 <li><a href="https://drive.google.com/file/d/1u64cvvA4GNSl3un0L8UAz40Pa4hSMSQx/view?usp=drive_link">lab2_adam_model.pt</a></li>
 </ul>
 <br/>
 <p>The first cell downloads the file; the second loads the model onto the selected device. The file holds the whole <code>PINN</code> object, so the class above must have been defined before it is loaded.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15219,9 +15258,7 @@ Epoch: 10000 Loss: 0.0001 PDELoss: 0.0000 BCLoss: 0.0000
 <pre>Downloading...
 From: https://drive.google.com/uc?id=1u64cvvA4GNSl3un0L8UAz40Pa4hSMSQx
 To: /content/lab2_adam_model.pt
-
-  0% 0.00/93.3k [00:00&lt;?, ?B/s]
-100% 93.3k/93.3k [00:00&lt;00:00, 101MB/s]
+  0% 0.00/93.3k [00:00&lt;?, ?B/s]100% 93.3k/93.3k [00:00&lt;00:00, 101MB/s]
 </pre>
 </div>
 </div>
@@ -15242,7 +15279,7 @@ To: /content/lab2_adam_model.pt
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Plot Displacement and Stress</strong></p>
+<br/>
 <p>Two helpers follow. The first evaluates the network at a set of points, takes the two first derivatives it needs, and returns $\sigma_{xx}$ and $\sigma_{yy}$ from the constitutive relations; this is the same computation performed inside the right-edge boundary function, now applied over the whole domain rather than on an edge. The second draws two scatter maps side by side, each with its own fixed colour range.</p>
 <br/>
 <p>Observe that the stresses are <em>derived</em> quantities here. The network outputs displacements only; the stress field is obtained afterwards by differentiating it. A finite element code proceeds the same way, computing nodal displacements first and recovering stresses from them, with the difference that the finite element derivative is taken of a piecewise-polynomial interpolant and is discontinuous between elements, while the PINN derivative is taken of a smooth function and is exact.</p>
@@ -15250,6 +15287,7 @@ To: /content/lab2_adam_model.pt
 <p>The test grid is then refined to $100 \times 100$, giving ten thousand evaluation points, four times as many as were used for training. As in Section 5, most of them lie between training points, so this is a genuine test of whether the network has learned a field rather than memorized a lattice. Note that the test points carry <code>requires_grad = True</code> even though nothing is trained here: a stress is a derivative, and a derivative needs a graph.</p>
 <br/>
 <p>The colour limits are fixed by hand so that the PINN maps can be compared directly against the finite element maps shown earlier: $u$ on $[0, 0.182]$, $v$ on $[-0.06, 0.011]$, $\sigma_{xx}$ on $[-0.0022, 1.0]$ and $\sigma_{yy}$ on $[-0.15, 0.45]$. Fixing the scale by hand is essential for a comparison of this kind, since a colour map with automatically chosen limits makes every field look equally well resolved.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15348,9 +15386,11 @@ To: /content/lab2_adam_model.pt
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p>Read the four maps against the physics. The plate is pulled in $x$, so $u$ should grow from zero on the left symmetry edge to its largest value on the loaded right edge, and $\sigma_{xx}$ should be largest near $y=0$ where the applied traction is largest and fall towards zero at the top edge, following the imposed cosine. The transverse displacement $v$ is negative, the plate contracting laterally as it is stretched, and its magnitude is a few tenths of the magnitude of $u$, which is the Poisson effect with $\nu = 0.3$.</p>
 <br/>
 <p>We now generate two sets of plots, one for the Finite Element Method (FEM) and another for the PINN, to compare their performance quantitatively. Additionally, to enable a more precise comparison, we plot the solution values along a diagonal line. A curve along a line is a far more sensitive instrument than two colour maps side by side: differences of a few percent that are invisible in a rainbow colormap are obvious as a gap between two lines.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15378,6 +15418,7 @@ To: /content/lab2_adam_model.pt
 <p>The line used for the comparison is the anti-diagonal $x + y = 10$, running from the corner $(0,10)$ to the corner $(10,0)$. It is a good line to choose, because it crosses the domain from the free top edge to the loaded right edge and therefore passes through the regions where each boundary condition is active. The next cells evaluate the trained model along a hundred and one evenly spaced points on that line, select the finite element nodes lying on it, and draw four panels, one per field, each carrying the PINN prediction as a solid line and the finite element reference as a dashed black line.</p>
 <br/>
 <p>Before looking, predict which of the four panels will show the largest discrepancy. The argument was made above: the loss weights all residuals equally, the equation and stress residuals carry a factor of $E/(1-\nu^2)\approx 55$, and the transverse displacement $v$ is the smallest of the fields, so it exerts the least influence on the objective and has the least incentive to be right.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15399,9 +15440,7 @@ To: /content/lab2_adam_model.pt
 <pre>Downloading...
 From: https://drive.google.com/uc?id=1NVLCxoF9HX-K2wa1Ofk7TaRCdYzktRCY
 To: /content/lab2_Plate_data.npy
-
-  0% 0.00/490k [00:00&lt;?, ?B/s]
-100% 490k/490k [00:00&lt;00:00, 129MB/s]
+  0% 0.00/490k [00:00&lt;?, ?B/s]100% 490k/490k [00:00&lt;00:00, 129MB/s]
 </pre>
 </div>
 </div>
@@ -15511,18 +15550,19 @@ To: /content/lab2_Plate_data.npy
 $$</p>
 <br/>
 <p>The interpretation is worth stating carefully, because it is the reverse of the usual one. In ordinary machine learning the data term is the objective and everything else is regularization; here the physics is the objective and the data is the regularizer. What the data supplies is information about <em>which</em> of the many nearly-equation-satisfying fields is the right one, and it supplies it most usefully in exactly the places where the equation residual is least sensitive, which is where the pure solver was weakest.</p>
+<br/>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Observed Data</strong></p>
 <p>The observation set is selected by a condition on both coordinates at once: a finite element node is retained when its $x$-coordinate is one of $0, 2, 5, 10$ <em>and</em> its $y$-coordinate is also one of those four values. The retained nodes therefore sit at the sixteen intersections of four vertical lines with four horizontal ones, a coarse rectangular array of sensors rather than a dense sampling of anything. For each of them the two displacement components and the two stress components are retained.</p>
 <br/>
 <p>Read the logic of the selection rather than the numbers, because a single-coordinate test would have given something quite different. Testing $x$ alone would retain four complete vertical lines, several hundred nodes; conjoining the two tests reduces that to the handful of points where the two families of lines cross. Sixteen scattered readings against the $2500$ collocation points of Section 6.2 is a very thin data budget, which is what makes the improvement worth measuring.</p>
 <br/>
 <p>One honest caveat about the experiment. The observations are drawn from the same finite element solution that will serve as the reference, so the comparison is favourable by construction; real sensor data would be noisy, would not lie on a tidy lattice, and would not include stresses, which are not directly measurable and would have to be inferred from strain gauges.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15567,10 +15607,11 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Define Data-Driven Loss Term</strong></p>
+<br/>
 <p>The data function evaluates the network at the observation points and returns the two displacements and the two stresses, the latter assembled from derivatives exactly as before.</p>
 <br/>
 <p>That the stresses are included is the most important detail of Section 6.3 and it is easy to read past. A data term on displacement alone would supervise the network's <em>values</em>. Because the observed stresses are functions of the network's derivatives, the stress part of the data term supervises the network's <em>derivatives</em> directly, at the observation points. Recall the discussion of Section 1.2: closeness in value does not imply closeness in derivative, and it is precisely the derivative-valued field $\sigma_{yy}$ that the pure solver got wrong. Supervising it directly attacks the weakness at its source.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15595,7 +15636,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Train</strong></p>
+<br/>
 <p>A new model of the same class is created and trained for the same ten thousand epochs, with the loss now carrying three groups of terms:</p>
 <br/>
 <p>$$
@@ -15605,6 +15646,7 @@ $$</p>
 <p>where the data group is itself the sum of three mean squared errors, on $u$, on $v$, and on the pair of stresses. All weights are again $1$, so in the notation of the formula above $\omega_{\text{data}} = \omega_{\text{PDE}} = \omega_{\text{BC}} = 1$. As in Section 6.2 the training cell may be skipped; the trained model is loaded below.</p>
 <br/>
 <p>Note that the comparison being set up is a fair one: the same architecture, the same optimizer, the same learning rate, and the same number of epochs, with the data term as the only difference. Whatever improvement appears is attributable to the data and to nothing else.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15682,22 +15724,24 @@ Epoch: 10000 Loss: 0.0002 PDELoss: 0.0001 BCLoss: 0.0001 DATALoss: 0.0001
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p>The printed trace repays a moment's reading. At epoch $0$ the total is $22.6604$, split as $3.2873$ from the equilibrium equations, $6.9588$ from the boundary conditions and $12.4143$ from the data. The data term dominates at initialization for a reason that should now be predictable: an untrained network outputs values near zero, and the measured displacements and stresses are not near zero, so the data residual is essentially the size of the measurements themselves.</p>
 <br/>
 <p>By epoch $1000$ the total has fallen to $0.0031$ and by the end of the run to about $10^{-4}$, with the three groups roughly balanced and the equation term the largest of them. The trace is not monotone: at epoch $2000$ the total rises to $0.0178$, almost all of it in the data term, before falling again. Adam is not a descent method in the strict sense; its momentum and its per-parameter scaling can carry it into a worse region, and on a non-convex objective an occasional excursion of this kind is unremarkable so long as the run recovers. It is a useful reminder that a single printed loss is a sample of a trajectory rather than a measurement of quality, and it is one more argument for reading the whole trace rather than the last line.</p>
+<br/>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Results</strong></p>
 <p>The trained model is provided so that the outcome can be inspected without waiting. It is loaded and evaluated on the same $100 \times 100$ grid as in Section 6.2.</p>
 <ul>
 <li><a href="https://drive.google.com/file/d/1oKqRzA3GvJuz1H98C6Kj_x_4xeLMKALL/view?usp=drive_link">lab2_data_model.pt</a></li>
 </ul>
 <br/>
 <p>The four maps are drawn with the same fixed colour limits as before, so they can be laid alongside the earlier figures and the two sets compared panel by panel.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15719,9 +15763,7 @@ Epoch: 10000 Loss: 0.0002 PDELoss: 0.0001 BCLoss: 0.0001 DATALoss: 0.0001
 <pre>Downloading...
 From: https://drive.google.com/uc?id=1oKqRzA3GvJuz1H98C6Kj_x_4xeLMKALL
 To: /content/lab2_data_model.pt
-
-  0% 0.00/93.3k [00:00&lt;?, ?B/s]
-100% 93.3k/93.3k [00:00&lt;00:00, 113MB/s]
+  0% 0.00/93.3k [00:00&lt;?, ?B/s]100% 93.3k/93.3k [00:00&lt;00:00, 113MB/s]
 </pre>
 </div>
 </div>
@@ -15764,10 +15806,12 @@ To: /content/lab2_data_model.pt
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p><strong>Comparison with FEM data along the diagonal</strong></p>
 <p>The decisive plot is the next one. The cell below evaluates the data-trained model along the same anti-diagonal as in Section 6.2 and draws the four panels, this time with the data-trained PINN in green against the same dashed black reference.</p>
 <br/>
 <p>Because the two figures are drawn on the same axes and along the same line, the comparison the section exists for is made by looking at this figure and the corresponding figure of Section 6.2 in turn, one panel at a time. In the two $x$-direction panels the pure solver was already close to the reference, and there is little room for the data to help. In the $y$-displacement and $\sigma_{yy}$ panels the pure solver deviated, and the data-trained curve should sit closer to the black line. That is the contribution of the data term, stated as a picture: it does not improve the model uniformly, it improves it where the physics-only loss was insensitive.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15809,6 +15853,7 @@ To: /content/lab2_data_model.pt
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<br/>
 <p>From this example, we can learn two key lessons.</p>
 <br/>
 <p>The first is mechanical: you now know how to incorporate observational data into a PINN. It is one more mean squared error term, structurally identical to every other term in the loss, differing only in that the target comes from a measurement rather than from an equation. No new machinery is needed and the change amounts to a handful of lines.</p>
@@ -15816,6 +15861,7 @@ To: /content/lab2_data_model.pt
 <p>The second is strategic: when data is available, using it improves a PINN, and doing so is generally to be recommended. The reason is worth stating in the general form, because it is the argument of the whole notebook read in reverse. A physics-only model is constrained everywhere but only through the equation, which is insensitive to some features of the solution; a data-only model is constrained sharply but only at the measurement points; combining them constrains the model sharply where the sensors are and everywhere else through the physics. Neither source of information is redundant, because they are informative about different things.</p>
 <br/>
 <p>It is worth adding the caveat that this laboratory could not show. Here the data was drawn from the reference solution and was therefore exactly consistent with the equations. Real measurements are noisy and are not exactly consistent with any model, so a large $\omega_{\text{data}}$ will drag the field towards the noise and a small one will ignore the sensors. The weight then becomes a genuine bias-variance decision familiar from regression, rather than the free choice it appears to be here.</p>
+<br/>
 </div>
 </div>
 </div>
@@ -15834,12 +15880,13 @@ To: /content/lab2_data_model.pt
 <p><strong>Key takeaways</strong></p>
 <ul>
 <li>A data-driven model fails in identifiable ways when data are scarce: physically impossible outputs, spurious attributions, poor extrapolation and no mechanism to inspect. Engineering problems have scarce data and known equations, and physics-informed learning puts the equations where the data would have been, in the objective. The universal approximation theorem licenses the attempt by saying that the solution is representable; it says nothing about whether a given optimisation will find it.</li>
-<li>The physics-informed loss is $L = L_{\text{PDE}} + \lambda_I L_{\text{IC}} + \lambda_B L_{\text{BC}}$, mean squared residuals of the equation at collocation points and of the side conditions on the boundary, each obtained by differentiating the network with respect to its input coordinates. Observations enter as one more mean squared term, and unknown coefficients become tensors handed to the optimizer alongside the weights; together they turn an under-determined inverse problem into an over-determined least-squares one.</li>
-<li>In PyTorch the whole method is three lines: the coordinate tensor carries <code>requires_grad = True</code>, <code>torch.autograd.grad(u, t, grad_outputs = torch.ones_like(u), create_graph = True)</code> returns $du_\theta/dt$ at every point at once, and <code>create_graph = True</code> lets the loss built from that derivative be differentiated again by <code>backward()</code>. Activations must be smooth ($\tanh$), and the output layer is linear so that the range of the solution is reachable.</li>
+<li>The physics-informed loss is $L = L_{\text{PDE}} + \lambda_I L_{\text{IC}} + \lambda_B L_{\text{BC}}$, mean squared residuals of the equation at collocation points, which carry no measured values and are not data, and of the side conditions on the boundary, each obtained by differentiating the network with respect to its input coordinates. Observations enter as one more mean squared term, and unknown coefficients become tensors handed to the optimizer alongside the weights; together they turn an under-determined inverse problem into an over-determined least-squares one.</li>
+<li>Those weights are a modelling decision and not a tuning knob of no consequence. The terms are not in the same units, since for the beam the equation residual has the units of $\partial^4 y/\partial x^4$ and the Dirichlet residual the units of length, and adding them scalarizes a multi-objective problem, which selects one point on a trade-off surface. The two extremes fail differently: too small a boundary weight gives a valid solution of the wrong problem while the physics loss looks excellent, which is the more dangerous failure, and too large a one nails the boundary and abandons the interior. Nondimensionalizing until every residual is of order one is what makes the default $\lambda = 1$ defensible, and it is the habit to carry into a new problem.</li>
+<li>A PINN needs two different derivatives, the gradient of the loss with respect to the weights and the derivative of the output with respect to the input coordinates, and the same automatic differentiation supplies both; because the loss is itself built from the second kind, the backward pass differentiates through a differentiation. In PyTorch the whole method is three lines: the coordinate tensor carries <code>requires_grad = True</code>, <code>torch.autograd.grad(u, t, grad_outputs = torch.ones_like(u), create_graph = True)</code> returns $du_\theta/dt$ at every point at once, and <code>create_graph = True</code> lets the loss built from that derivative be differentiated again by <code>backward()</code>. Activations must be smooth ($\tanh$), and the output layer is linear so that the range of the solution is reachable.</li>
 <li>The loss at initialisation can be predicted from the equation: for $du/dt = \cos 2\pi t$ with $u(0) = 1$ it is about $0.5 + 1 = 1.5$, and the run confirms it. Where that run ends, however, is decided by choices that look like housekeeping, resampled versus fixed collocation points and the initialisation scheme, which is the theme <strong>Regularization, MAP Estimation, and Loss Weighting</strong> and <strong>PINN: Limitations and Extensions</strong> develop.</li>
 <li>The beam and the plate show the method on a fourth-order equation and on a coupled two-dimensional system. Unit weighting of residuals that carry a factor $E/(1-\nu^2)$ neglects the small transverse displacement, and a handful of measured values repair exactly that field. <strong>Physics-Informed Neural Networks: Labs</strong> carries the same idea into inverse problems, where data and prior knowledge identify unknown constants and an unknown edge.</li>
+<li>The method is not uniformly superior to what it replaces. For a well-posed forward problem on a simple geometry a finite element solver returns the answer in milliseconds, to more digits, with an error estimate and a convergence theory that a PINN cannot offer, and the beam and the plate are here to teach the mechanics on problems whose exact solution can be written down. What a PINN does that a classical solver does not is absorb measurements and unknown coefficients into the same objective, and that is why the inverse problem, rather than the forward one, is where the method advances scientific computing.</li>
 </ul>
-<br/>
 <p><strong>Looking ahead.</strong> A PINN solves one problem, for one set of coefficients and boundary data, and must be retrained for the next. <strong>Deep Neural Operators</strong> and <strong>Fourier Neural Operator</strong> learn the map from coefficients or forcing to the solution itself, so that a new instance costs one forward pass; <strong>Embedding Physical Knowledge into Neural Networks</strong> broadens the view from equations in the loss to every way domain knowledge can be built into a network.</p>
 </div>
 </div>
