@@ -13092,7 +13092,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><br/><br/>
-<font size="5"><b>Scientific Machine Learning:</b></font><br/><br/><br/>
+<font size="5"><b>Scientific Machine Learning:</b></font><br/>
 <font size="6"><b>Numerical Analysis</b></font><br/><br/></p>
 <p>Physical laws are written as derivatives, integrals and differential equations, and a computer can handle none of these directly. Numerical analysis supplies the approximations that make them computable: roots of nonlinear equations, finite difference derivatives, numerical integration, and time-stepping schemes for ordinary and partial differential equations. These are the classical tools that scientific machine learning both competes with and builds on, and every one of them reappears later, inside a loss function or as the reference solution a network is compared against.</p>
 </div>
@@ -13222,7 +13222,7 @@ div#notebook {
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=90f2d157"><div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=77e3f79e"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Setup</strong></p>
@@ -13281,7 +13281,7 @@ $$</p>
 <br/>
 <p>so that they can be judged on equal terms. It cannot be solved in closed form with elementary functions, but a glance at the graph shows that $f$ is increasing on $[0, 1]$ with $f(0) = -2 &lt; 0$ and $f(1) = e - 2 \approx 0.718 &gt; 0$, so there is exactly one root in that interval.</p>
 <br/>
-<p>The first code cell imports everything used below and plots $f$. The accurate reference value $r$ printed there is obtained with SciPy's <code>root_scalar</code>; we will use it only to <em>measure</em> the error of our own iterations, which is a luxury unavailable in a real computation.</p>
+<p>The accurate reference value $r$ is obtained with SciPy's <code>root_scalar</code>; we will use it only to <em>measure</em> the error of our own iterations, which is a luxury unavailable in a real computation.</p>
 </div>
 </div>
 </div>
@@ -13370,7 +13370,7 @@ $$</p>
 <br/>
 <p>The <strong>bisection method</strong> shrinks the bracket by halving it. Let $x_k$ be the midpoint of the current interval. Evaluating $f(x_k)$ tells us which half still has the sign change: if $f(a)$ and $f(x_k)$ have opposite signs the root lies in $[a, x_k]$, otherwise it lies in $[x_k, b]$. Replace the interval by that half and repeat. The bracket is never lost, so the method cannot fail.</p>
 <br/>
-<p>The implementation below returns the sequence of midpoints, so that the convergence can be inspected afterwards. Each pass costs exactly <strong>one</strong> new evaluation of $f$.</p>
+<p>The implementation returns the sequence of midpoints, so that the convergence can be inspected afterwards. Each pass costs exactly <strong>one</strong> new evaluation of $f$.</p>
 </div>
 </div>
 </div>
@@ -13494,7 +13494,7 @@ $$</p>
 k \ge \log_2\!\frac{b - a}{\delta} ,
 $$</p>
 <br/>
-<p>independently of $f$. For $[a, b] = [0, 1]$ and $\delta = 10^{-14}$ this is $k \approx 46$ — and the loop above indeed stops after $46$ steps, with a final error of about $5 \times 10^{-15}$.</p>
+<p>independently of $f$. For $[a, b] = [0, 1]$ and $\delta = 10^{-14}$ this is $k \approx 46$ — and the bisection run indeed stopped after $46$ steps, with a final error of about $5 \times 10^{-15}$.</p>
 <br/>
 <p>The error is (at worst) multiplied by $\tfrac12$ at every step, which is <strong>linear convergence</strong> with rate $\sigma = 1/2$: a straight line on a semilogarithmic plot, and about $\log_{10} 2^{-1} \approx 0.3$ decimal digits gained per iteration, i.e. one digit every $3.3$ evaluations of $f$. That rate is fixed: it can be beaten, but only by a method that looks at the values of $f$ and not merely at its sign.</p>
 </div>
@@ -13573,7 +13573,7 @@ x &amp;= x - f(x) = g(x) .
 \end{align*}
 $$</p>
 <br/>
-<p><strong>The choice of $g$ is not unique, and it is not innocent.</strong> Every valid rewriting has the same solution, but as the examples below show, some of them produce an iteration that converges quickly, some converge slowly, and some do not converge at all. Choosing $g$ well is the entire craft of this method.</p>
+<p><strong>The choice of $g$ is not unique, and it is not innocent.</strong> Every valid rewriting has the same solution, but as the examples of this section show, some of them produce an iteration that converges quickly, some converge slowly, and some do not converge at all. Choosing $g$ well is the entire craft of this method.</p>
 </div>
 </div>
 </div>
@@ -13643,7 +13643,7 @@ $$</p>
 <p><strong>The geometric picture</strong></p>
 <p>The condition has a picture that is worth more than the algebra. Plot $y = g(x)$ and the diagonal $y = x$ on the same axes. A fixed point is where the two curves cross.</p>
 <br/>
-<p>Starting at $x_k$ on the horizontal axis, one iteration does two things: move vertically to the curve, which computes $g(x_k)$, and then move horizontally to the diagonal, which turns that value into the next input $x_{k+1}$. Repeating draws a staircase or a spiral, and whether it winds inward toward the crossing or outward away from it is decided by how steep $g$ is there compared with the diagonal. This is the <strong>cobweb diagram</strong>, and we draw it for every example below.</p>
+<p>Starting at $x_k$ on the horizontal axis, one iteration does two things: move vertically to the curve, which computes $g(x_k)$, and then move horizontally to the diagonal, which turns that value into the next input $x_{k+1}$. Repeating draws a staircase or a spiral, and whether it winds inward toward the crossing or outward away from it is decided by how steep $g$ is there compared with the diagonal. This is the <strong>cobweb diagram</strong>, and we draw it for every example of this section.</p>
 </div>
 </div>
 </div>
@@ -13869,7 +13869,7 @@ k = 19   x = 0.7392671163
 <br/>
 <p>The iterates <strong>alternate</strong> around the solution: one is above, the next below. That is the sign of $g'$ at work. Here $g'(x) = -\sin(x)$ is negative near the root, so $e_{k+1} = g'e_k$ flips the sign of the error at every step.</p>
 <br/>
-<p>The approach is <strong>steady rather than dramatic</strong>: each step removes a fixed fraction of the remaining error. That fraction should be $\lvert g'(r)\rvert = \lvert\sin(r)\rvert$, and the next cell checks it.</p>
+<p>The approach is <strong>steady rather than dramatic</strong>: each step removes a fixed fraction of the remaining error. That fraction should be $\lvert g'(r)\rvert = \lvert\sin(r)\rvert$, which can be checked against the ratio of successive errors.</p>
 </div>
 </div>
 </div>
@@ -14615,7 +14615,7 @@ $$</p>
 \frac{f''(r)}{2f'(r)} = \frac{(2+r)e^{r}}{2(1+r)e^{r}} = \frac{2+r}{2(1+r)} = 0.7699 ,
 $$</p>
 <br/>
-<p>the exponential cancelling. The next cell starts deliberately far away, at $x_0 = 2$.</p>
+<p>the exponential cancelling. The iteration starts deliberately far away, at $x_0 = 2$.</p>
 </div>
 </div>
 </div>
@@ -14764,7 +14764,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=62a18e89"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="1.4.4.-The-Geometric-Picture">1.4.4. The Geometric Picture<a class="anchor-link" href="#1.4.4.-The-Geometric-Picture">¶</a></h3><p>The algebra is short enough that the geometry is easy to lose sight of. The next figure draws the first three tangent lines explicitly, starting again from $x_0 = 2$.</p>
+<h3 id="1.4.4.-The-Geometric-Picture">1.4.4. The Geometric Picture<a class="anchor-link" href="#1.4.4.-The-Geometric-Picture">¶</a></h3><p>The algebra is short enough that the geometry is easy to lose sight of. The first three tangent lines are drawn explicitly, starting again from $x_0 = 2$.</p>
 </div>
 </div>
 </div>
@@ -15165,7 +15165,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=3b2e569e"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2.2.2.-The-Two-Slopes-at-a-Point">2.2.2. The Two Slopes at a Point<a class="anchor-link" href="#2.2.2.-The-Two-Slopes-at-a-Point">¶</a></h3><p>The three formulas are evaluated below at $x_0 = 1$ with a deliberately large step $\Delta x = 0.25$, so that the differences between them are easy to see. The figure draws the three sample points $x - \Delta x$, $x$ and $x + \Delta x$ together with the central-difference line through the outer two.</p>
+<h3 id="2.2.2.-The-Two-Slopes-at-a-Point">2.2.2. The Two Slopes at a Point<a class="anchor-link" href="#2.2.2.-The-Two-Slopes-at-a-Point">¶</a></h3><p>The three formulas are evaluated at $x_0 = 1$ with a deliberately large step $\Delta x = 0.25$, so that the differences between them are easy to see. The figure draws the three sample points $x - \Delta x$, $x$ and $x + \Delta x$ together with the central-difference line through the outer two.</p>
 </div>
 </div>
 </div>
@@ -15281,7 +15281,7 @@ $$</p>
 <p>The formula is <strong>second-order accurate</strong>: halving $\Delta x$ divides the error by four. It costs the same two function evaluations as the forward difference, so the extra accuracy is free — the only price is that it needs a point on each side, which rules it out in two common situations: when $f'$ must be computed in real time, where the future value $f(x + \Delta x)$ is not yet available, and at the two ends of a finite data record (Section 2.5).</p>
 <br/>
 <blockquote>
-<p><strong>Intuition (why symmetry pays).</strong> The cancellation was not an accident of algebra. A symmetric formula cannot distinguish left from right, so its error cannot contain any term that changes sign when $\Delta x \to -\Delta x$ — that is, no odd power of $\Delta x$. Symmetry alone forces the error to start at $\Delta x^2$. The same argument explains why every symmetric stencil below has an even order of accuracy.</p>
+<p><strong>Intuition (why symmetry pays).</strong> The cancellation was not an accident of algebra. A symmetric formula cannot distinguish left from right, so its error cannot contain any term that changes sign when $\Delta x \to -\Delta x$ — that is, no odd power of $\Delta x$. Symmetry alone forces the error to start at $\Delta x^2$. The same argument explains why every symmetric stencil of this chapter has an even order of accuracy.</p>
 </blockquote>
 </div>
 </div>
@@ -15732,7 +15732,7 @@ error at x_n        8.70e-03     predicted  dx |f''(x_n)|/2  7.06e-03
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=a23566c8"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The computed derivative follows $\cos x$ closely, and each printed error is within about $30\%$ of its predicted leading term — the rest is the next term of the expansion, which is not negligible at this coarse spacing. The two end points are about five times worse than the interior here, but the number five is not the point: the interior error is $O(\Delta x^2)$ and the end error is only $O(\Delta x)$, so the gap widens every time the grid is refined. The next cell measures that.</p>
+<p>The computed derivative follows $\cos x$ closely, and each printed error is within about $30\%$ of its predicted leading term — the rest is the next term of the expansion, which is not negligible at this coarse spacing. The two end points are about five times worse than the interior here, but the number five is not the point: the interior error is $O(\Delta x^2)$ and the end error is only $O(\Delta x)$, so the gap widens every time the grid is refined, as refining the grid shows directly.</p>
 <br/>
 <p>This is the single most common weakness of finite differences on a finite data record, and there are two standard cures. If the data are periodic, wrap around and use the central formula everywhere. Otherwise, use a <strong>second-order one-sided</strong> formula at the ends, built by the same Taylor bookkeeping as Section 2.4.2 but from the points that do exist:</p>
 <br/>
@@ -15798,7 +15798,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Read the table down each column. Every time $n$ doubles, the interior error falls by a factor of $4$ and so does the second-order end error, while the first-order end error falls by only $2$. By $n = 240$ the cheap end formula is $36$ times worse than the interior, and it alone would decide the accuracy of anything built on top of these derivatives. The second-order ends stay within a factor of two of the interior at every resolution, which is what "matching the interior order" means in practice.</p>
 <br/>
-<p>One remark on the code. The interior loop can be replaced by a single vectorized expression, in which the shifted arrays <code>f[2:]</code> and <code>f[:-2]</code> play the roles of $f_{k+1}$ and $f_{k-1}$ — for large grids this matters a great deal. NumPy packages the whole scheme as <code>np.gradient</code>, which uses central differences in the interior and, with <code>edge_order = 2</code>, the same one-sided formulas at the ends.</p>
+<p>The same scheme can be written without the loop, and NumPy packages it as <code>np.gradient</code>, which uses central differences in the interior and, with <code>edge_order = 2</code>, the same one-sided formulas at the ends.</p>
 </div>
 </div>
 </div>
@@ -16001,7 +16001,7 @@ exact integral           1.8390715290764525
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=ba3a76b8"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The picture below shows the two sets of rectangles themselves. Where $f$ is increasing the left rectangles sit below the curve and the right rectangles above it; where $f$ is decreasing the roles are reversed. That observation is the whole story of the error.</p>
+<p>Drawing the two sets of rectangles themselves shows where the error comes from. Where $f$ is increasing the left rectangles sit below the curve and the right rectangles above it; where $f$ is decreasing the roles are reversed. That observation is the whole story of the error.</p>
 </div>
 </div>
 </div>
@@ -16047,7 +16047,7 @@ exact integral           1.8390715290764525
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=a460a5c9"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The two sums are written below exactly as they read: add one rectangle area at a time.</p>
+<p>The two sums are written exactly as they read: add one rectangle area at a time.</p>
 </div>
 </div>
 </div>
@@ -16088,7 +16088,7 @@ areaR    1.664592    error -0.174480
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=10fab3ec"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A loop is the clearest way to write a sum once, but NumPy can add the whole array at a stroke. The left rule adds the first $N$ samples, the right rule the last $N$, and both multiply by $\Delta x$.</p>
+<p>The same two sums without the loop, together with a check of how much the two rules differ from each other, which Section 3.2.2 explains.</p>
 </div>
 </div>
 </div>
@@ -16409,13 +16409,7 @@ $$</p>
 A \approx A_B \cdot \frac{N_{\text{inside}}}{N} .
 $$</p>
 <br/>
-<p>This is the <strong>hit-or-miss</strong> technique. As a demonstration we estimate the area of the unit circle $x^2 + y^2 \le 1$, whose exact value is $\pi$, by enclosing it in the square $[-1, 1] \times [-1, 1]$:</p>
-<ol>
-<li><strong>Define the bounding box.</strong> The square has area $A_{\text{box}} = 2 \times 2 = 4$.</li>
-<li><strong>Generate samples.</strong> Draw $N$ independent uniform points $(x_i, y_i)$ from $[-1, 1] \times [-1, 1]$.</li>
-<li><strong>Inclusion test.</strong> Check whether $x_i^2 + y_i^2 \le 1$.</li>
-<li><strong>Compute the estimate.</strong> Take $A \approx 4 \cdot N_{\text{inside}}/N$, and plot a subset of the points to see the sampling distribution inside and outside the boundary.</li>
-</ol>
+<p>This is the <strong>hit-or-miss</strong> technique. As a demonstration we estimate the area of the unit circle $x^2 + y^2 \le 1$, whose exact value is $\pi$, by scattering a million uniform points over the enclosing square $[-1, 1] \times [-1, 1]$, of area $4$, and counting the fraction that land inside the circle.</p>
 </div>
 </div>
 </div>
@@ -16514,11 +16508,7 @@ Error: 0.003%
 I = \int_{0}^{\pi} \bigl( \sin x + 0.5\cos 3x + 1 \bigr)\,dx .
 $$</p>
 <br/>
-<ol>
-<li><strong>Analytical solution.</strong> $\displaystyle I_{\text{exact}} = \Bigl[-\cos x + \tfrac{1}{6}\sin 3x + x\Bigr]_0^{\pi} = 2 + \pi \approx 5.14159$.</li>
-<li><strong>Domain length.</strong> $|\Omega| = b - a = \pi$.</li>
-<li><strong>Computation.</strong> The integrand and the area to be computed are plotted first; then $N$ points $x_i \sim \mathcal{U}(0, \pi)$ are drawn and the integral is estimated as the mean height times the domain length.</li>
-</ol>
+<p>Its exact value is $\displaystyle I_{\text{exact}} = \Bigl[-\cos x + \tfrac{1}{6}\sin 3x + x\Bigr]_0^{\pi} = 2 + \pi \approx 5.14159$ and the domain length is $|\Omega| = \pi$. The estimate is the mean height of $f$ at uniform random points of $[0, \pi]$ times the domain length, and it is checked against the exact value.</p>
 </div>
 </div>
 </div>
@@ -16848,7 +16838,7 @@ eigenvalues of A  [ -1.97203638 -20.01911219]
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=1b9c985c"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.2.2.-Coding-the-Two-Euler-Methods">4.2.2. Coding the Two Euler Methods<a class="anchor-link" href="#4.2.2.-Coding-the-Two-Euler-Methods">¶</a></h3><p>Each method is a loop over the same three lines: start from $x_0$, apply the update rule, store the result. For this linear system the update is a single matrix multiplication, so the matrix is formed once outside the loop.</p>
+<h3 id="4.2.2.-Coding-the-Two-Euler-Methods">4.2.2. Coding the Two Euler Methods<a class="anchor-link" href="#4.2.2.-Coding-the-Two-Euler-Methods">¶</a></h3><p>Both Euler methods are run with $\Delta t = 0.1$ over five seconds and compared with a library solver as the reference.</p>
 </div>
 </div>
 </div>
@@ -17865,7 +17855,7 @@ unknowns       n - 1 = 19
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=44129933"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5.2.2.-Building-and-Solving-the-System">5.2.2. Building and Solving the System<a class="anchor-link" href="#5.2.2.-Building-and-Solving-the-System">¶</a></h3><p>The matrix is built one row at a time, which is the literal transcription of "one finite difference equation per interior point". The two <code>if</code> statements are there only because the first and last rows have no left or no right neighbour.</p>
+<h3 id="5.2.2.-Building-and-Solving-the-System">5.2.2. Building and Solving the System<a class="anchor-link" href="#5.2.2.-Building-and-Solving-the-System">¶</a></h3><p>The matrix is assembled one row per interior point, the literal transcription of "one finite difference equation per interior point".</p>
 </div>
 </div>
 </div>
@@ -18136,13 +18126,13 @@ $$</p>
 <br/>
 <p>Three things are visible in this list that the compact formula hides.</p>
 <br/>
-<p>Every line has the same shape, and only the subscript moves by one from line to line. That is the inner loop, <code>for i in range(1, N_x)</code>, with the subscript as the array index.</p>
+<p>Every line has the same shape, and only the subscript moves by one from line to line. That is one sweep over the interior points.</p>
 <br/>
 <p>Every quantity on the right-hand side carries the superscript $n$, and only the quantity on the left carries $n+1$. The whole right-hand side is therefore known before the sweep begins, and the lines can be evaluated in any order; none of them needs a result from another line. This is why the method is called explicit, and why the code must read from the old array and write into a new one rather than overwrite in place.</p>
 <br/>
 <p>The first line uses $u_0^n$ and the last uses $u_{N_x}^n$. These are the boundary values, which are never computed by the formula but supplied by the boundary conditions; the loop runs over $i = 1, \dots, N_x - 1$ and leaves the two ends alone.</p>
 <br/>
-<p>Once the sweep is complete, the new level replaces the old one, $n \leftarrow n + 1$, and the same list of lines is evaluated again. That is the outer loop.</p>
+<p>Once the sweep is complete, the new level replaces the old one, $n \leftarrow n + 1$, and the same list of lines is evaluated again. That is the march in time.</p>
 </div>
 </div>
 </div>
@@ -18168,34 +18158,6 @@ $$</p>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>dx = 0.0200    dt = 1.80e-04
 r  = 0.45    number of time steps = 556
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered" id="cell-id=EryUaaCYj5oO">
-<div class="input">
-<div class="prompt input_prompt">In [ ]:</div>
-<div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">Nt</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">Nx</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">Nt</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Nx</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>100
-50
-range(0, 100)
-range(1, 50)
 </pre>
 </div>
 </div>
@@ -18338,7 +18300,7 @@ $$</p>
 <br/>
 <p>The most dangerous mode is the shortest wavelength the grid can carry — the <strong>sawtooth</strong>, alternating in sign from one point to the next — for which the sine equals one and $g = 1 - 4r$. Requiring $|g| \le 1$ for every mode again gives $r \le 1/2$.</p>
 <br/>
-<p>The code below is the previous one with $r = 0.52$, a two per cent violation.</p>
+<p>The same run with $r = 0.52$, a two per cent violation, shows what the condition protects against.</p>
 </div>
 </div>
 </div>
@@ -18499,13 +18461,7 @@ $$</p>
 }_{b} .
 $$</p>
 <br/>
-<p>This is precisely the kind of system built in Chapter 5 — tridiagonal, one row per interior point, with the boundary values entering the right-hand side. For the code, it is worth separating what depends on the time step from what does not.</p>
-<br/>
-<p>The matrix $A$ contains only $r$. It does not change from step to step, so it is <strong>assembled once, outside the time loop</strong>: a diagonal of $1+2r$ and two off-diagonals of $-r$, of size $(N_x - 1) \times (N_x - 1)$.</p>
-<br/>
-<p>The right-hand side $b$ is rebuilt at <strong>every</strong> step. Its interior entries are simply the current values $u_1^n, \dots, u_{N_x-1}^n$, that is, the interior of the current array; its first and last entries receive in addition $r$ times the boundary value at the new time level.</p>
-<br/>
-<p>The step itself is one call to a linear solver, which returns all interior values of the new level at once. They are written into positions $1, \dots, N_x - 1$ of the new array, the boundary values into positions $0$ and $N_x$, and the new array becomes the current one, $n \leftarrow n + 1$. The inner loop of the explicit method has become "build $b$, solve $A u^{n+1} = b$"; the outer loop over time is unchanged.</p>
+<p>This is precisely the kind of system built in Chapter 5 — tridiagonal, one row per interior point, with the boundary values entering the right-hand side. The matrix $A$ contains only $r$ and does not change from step to step, so it is assembled once; the right-hand side is rebuilt at every step from the current level and the boundary values, and one linear solve returns the whole new level. The inner loop of the explicit method has become a solve; the march in time is unchanged.</p>
 <br/>
 <p>The amplification factor of this scheme is $g_j = 1/\bigl(1 + 4r\sin^2(j\pi\Delta x/2)\bigr)$, which is smaller than one in magnitude for <strong>every</strong> $r$ and every mode. The implicit method is <strong>unconditionally stable</strong>: the time step may be chosen for accuracy alone.</p>
 </div>
@@ -18712,7 +18668,7 @@ $$</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=3c04eab5"><div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=98206f3e"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Key takeaways</strong>

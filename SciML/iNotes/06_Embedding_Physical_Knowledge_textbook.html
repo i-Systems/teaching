@@ -13092,10 +13092,10 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><br/><br/>
-<font size="5"><b>Scientific Machine Learning:</b></font><br/><br/><br/>
+<font size="5"><b>Scientific Machine Learning:</b></font><br/>
 <font size="6"><b>Embedding Physical Knowledge into Neural Networks</b></font><br/><br/></p>
 <p>In many scientific and engineering problems, purely data-driven learning is insufficient. Physical systems are governed by underlying structure: conservation laws, symmetries, boundary conditions, causality. A network that does not know about this structure must rediscover it from data, and it will only ever rediscover it approximately. Incorporating the structure directly improves data efficiency, generalization and physical consistency. This notebook is a systematic catalogue of how that is done — first the general choice between penalizing a violation and making it impossible, then the standard constraints one at a time, ending with the two symmetry requirements that are easiest to confuse with each other.</p>
-<p>Everything below runs in plain PyTorch on ordinary supervised data. Nothing in this notebook
+<p>Everything in this notebook runs in plain PyTorch on ordinary supervised data. Nothing in this notebook
 solves a differential equation or differentiates a network output — each experiment fits a network to
 samples and then measures whether the constraint holds. The point is always the same: compare a
 network with the constraint built in against the same network without it, and read off what the
@@ -13559,7 +13559,7 @@ Section 2.1.1.</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
-\hat{f}(x) = -\log\bigl(1 + \exp(v(x))\bigr)
+\hat{f}(x) = \log\bigl(1 + \exp(v(x))\bigr)
 $$</p>
 </div>
 </div>
@@ -13709,7 +13709,7 @@ $$</p>
 <br/>
 <p>as for the fatigue life of a material against the amplitude of the applied stress.</p>
 <br/>
-<p>The two cases are not separate problems. A monotone decreasing function is $f(x) = -h(x)$ with $h$ monotone increasing, so every strategy below is described for the increasing case and the decreasing case follows by negation.</p>
+<p>The two cases are not separate problems. A monotone decreasing function is $f(x) = -h(x)$ with $h$ monotone increasing, so every strategy in this chapter is described for the increasing case and the decreasing case follows by negation.</p>
 </div>
 </div>
 </div>
@@ -13741,7 +13741,7 @@ $$</p>
 <br/>
 <p>This gives the strongest guarantee and leaves $g$ completely free, so no expressive power is lost. Its cost is the integral, which must be evaluated numerically at every forward pass, and the constant $f(x_0)$, which becomes an additional learnable parameter.</p>
 <br/>
-<p>The two cases are drawn below. What the constraint asks for is visible in the tangent at every point: it may never tip the other way.</p>
+<p>The two cases are drawn in the figure. What the constraint asks for is visible in the tangent at every point: it may never tip the other way.</p>
 </div>
 </div>
 </div>
@@ -13921,12 +13921,10 @@ closely will inherit some of that. The question is whether it has to.</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The monotone model is the construction of Section 3.1.1, with the integral evaluated as a
-cumulative sum on the same grid. The network produces the <em>rate</em> $g$; the exponential makes it
-positive; the cumulative sum integrates it. The starting value $f(x_0)$ is one extra learnable
-parameter.</p>
+cumulative sum on the same grid and the starting value $f(x_0)$ learned along with the network.</p>
 <br/>
 <p>$$
-f(x) = f(x_0) - \int_{x_0}^{x} \exp\bigl(g(t)\bigr)\,dt ,
+f(x) = f(x_0) + \int_{x_0}^{x} \exp\bigl(g(t)\bigr)\,dt ,
 $$</p>
 </div>
 </div>
@@ -14433,10 +14431,9 @@ masked network     2.66e-04   +0.000e+00   +0.000e+00   3.09e-02
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The masked network returns exactly zero at both ends — not approximately, and not as a result of
 training, but because $s$ vanishes there and the product with anything finite is zero. The
-unconstrained network misses by $3 \times 10^{-2}$ at one end and $7 \times 10^{-2}$ at the other, and
-those two numbers are the largest errors it makes anywhere: the worst part of the solution is
-precisely the part the prior knowledge already determined. Removing it also halves the maximum error
-over the whole interval.</p>
+unconstrained network misses at both ends, and those are the largest errors it makes anywhere: the
+worst part of the solution is precisely the part the prior knowledge already determined. Removing it
+also halves the maximum error over the whole interval.</p>
 </div>
 </div>
 </div>
@@ -14858,19 +14855,18 @@ distance from the unconstrained output, among the corrections with the right int
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The unconstrained network misses the prescribed integral by three percent, and the penalty brings it
-to three parts in a thousand — closer, but never exact, and what remains is the price of a finite
-$\lambda$. The shift and the softmax are exact to every digit printed, because in their case the
-integral is not something the optimizer is asked to achieve.</p>
+<p>The unconstrained network misses the prescribed integral, and the penalty brings it closer but never
+to the exact value; what remains is the price of a finite $\lambda$. The shift and the softmax are exact
+to every digit printed, because in their case the integral is not something the optimizer is asked to
+achieve.</p>
 <br/>
 <p>What separates the two is the sign. The shift subtracts one constant from the whole field, and the
-constant it must subtract here is positive, so the correction pushes the tail further below zero: the
-plain network is negative at two grid points, the shifted one at five, and its lowest value is twice
-as far below zero. The softmax has no negative values to lose, and it satisfies both requirements at
-once, no further from the true density than the shift is. The last two lines confirm the claim of
-Section 5.1.2 along the way — among the corrections that give the right integral, the shift is the
-smaller one — which is exactly the point: a correction can be optimal in one norm and still be
-inadmissible, and when the quantity is a density the constraint to be satisfied is the pair.</p>
+constant it must subtract here is positive, so the correction pushes the tail further below zero than
+the plain network already was. The softmax has no negative values to lose, and it satisfies both
+requirements at once, no further from the true density than the shift is. The last two lines confirm
+the claim of Section 5.1.2 along the way, that among the corrections which give the right integral the
+shift is the smaller one, which is exactly the point: a correction can be optimal in one norm and still
+be inadmissible, and when the quantity is a density the constraint to be satisfied is the pair.</p>
 </div>
 </div>
 </div>
@@ -14923,7 +14919,7 @@ $$</p>
 <br/>
 <p>In both cases the network that is equivariant responds correctly to a transformed input without ever having been trained on one. A network that is not equivariant may respond to the rotated configuration with a field that is not the rotation of anything it predicted before — and no inspection of its loss on the training set would reveal that.</p>
 <br/>
-<p>The figure below collects the transformations that occur most often. In each case the same $T$ acts on the input and on the output, which is the content of $f(Tx) = T f(x)$.</p>
+<p>The figure collects the transformations that occur most often. In each case the same $T$ acts on the input and on the output, which is the content of $f(Tx) = T f(x)$.</p>
 </div>
 </div>
 </div>
@@ -15026,7 +15022,7 @@ $$</p>
 <br/>
 <p>A network $f$ trained without any symmetry constraint does not satisfy this. Nothing in a data-fitting loss forces it to.</p>
 <br/>
-<p>The figure below is that statement drawn once. The top row sends a load through the network and obtains a deflection; the bottom row sends the mirrored load through the same network, and the deflection that comes out is the mirror of the first.</p>
+<p>The figure is that statement drawn once. The top row sends a load through the network and obtains a deflection; the bottom row sends the mirrored load through the same network, and the deflection that comes out is the mirror of the first.</p>
 </div>
 </div>
 </div>
@@ -15169,10 +15165,10 @@ as the truth. The reflection $R$ sends a load at $c$ to a load at $-c$ and rever
 grid values of the deflection, so the network is asked to satisfy $f(-c) = R\,f(c)$.</p>
 <br/>
 <p>The symmetry is withheld from the data on purpose: every training load lies on the left half of the
-beam, $c \in [-0.35, -0.05]$, while the test loads lie anywhere, $c \in [-0.40, 0.40]$. Three of the
-routes of Section 6.2 are compared against the unconstrained network — data augmentation, the
-symmetrization of Section 6.2.2 applied to a network that has already been trained, and the same
-symmetrization built in from the start, so that what the optimizer sees is $\tilde{f}$ rather than $f$.</p>
+beam, $c \in [-0.35, -0.05]$, while the test loads lie anywhere, $c \in [-0.40, 0.40]$. Two of the
+routes of Section 6.2 are compared against the unconstrained network: data augmentation, and the
+symmetrization of Section 6.2.2 built in from the start, so that what the optimizer sees is $\tilde{f}$
+rather than $f$.</p>
 </div>
 </div>
 </div>
@@ -15488,20 +15484,13 @@ becomes good, because the mirrored copies are in effect the missing half of the 
 does not deliver is the identity itself: one percent is small, but it is not zero, and nothing keeps
 it small on a load unlike those it was shown.</p>
 <br/>
-<p>Both symmetrized rows are exactly equivariant, to every digit printed, and the difference between
-them is the point of the experiment. Symmetrizing a network that has already been trained buys the
-identity immediately and little else — the error falls only from $1.5\times10^{-3}$ to
-$1.1\times10^{-3}$, because the average of one good prediction and one useless one is a half-useless
-prediction, and no algebraic identity can supply information the network never saw. Training the
-symmetrized model instead gives both at once: the identity for free, and an error of
-$1.4\times10^{-5}$ from data covering half the beam, because the construction supplies the other half
-before the optimizer ever sees it.</p>
+<p>The symmetrized network is exactly equivariant, to every digit printed, and it is also the most
+accurate, from data covering half the beam, because the construction supplies the other half before
+the optimizer ever sees it. The identity is not something it learned; it holds for any parameters, and
+training only has to make the average right.</p>
 <br/>
-<p>The figure is the same statement for a single load. The two curves $f(q)$ and $R\,f(Rq)$ are what
-equivariance requires to be equal; for the unconstrained network the first is wrong everywhere while
-the second, which reaches the network through the half of the beam it does know, lies on the exact
-solution. Averaging them is what the symmetrized model does, and training with that average in place
-is what makes the average right.</p>
+<p>The figure is the same statement for a single load on the right half of the beam, where no training
+load ever sat: the symmetrized prediction lies on the exact solution.</p>
 </div>
 </div>
 </div>
@@ -15582,7 +15571,7 @@ $$</p>
 <br/>
 <p>This is the strongest and most efficient of the three, because the invariance is built into the representation and costs one forward pass. It requires knowing a complete set of invariant features; an incomplete set discards information the network may need.</p>
 <br/>
-<p>The idea is shown below for two interacting particles.</p>
+<p>The figure shows the idea for two interacting particles.</p>
 </div>
 </div>
 </div>
@@ -15935,12 +15924,12 @@ rotate it through a full turn without changing the separation, and watch the pre
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The network given the raw coordinates fits its training set to $0.005$ and then misses the test set
-by $1.37$ — a factor of about $260$ — and its prediction for one physical configuration varies by
-$2.3$ as that configuration is merely turned around. The network given $r_{12}$ has the same accuracy
-on both sets, and its prediction is exactly constant under rotation — its flat line lies on top of
-the exact one in the figure — because the number it receives
-does not change. The invariance was not learned; it was made unnecessary to learn.</p>
+<p>The network given the raw coordinates fits its training set closely and then fails on the test set by
+orders of magnitude more, and its prediction for one physical configuration swings widely as that
+configuration is merely turned around. The network given $r_{12}$ has the same accuracy on both sets,
+and its prediction is exactly constant under rotation, its flat line lying on top of the exact one in
+the figure, because the number it receives does not change. The invariance was not learned; it was made
+unnecessary to learn.</p>
 </div>
 </div>
 </div>
@@ -15982,7 +15971,7 @@ does not change. The invariance was not learned; it was made unnecessary to lear
 </ul>
 <br/>
 <ul>
-<li><strong>The constructions cost little and the measurements say so.</strong> In the experiments of this notebook the constrained model matched the unconstrained one on training loss and on error against the truth, while removing every violation: the softplus network never went negative where the plain one did over a fifth of the test range; the monotone network decreased nowhere where the plain one decreased at twelve intervals; the masked network was exactly zero at both ends, where the plain network's largest error was at those ends. A correct prior is not a restriction that has to be paid for.</li>
+<li><strong>The constructions cost little and the measurements say so.</strong> In the experiments of this notebook the constrained model matched the unconstrained one on training loss and on error against the truth, while removing every violation: the softplus network never went negative where the plain one did over part of the extrapolation range; the monotone network decreased nowhere where the plain one decreased at twelve intervals; the masked network was exactly zero at both ends, where the plain network's largest error was at those ends. A correct prior is not a restriction that has to be paid for.</li>
 <li><strong>An exact construction is exact for a reason that can be checked.</strong> Commuting with the reflection to machine precision, returning zero at a masked boundary, integrating to the prescribed constant — each is one line of verification, and each fails loudly when the construction is subtly wrong.</li>
 </ul>
 <br/>

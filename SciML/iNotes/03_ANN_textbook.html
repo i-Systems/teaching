@@ -13092,7 +13092,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><br/><br/>
-<font size="5"><b>Scientific Machine Learning:</b></font><br/><br/><br/>
+<font size="5"><b>Scientific Machine Learning:</b></font><br/>
 <font size="6"><b>Artificial Neural Networks (ANN)</b></font><br/><br/></p>
 <p>An artificial neural network is the function approximator used throughout scientific machine learning. This notebook builds it up from the perceptron of the previous notebook to the multi-layer perceptron, explains how it is trained by backpropagation and gradient descent, and implements it in PyTorch on a regression problem and on image classification. The same construction, with the same training loop, will later be asked to satisfy differential equations rather than to fit labels.</p>
 </div>
@@ -13441,7 +13441,7 @@ $$</p>
 </li>
 </ul>
 <br/>
-<p>Read the figures that follow with the correspondence of Chapter 1 in mind. Each neuron in the hidden layer draws its own hyperplane in the input space, so a hidden layer with three neurons draws three hyperplanes. The output neuron does not see the original inputs at all. It sees only the three numbers reporting where the input fell relative to each of those hyperplanes, and it draws a hyperplane in that new space of three numbers.</p>
+<p>Read the figures of this section with the correspondence of Chapter 1 in mind. Each neuron in the hidden layer draws its own hyperplane in the input space, so a hidden layer with three neurons draws three hyperplanes. The output neuron does not see the original inputs at all. It sees only the three numbers reporting where the input fell relative to each of those hyperplanes, and it draws a hyperplane in that new space of three numbers.</p>
 <br/>
 <p>This is the whole mechanism, and it is worth stating in one sentence: a hidden layer changes the coordinates in which the problem is expressed, and the output layer solves the problem linearly in the new coordinates.</p>
 </div>
@@ -13948,7 +13948,7 @@ iteration  500   loss 0.0473
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, let us move on to a non-linearly separable case.</p>
+<p>The boundary recovered from the trained weights is a single straight line, which is all that logistic regression can draw. Now, let us move on to a non-linearly separable case.</p>
 <br/>
 <p>In this scenario, the dataset cannot be separated by a single linear hyperplane. Therefore, we use a multi-layer perceptron (MLP), which approximates complex non-linear decision boundaries by learning multiple hyperplanes and combining them using non-linear activation functions.</p>
 <br/>
@@ -13966,7 +13966,7 @@ iteration  500   loss 0.0473
 <br/>
 <p>$$ z = W x + b, \qquad a = g(z) . $$</p>
 <br/>
-<p>This is the form in which the code below, and essentially all deep learning code, is written.</p>
+<p>This is the form in which the code of this chapter, and essentially all deep learning code, is written.</p>
 </div>
 </div>
 </div>
@@ -14197,7 +14197,7 @@ iteration 1000   loss 0.1223
 <br/>
 <p>Note what $z_1$ and $z_2$ actually are. Each hidden neuron computes $\sigma(b_j + \omega_{1j} x_1 + \omega_{2j} x_2)$, and the sigmoid argument is the signed distance from the input point to that neuron's hyperplane, up to a scale factor. The value of $z_j$ is therefore a smoothed indicator of which side of hyperplane $j$ the point lies on, close to $1$ well on one side, close to $0$ well on the other, and intermediate near the boundary itself.</p>
 <br/>
-<p>The coordinates of the new representation are thus answers to the questions "which side of line 1?" and "which side of line 2?". The output layer then draws a straight boundary in the space of those two answers, which is what the next figure confirms.</p>
+<p>The coordinates of the new representation are thus answers to the questions "which side of line 1?" and "which side of line 2?". The output layer then draws a straight boundary in the space of those two answers, and the boundary recovered from its weights confirms it.</p>
 </div>
 </div>
 </div>
@@ -14569,7 +14569,7 @@ x, &amp;\text{if} \;\; x &gt; 0
 <li>$b_2$ shifts the whole function vertically.</li>
 </ul>
 <br/>
-<p>So a single hidden unit with ReLU produces one kink at a location it chooses, with a slope it chooses, oriented in one of four ways. The examples that follow simply ask what happens when several of these are added together.</p>
+<p>So a single hidden unit with ReLU produces one kink at a location it chooses, with a slope it chooses, oriented in one of four ways. The regression examples of this chapter simply ask what happens when several of these are added together.</p>
 </div>
 </div>
 </div>
@@ -14637,7 +14637,7 @@ x, &amp;\text{if} \;\; x &gt; 0
 <br/>
 <p>Nonlinear regression with MLPs can be thought of as creating a piecewise linear approximation of the true function, where the linear segments are defined by the ReLU activations in the hidden layer. The network learns how to place these segments and their slopes to best fit the target function.</p>
 <br/>
-<p>This picture is worth taking literally, because it makes the behavior of the network in the examples below entirely predictable.</p>
+<p>This picture is worth taking literally, because it makes the behavior of the network in the regression examples entirely predictable.</p>
 <br/>
 <p>A network with $m$ ReLU units in one hidden layer computes a function with at most $m$ kinks, and is exactly linear between consecutive kinks. Training determines two things: where the kinks are placed, through the hidden weights and biases, and what the slope change is at each kink, through the output weights. Increasing $m$ increases the number of segments available and therefore the resolution of the approximation.</p>
 <br/>
@@ -14664,7 +14664,7 @@ $$</p>
 <br/>
 <p>In the following examples, $b^{(2)}$, the bias term for the output layer, is omitted for simplicity. In other words, the vertical shift transformation is not applied.</p>
 <br/>
-<p>Read the superscripts as layer indices rather than as exponents. The quantity $\omega_{ij}^{(1)}$ is the weight connecting input $i$ to hidden unit $j$ in the first layer, and $\omega_j^{(2)}$ is the weight from hidden unit $j$ to the output in the second layer. This convention is used consistently in the code that follows and in Chapter 6.</p>
+<p>Read the superscripts as layer indices rather than as exponents. The quantity $\omega_{ij}^{(1)}$ is the weight connecting input $i$ to hidden unit $j$ in the first layer, and $\omega_j^{(2)}$ is the weight from hidden unit $j$ to the output in the second layer. This convention is used consistently in the code of this chapter and in Chapter 6.</p>
 <br/>
 <p>Note the structure of the expression: the sum over $j$ is a linear combination of the hidden activations, and the nonlinearity appears only inside $h(\cdot)$. This is the same form met throughout the previous notebook, a linear model applied to a feature map, except that here the feature map contains adjustable parameters.</p>
 </div>
@@ -14693,7 +14693,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$\hat{y} = \omega^{(2)} \left( h \left( \omega^{(1)} x + b^{(1)} \right) \right)$$</p>
 <br/>
-<p>With one hidden unit the model can produce a single kink and nothing more. Whatever the target function looks like, the best this network can do is one flat portion joined to one sloped portion. Comparing the fit obtained below with the target curve shows exactly how much of the shape is out of reach, and provides the baseline against which the next two examples should be read.</p>
+<p>With one hidden unit the model can produce a single kink and nothing more. Whatever the target function looks like, the best this network can do is one flat portion joined to one sloped portion. Comparing the fit with the target curve shows exactly how much of the shape is out of reach, and provides the baseline against which the next two examples should be read.</p>
 </div>
 </div>
 </div>
@@ -16293,7 +16293,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Display a few random samples from it:</p>
+<p>One image from the training set:</p>
 </div>
 </div>
 </div>
@@ -16324,7 +16324,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let us visualize what some of these images and their corresponding training labels look like.</p>
+<p>The image and its label.</p>
 </div>
 </div>
 </div>

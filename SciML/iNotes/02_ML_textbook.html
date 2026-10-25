@@ -13092,7 +13092,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><br/><br/>
-<font size="5"><b>Scientific Machine Learning:</b></font><br/><br/><br/>
+<font size="5"><b>Scientific Machine Learning:</b></font><br/>
 <font size="6"><b>Machine Learning</b></font><br/><br/></p>
 <p>Machine learning is the set of tools with which a model is fitted to data: a hypothesis class, a loss function that measures the misfit, and an optimizer that reduces it. This notebook builds those tools from the simplest case, linear regression, through classification with the perceptron, logistic regression and support vector machines, and ends with the nonlinear models that lead to neural networks. Every later notebook in this course, physics-informed or not, is an instance of the same three ingredients.</p>
 </div>
@@ -13311,7 +13311,7 @@ y_{m}
 <p><strong>Vector Form of the Model</strong></p>
 <p>We can express the model for all data points at once using vectors and matrix operations:</p>
 <br/>
-<p>Read the expression below from right to left, as a statement about vectors rather than about individual points. The predicted output vector $\hat{y}$ is built from just two fixed vectors: a vector of ones and the vector of inputs. The parameters $\theta_0$ and $\theta_1$ are the amounts of each that we mix together.</p>
+<p>Read the vector form from right to left, as a statement about vectors rather than about individual points. The predicted output vector $\hat{y}$ is built from just two fixed vectors: a vector of ones and the vector of inputs. The parameters $\theta_0$ and $\theta_1$ are the amounts of each that we mix together.</p>
 <br/>
 <p>This is a genuinely useful way to think about regression. Whatever values of $\theta_0$ and $\theta_1$ we choose, the resulting $\hat{y}$ is confined to the set of all linear combinations of those two vectors, that is, to a two-dimensional plane inside $m$-dimensional space. The measured vector $y$ almost certainly does not lie on that plane. Fitting the model therefore amounts to finding the point on the plane that is closest to $y$, and we will see this geometric picture again in Section 1.2.</p>
 <br/>
@@ -13359,7 +13359,7 @@ x_{m}
 <br/>
 <p>The purpose of this rewriting is not merely convenience, and it is worth pausing on. Introducing the feature map $\phi$ separates the model into two stages: a transformation of the input, followed by a linear combination. The transformation $\phi$ absorbs everything specific to the problem, while the linear combination stays the same regardless of what $\phi$ does.</p>
 <br/>
-<p>The payoff appears as soon as we want a model that is not a straight line. Choosing $\phi(x_i) = \begin{bmatrix} 1 &amp; x_i &amp; x_i^2 \end{bmatrix}^T$ gives a quadratic fit, and choosing $\phi(x_i) = \begin{bmatrix} 1 &amp; \sin x_i &amp; \cos x_i \end{bmatrix}^T$ gives a sinusoidal fit, yet in both cases the solution procedure derived below is used without a single modification. The model is nonlinear in $x$, but it remains linear in $\theta$, and it is linearity in $\theta$, not in $x$, that makes least squares work. This idea returns in Chapter 2 under the name of feature representation, and again when kernels are discussed.</p>
+<p>The payoff appears as soon as we want a model that is not a straight line. Choosing $\phi(x_i) = \begin{bmatrix} 1 &amp; x_i &amp; x_i^2 \end{bmatrix}^T$ gives a quadratic fit, and choosing $\phi(x_i) = \begin{bmatrix} 1 &amp; \sin x_i &amp; \cos x_i \end{bmatrix}^T$ gives a sinusoidal fit, yet in both cases the same solution procedure is used without a single modification. The model is nonlinear in $x$, but it remains linear in $\theta$, and it is linearity in $\theta$, not in $x$, that makes least squares work. This idea returns in Chapter 2 under the name of feature representation, and again when kernels are discussed.</p>
 <br/>
 <p>$$\begin{array}{lcr}\begin{align*} \hat{y}_{i}
 &amp; = \theta_0 + x_i \theta_1 = 1 \cdot \theta_0 + x_i \theta_1 \\ \\
@@ -13417,7 +13417,7 @@ b_m
 \end{bmatrix}
 \right\|^2 = \lVert \underbrace{Ax-b}_{\text{vector}} \rVert_2^2$$</p>
 <br/>
-<p>The geometric interpretation of the least squares solution is illustrated below.</p>
+<p>The geometric interpretation of the least squares solution is illustrated in the figure.</p>
 </div>
 </div>
 </div>
@@ -13472,7 +13472,7 @@ y_m
 }_{y}
 $$</p>
 <br/>
-<p>Below each column of $A$, we can identify the column vectors (features):</p>
+<p>The columns of $A$ are the feature vectors:</p>
 <br/>
 <p>$$
 \begin{array}{cccccc}
@@ -13536,6 +13536,8 @@ $$</p>
 <li><p><strong>This closed form is a luxury.</strong> Linear regression is one of the few models whose optimum can be written down in a single formula. For logistic regression in Chapter 3, and for every neural network afterwards, no such formula exists and the minimum must be found iteratively by gradient descent. It is worth appreciating the closed form here precisely because it is the last time we will have one.</p>
 </li>
 </ul>
+<br/>
+<p>The formula is now applied to a small set of measurements and the fitted line is drawn over the data. The same data return in Section 5.2, where the same line is found by gradient descent instead of in one step.</p>
 </div>
 </div>
 </div>
@@ -14838,7 +14840,7 @@ This corresponds to the region where $ g(x) &lt; 0 $, classifying these points a
 <h3 id="2.2.2.-Perceptron-in-Python">2.2.2. Perceptron in Python<a class="anchor-link" href="#2.2.2.-Perceptron-in-Python">¶</a></h3><br/>
 <p>By adding an artificial coordinate $x_0 = 1$, we simplify the perceptron implementation and avoid the need to handle the bias separately. This technique is commonly used in machine learning to streamline calculations and make the formulation more uniform.</p>
 <br/>
-<p>Pay attention to the shape conventions below, since they are used consistently in the code that follows and mismatched shapes are the most common source of errors in practice. Each <strong>row</strong> of the matrix $x$ is one training example, and each <strong>column</strong> is one feature. With $m$ examples and two original features, $x$ is $m \times 3$ after the leading column of ones is prepended, $\omega$ is $3 \times 1$, and the product $x\omega$ is $m \times 1$, giving one score per example. The superscript $(i)$ indexes the example, while the subscript indexes the feature.</p>
+<p>Pay attention to the shape conventions, since they are used consistently in the code that follows and mismatched shapes are the most common source of errors in practice. Each <strong>row</strong> of the matrix $x$ is one training example, and each <strong>column</strong> is one feature. With $m$ examples and two original features, $x$ is $m \times 3$ after the leading column of ones is prepended, $\omega$ is $3 \times 1$, and the product $x\omega$ is $m \times 1$, giving one score per example. The superscript $(i)$ indexes the example, while the subscript indexes the feature.</p>
 <br/>
 <p>$$g(x) = \omega_0 + \omega^Tx  = \omega_0 + \omega_1x_1 + \omega_2x_2  = 0$$</p>
 <p><br/><br/></p>
@@ -14998,7 +15000,7 @@ y &amp;= \begin{bmatrix}y^{(1)} \\ y^{(2)} \\ y^{(3)}\\ \vdots \\ y^{(m)} \end{b
 <br/>
 <p>$$\omega \leftarrow \omega + yx$$ where $(x, y)$ is a misclassified training point</p>
 <br/>
-<p>The implementation follows the algorithm literally. Initialize $\omega$, then loop: compute the predictions, find a point whose prediction disagrees with its label, apply the update, and repeat. Because every update depends on a single training example, the perceptron is an example of an online learning algorithm, one that can process data one point at a time rather than requiring the whole dataset at once.</p>
+<p>The perceptron is now run on the two classes just generated. Because every update depends on a single training example, the perceptron is an example of an online learning algorithm, one that can process data one point at a time rather than requiring the whole dataset at once.</p>
 </div>
 </div>
 </div>
@@ -15045,7 +15047,7 @@ g(x) &amp;= \omega_0 + \omega^Tx  = \omega_0 + \omega_1x_1 + \omega_2x_2  = 0 \\
 \end{align*}
 $$</p>
 <br/>
-<p>The rearrangement is purely for plotting. The learned model is the vector $\omega$, and the boundary is defined implicitly by $\omega^T x = 0$. To draw it on a two-dimensional scatter plot we solve that implicit equation for $x_2$ as an explicit function of $x_1$, which is the familiar slope-intercept form of a line. The slope is $-\omega_1/\omega_2$ and the intercept is $-\omega_0/\omega_2$. Note that this form breaks down when $\omega_2 = 0$, which corresponds to a vertical boundary, a reminder that the implicit form $\omega^T x = 0$ is the more general description.</p>
+<p>The learned model is the vector $\omega$, and the boundary is defined implicitly by $\omega^T x = 0$; solving for $x_2$ gives the line to draw over the scatter plot. The implicit form is the more general one, since the explicit line fails for a vertical boundary, $\omega_2 = 0$.</p>
 </div>
 </div>
 </div>
@@ -15085,10 +15087,12 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>The learned line separates the two classes. It is one separating line among many, and nothing in the algorithm prefers one over another; Section 2.2.3 returns to this.</p>
+<br/>
 <p><strong>Perceptron using Scikit-Learn</strong></p>
 <p>In scikit-learn, the Perceptron includes the bias term by default, so you do not need to add an artificial coordinate manually. This makes it more convenient for implementing and training perceptron models on datasets.</p>
 <br/>
-<p>Compare the matrix below with the one used in the manual implementation: the leading column of ones is absent. This is a small but frequent source of confusion when moving between hand-written code and library code, so it is worth stating the rule explicitly. When you form the design matrix yourself, you must supply the constant column. When a library manages the intercept internally, supplying it yourself creates a redundant feature.</p>
+<p>Compare this design matrix with the one used in the manual implementation: the leading column of ones is absent. This is a small but frequent source of confusion when moving between hand-written code and library code, so it is worth stating the rule explicitly. When you form the design matrix yourself, you must supply the constant column. When a library manages the intercept internally, supplying it yourself creates a redundant feature.</p>
 <br/>
 <p>Note also that the fitted parameters are then reported in two separate places, <code>coef_</code> for the weights and <code>intercept_</code> for the bias, rather than in a single augmented vector.</p>
 <p><br/><br/></p>
@@ -16020,7 +16024,7 @@ This smaller margin increases the risk of misclassifying new data points that ma
 <br/>
 <p>This reinterpretation is the conceptual turning point of the section, so it is worth stating plainly what has changed. We began with a geometric quantity, the distance from a point to a hyperplane. We compressed it with the sigmoid to keep outliers from dominating. The compressed value happens to lie in $(0,1)$ and to increase monotonically with the distance, so nothing prevents us from reading it as a probability.</p>
 <br/>
-<p>Having done so, we gain access to an entire framework. Probabilities can be combined by multiplication across independent observations, they can be compared using likelihood, and parameters can be estimated by maximum likelihood estimation, a standard tool of statistics. The next several cells simply carry out that standard procedure. The geometric motivation has served its purpose and can now be set aside.</p>
+<p>Having done so, we gain access to an entire framework. Probabilities can be combined by multiplication across independent observations, they can be compared using likelihood, and parameters can be estimated by maximum likelihood estimation, a standard tool of statistics. What follows simply carries out that standard procedure. The geometric motivation has served its purpose and can now be set aside.</p>
 <br/>
 <p>The predicted probability is also useful in its own right, independently of the classification decision. A medical screening model reporting a probability of $0.55$ and one reporting $0.99$ both predict the positive class, yet the two situations call for very different responses. The perceptron cannot distinguish them.</p>
 </div>
@@ -16030,7 +16034,7 @@ This smaller margin increases the risk of misclassifying new data points that ma
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>The Role of Distance in Classification</strong></p>
-<p>The perceptron, the support vector machine (SVM), and logistic regression are three fundamental approaches to linear classification. The primary distinction among them lies in how each defines and utilizes the distance from the decision boundary to the data points. Although the SVM is not treated in detail in this section, it is included here for comparison. The figures below illustrate these differences.</p>
+<p>The perceptron, the support vector machine (SVM), and logistic regression are three fundamental approaches to linear classification. The primary distinction among them lies in how each defines and utilizes the distance from the decision boundary to the data points. Although the SVM is not treated in detail in this section, it is included here for comparison. The figure illustrates these differences.</p>
 <ul>
 <li>Perceptron: Considers only the sign of the data points, completely ignoring the distance.</li>
 <li>SVM: Utilizes the distance, but only through the margin, that is, the distance from the decision boundary to the closest points (the support vectors).</li>
@@ -16081,7 +16085,7 @@ $$</p>
 <br/>
 <p>$$P\left(y \mid x\,;\omega\right) = \left(h_{\omega}(x) \right)^y \left(1 - h_{\omega}(x)\right)^{1-y}$$</p>
 <br/>
-<p>The compact form is a standard trick and is easier to read once its mechanism is noticed. The exponents act as switches. When $y = 1$ the second factor becomes $(1 - h_\omega(x))^0 = 1$ and the expression reduces to $h_\omega(x)$; when $y = 0$ the first factor becomes $1$ and the expression reduces to $1 - h_\omega(x)$. A single formula thus covers both cases, which is what allows the product over all training points to be written down cleanly below.</p>
+<p>The compact form is a standard trick and is easier to read once its mechanism is noticed. The exponents act as switches. When $y = 1$ the second factor becomes $(1 - h_\omega(x))^0 = 1$ and the expression reduces to $h_\omega(x)$; when $y = 0$ the first factor becomes $1$ and the expression reduces to $1 - h_\omega(x)$. A single formula thus covers both cases, which is what allows the product over all training points to be written as a single formula.</p>
 <br/>
 <p>For $m$ training data points, the likelihood function of the parameters:</p>
 <br/>
@@ -16168,7 +16172,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We can implement logistic regression from scratch in Python, but instead, we will use scikit-learn for convenience and efficiency.</p>
 <br/>
-<p>As with the perceptron, scikit-learn handles the intercept internally, so the design matrix below contains no column of ones. Two further points about the library implementation are worth knowing.</p>
+<p>As with the perceptron, scikit-learn handles the intercept internally, so the design matrix contains no column of ones. Two further points about the library implementation are worth knowing.</p>
 <br/>
 <ul>
 <li><p>Scikit-learn applies $L_2$ regularization by default, adding a penalty on $\lVert \omega \rVert^2$ to the objective. The strength is controlled by the parameter <code>C</code>, where a smaller <code>C</code> means stronger regularization. This is why the coefficients obtained from the library may differ slightly from those obtained by maximizing the unpenalized log-likelihood by hand.</p>
@@ -16903,7 +16907,7 @@ $$</p>
 </li>
 </ul>
 <br/>
-<p>The three most widely used frameworks are introduced below. PyTorch is used for the examples in this notebook.</p>
+<p>Three widely used frameworks are TensorFlow, Keras and PyTorch; PyTorch is used for the examples in this notebook.</p>
 <br/>
 <p><strong>TensorFlow</strong></p>
 </div>
@@ -17051,7 +17055,7 @@ $$</p>
 <br/>
 <p>This example illustrates how PyTorch handles automatic differentiation and gradient descent updates, which is useful when building deep learning models and optimizing more complex loss functions.</p>
 <br/>
-<p>The example below is deliberately trivial. The function $(\omega - 4)^2$ is a parabola whose minimum is obviously at $\omega = 4$, and no numerical method is needed to find it. That is exactly the point: because the answer is known in advance, any discrepancy in the output is attributable to the procedure rather than to the problem.</p>
+<p>The example is deliberately trivial. The function $(\omega - 4)^2$ is a parabola whose minimum is obviously at $\omega = 4$, and no numerical method is needed to find it. That is exactly the point: because the answer is known in advance, any discrepancy in the output is attributable to the procedure rather than to the problem.</p>
 <br/>
 <p>Watch for four elements in the code, since every training loop in deep learning contains the same four, no matter how complicated the model.</p>
 <br/>
@@ -17333,6 +17337,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>The fitted line lies close to the one the normal equation gave in Section 1.3, but not on it: gradient descent approaches the optimum step by step and was stopped after a fixed number of iterations, whereas the normal equation lands on it in one step. More iterations or a larger learning rate close the gap. That is the price of a method that needs no closed form, and it is a price worth paying, since no closed form exists for anything that follows.</p>
 <br/>
 <p><a name="section-5-3"></a></p>
 <h2 id="5.3.-Logistic-Regression-using-PyTorch">5.3. Logistic Regression using PyTorch<a class="anchor-link" href="#5.3.-Logistic-Regression-using-PyTorch">¶</a></h2>
@@ -17342,7 +17347,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This is the same model derived in Chapter 3, now expressed in PyTorch. Comparing the two implementations is instructive: the mathematics is identical, but the gradient formula derived by hand in Section 3.1 no longer appears anywhere in the code. It is obtained automatically by differentiating the loss.</p>
+<p>This is the same model derived in Chapter 3, now expressed in PyTorch, on a larger data set of a thousand points. Comparing the two implementations is instructive: the mathematics is identical, but the gradient formula derived by hand in Section 3.1 no longer appears anywhere in the code. It is obtained automatically by differentiating the loss.</p>
 <br/>
 <p>This is the pattern that carries forward into deep learning. From this point on, specifying a model means stating the architecture and the loss function, and the learning rule follows from them without further human intervention.</p>
 <br/>
@@ -17416,7 +17421,7 @@ $$</p>
 <br/>
 <p>In practice, optimization problems in machine learning are commonly formulated as the minimization of an objective function (or loss function) rather than the maximization.</p>
 <br/>
-<p>Two changes are made in the expressions below, and each has a practical reason.</p>
+<p>Two changes are made to the objective, and each has a practical reason.</p>
 <br/>
 <ul>
 <li><p><strong>Division by $m$.</strong> Replacing the sum by an average makes the loss independent of the number of training examples. Without it, a suitable learning rate for a dataset of $100$ points would be far too large for one of $10{,}000$ points, since the gradient would scale with the dataset size.</p>
@@ -17535,6 +17540,8 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>The learned boundary separates the two classes, and the hand-derived gradient of Section 3.1 appears nowhere in the code; the loss was stated and the rest followed. The weights need not match those that generated the labels, since for separable data every boundary through the empty corridor reproduces the labels equally well.</p>
+<br/>
 <p>Instead of manually defining the cross-entropy loss function, PyTorch's built-in loss functions can be utilized for greater convenience and efficiency.</p>
 <br/>
 <p>The reason for preferring the built-in function is numerical, not merely a matter of convenience, and it is worth understanding because the same issue arises in every framework.</p>
@@ -17641,7 +17648,7 @@ $$</p>
 <li>The <strong>perceptron</strong> classifies by the sign of $\omega^Tx$ and updates only on the points it gets wrong. It converges whenever the data are linearly separable, but it stops at the first separating hyperplane it finds and has nothing to say when no such hyperplane exists.</li>
 <li><strong>Logistic regression</strong> replaces the hard sign by the sigmoid, so that every point contributes according to its distance from the boundary. Its output is a probability, its loss is the cross-entropy, and minimizing that loss is maximum likelihood.</li>
 <li>A <strong>deep learning framework</strong> supplies automatic differentiation, GPU execution, and standard building blocks. Automatic differentiation is the essential one: it records the forward computation and applies the chain rule backwards, so gradients are exact rather than finite-difference approximations, and cost about as much as one forward pass no matter how many parameters there are.</li>
-<li>In <strong>PyTorch</strong> a training loop is four lines of bookkeeping — mark the parameters with <code>requires_grad</code>, call <code>backward()</code> on the loss, update under <code>torch.no_grad()</code>, and clear the gradients with <code>zero_()</code>, since PyTorch accumulates them. Solving linear and logistic regression this way gives the same answers obtained analytically, which is the point: the iterative machinery is verified on problems whose answers are already known.</li>
+<li>In <strong>PyTorch</strong> a training loop is four lines of bookkeeping — mark the parameters with <code>requires_grad</code>, call <code>backward()</code> on the loss, update under <code>torch.no_grad()</code>, and clear the gradients with <code>zero_()</code>, since PyTorch accumulates them. Solving linear and logistic regression this way approaches the answers obtained analytically, which is the point: the iterative machinery is verified on problems whose answers are already known.</li>
 <li>Built-in losses such as <code>BCEWithLogitsLoss</code> take the <strong>logits</strong>, not the probabilities, and combine the sigmoid with the logarithm into one numerically stable expression. Passing an already-squashed probability into them is a quiet and common error.</li>
 </ul>
 <br/>
