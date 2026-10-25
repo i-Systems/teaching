@@ -13203,7 +13203,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Before building anything it is worth seeing the shape of the design space, because "add physics to the network" is not one idea but a family of them, and the members of the family differ in ways that matter. Two questions organize the family. First, in what form is the knowledge available? Second, at which point in the modelling pipeline is it inserted? The figure below arranges the possibilities along these two axes, with the network architectures listed on one side.</p>
+<p>Before building anything it is worth seeing the shape of the design space, because "add physics to the network" is not one idea but a family of them, and the members of the family differ in ways that matter. Two questions organize the family. First, in what form is the knowledge available? Second, at which point in the modelling pipeline is it inserted? The figure arranges the possibilities along these two axes, with the network architectures listed on one side.</p>
 <br/>
 </div>
 </div>
@@ -13710,12 +13710,12 @@ $$</p>
 <br/>
 <p>Doing it by hand first is not ceremony. A PINN implementation contains exactly one unfamiliar idea, namely differentiating the network output with respect to the network input, and once you have written those three lines yourself the rest of the notebook reads as variations on a theme. Every laboratory from Section 5 onward has the same skeleton: a helper that computes a derivative, a function that assembles the residual of the governing equation, one function per boundary condition, and a loop that squares everything, adds it up, and calls the optimizer. Learn the skeleton here and the later laboratories become exercises in translating physics rather than exercises in programming.</p>
 <br/>
-<p>There is a second reason to write the loop out by hand. In a framework that hides training behind a single <code>fit</code> call, the three operations that actually constitute gradient descent are invisible; PyTorch never hides them, and the loop below is the same <code>zero_grad</code>, <code>backward</code>, <code>step</code> triple as in every earlier lab.</p>
+<p>There is a second reason to write the loop out by hand. In a framework that hides training behind a single <code>fit</code> call, the three operations that actually constitute gradient descent are invisible; PyTorch never hides them, and the training loop is the same <code>zero_grad</code>, <code>backward</code>, <code>step</code> triple as in every earlier lab.</p>
 <br/>
 <p>Here they appear explicitly: clear the accumulated gradient, evaluate it, move against it. In an ordinary supervised problem this transparency is a convenience. In a PINN it is close to a necessity, because the loss itself contains a derivative, so the backward pass is being asked to differentiate through a differentiation, and it helps a great deal to be able to see where each of the two differentiations happens.</p>
 <br/>
 <blockquote>
-<p><strong>Note.</strong> The first two laboratories train in seconds and are run in place. The thin plate of Section 6 trains for ten thousand epochs on 2,500 points, which takes minutes on a GPU and much longer without one, so its two training cells may be skipped: the models they produce, together with the finite element reference data, are downloaded from Google Drive in the cells that follow, and every result of Section 6 is drawn from those files.</p>
+<p><strong>Note.</strong> The first two laboratories train in seconds and are run in place. The thin plate of Section 6 trains for ten thousand epochs on 2,500 points, which takes minutes on a GPU and much longer without one, so its two training runs may be skipped: the models they produce, together with the finite element reference data, are downloaded from Google Drive, and every result of Section 6 is drawn from those files.</p>
 </blockquote>
 </div>
 </div>
@@ -13763,7 +13763,7 @@ $$</p>
 <br/>
 <p>Two features of this solution are worth noticing in advance, because they explain design decisions that follow. The solution oscillates with period $1$, and the training domain will be $t \in [0,2]$, so the network must represent two full periods. And the solution takes values between $1 - 1/2\pi \approx 0.841$ and $1 + 1/2\pi \approx 1.159$; it is centred on $1$, not on $0$, and its total variation is small compared with its mean. Predicting a nearly constant function with a small ripple on top is harder than it looks, because the loss is built from the derivative, where the ripple is everything and the constant contributes nothing.</p>
 <br/>
-<p>Make a neural network and loss functions like below:</p>
+<p>The figure shows the network and the two terms of the loss.</p>
 <br/>
 </div>
 </div>
@@ -13821,7 +13821,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The network takes one input, $t$, and returns one output, the predicted $u$. Between them are two hidden layers of thirty-two units with $\tanh$ activations. Before running the cell, work out the parameter count for yourself: the first layer holds $1 \times 32$ weights and $32$ biases, giving $64$; the second holds $32\times32 + 32 = 1056$; the output layer holds $32 \times 1 + 1 = 33$. The total is $1153$, which is what the printed count reports.</p>
+<p>The network takes one input, $t$, and returns one output, the predicted $u$. Between them are two hidden layers of thirty-two units with $\tanh$ activations. Work out the parameter count for yourself: the first layer holds $1 \times 32$ weights and $32$ biases, giving $64$; the second holds $32\times32 + 32 = 1056$; the output layer holds $32 \times 1 + 1 = 33$. The total is $1153$, which is what the printed count reports.</p>
 <br/>
 <p>Two choices here are physics-driven rather than conventional, and both are easy to pass over.</p>
 <br/>
@@ -13909,7 +13909,7 @@ parameters: 1153
 <br/>
 <p>The two terms are added with equal weight, which in the notation of Section 2 means $\lambda_I = 1$. Since $u$ is of order one and $du/dt$ is of order one, the two residuals have comparable magnitudes and the choice is reasonable.</p>
 <br/>
-<p>The cell that follows implements this, and one idea in it carries the whole method: the input coordinate $t$ is created with <code>requires_grad = True</code>, so that a graph connecting $t$ to the network output exists and can be walked backwards, and <code>torch.autograd.grad(u, t, ...)</code> walks it. Two arguments of that call matter. <code>grad_outputs = torch.ones_like(u)</code> asks for the derivative of each output with respect to its own input, which is what a pointwise network gives, and <code>create_graph = True</code> records the differentiation itself so that the loss built from $du_\theta/dt$ can be differentiated again with respect to the weights. Ordinarily one tracks the <em>weights</em>, because the weights are what will be updated. Here the <em>input</em> is tracked as well, not because $t$ will ever be updated, but because we want $du_\theta/dt$. This is the single most common omission in a first hand-written PINN, and it produces not a wrong answer but no answer at all.</p>
+<p>One idea in the implementation carries the whole method: the input coordinate $t$ is created with <code>requires_grad = True</code>, so that a graph connecting $t$ to the network output exists and can be walked backwards, and <code>torch.autograd.grad(u, t, ...)</code> walks it. Two arguments of that call matter. <code>grad_outputs = torch.ones_like(u)</code> asks for the derivative of each output with respect to its own input, which is what a pointwise network gives, and <code>create_graph = True</code> records the differentiation itself so that the loss built from $du_\theta/dt$ can be differentiated again with respect to the weights. Ordinarily one tracks the <em>weights</em>, because the weights are what will be updated. Here the <em>input</em> is tracked as well, not because $t$ will ever be updated, but because we want $du_\theta/dt$. This is the single most common omission in a first hand-written PINN, and it produces not a wrong answer but no answer at all.</p>
 <br/>
 <p>The rest of the function is arithmetic. The equation residual $du_\theta/dt - \cos 2\pi t$ is evaluated at all twenty collocation points at once and its mean square is $L_{\text{ODE}}$; the initial-condition error $u_\theta(0) - 1$ is a single number, since that condition is enforced at the one point $t=0$, and its square is $L_{IC}$. The two are added with no explicit $\lambda_I$, which is the equal weighting stated above.</p>
 <br/>
@@ -13945,7 +13945,7 @@ parameters: 1153
 <p>Two nested differentiations happen at every step, and separating them explicitly is worth the effort, since this is the one structural feature that distinguishes a PINN's training step from an ordinary one. The inner differentiation produces $du_\theta/dt$, the derivative of the output with respect to the input. The outer differentiation produces $\partial L/\partial\theta$, the derivative of the loss with respect to the weights, and because the loss contains $du_\theta/dt$, the second differentiation must pass <em>through</em> the first. That is second-order automatic differentiation, and it is what makes a derivative-based loss trainable at all; in PyTorch it is exactly what <code>create_graph = True</code> buys, and without it the inner derivative would be a constant to the outer <code>backward()</code>.</p>
 <br/>
 <p><strong>Predict the first printed number</strong></p>
-<p>Before running the cell, work out what the loss should be at iteration zero. The weights are freshly initialized, so the network output is close to zero everywhere and so is its derivative. With $u_\theta \approx 0$ we get $\text{IC\_loss} \approx 0 - 1 = -1$, contributing $1$ to the total. With $du_\theta/dt \approx 0$ the ODE residual is approximately $-\cos 2\pi t$, and the average of $\cos^2$ over a whole number of periods is $1/2$, contributing about $0.5$. The predicted initial loss is therefore about $1.5$.</p>
+<p>Before training, work out what the loss should be at iteration zero. The weights are freshly initialized, so the network output is close to zero everywhere and so is its derivative. With $u_\theta \approx 0$ we get $\text{IC\_loss} \approx 0 - 1 = -1$, contributing $1$ to the total. With $du_\theta/dt \approx 0$ the ODE residual is approximately $-\cos 2\pi t$, and the average of $\cos^2$ over a whole number of periods is $1/2$, contributing about $0.5$. The predicted initial loss is therefore about $1.5$.</p>
 <br/>
 </div>
 </div>
@@ -14013,13 +14013,13 @@ parameters: 1153
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The printed values are $1.3936$ at iteration $0$, $0.3519$ at iteration $1000$, and $0.0004$ at iteration $2000$. The opening value confirms the prediction to two figures, which is the useful part: the arithmetic above was a genuine test of whether we understood what the loss measures, and it passed.</p>
+<p>The opening value confirms the prediction to two figures, which is the useful part: the arithmetic above was a genuine test of whether we understood what the loss measures, and it passed.</p>
 <br/>
-<p>The rest of the trace is the interesting part, and the plotted curve carries information the three printed numbers do not. For roughly the first fifteen hundred iterations the loss wanders noisily between about $0.2$ and $0.6$, declining but nowhere near zero; the value of $0.3519$ at iteration $1000$ means that the mean squared equation residual is still of the order it started from, and that the network has learned the level of the solution far better than its oscillation. Then, over a few hundred iterations, the loss drops by three orders of magnitude and settles near $4\times10^{-4}$, where it stays; the value of $0.0004$ at iteration $2000$ is the settled level. That shape, a long plateau followed by a sudden descent, is typical of PINNs on oscillatory solutions. The plateau is the network fitting the mean and the overall bend of $u$; the descent is the moment at which its derivative locks onto $\cos 2\pi t$. Nothing in the loss told us in advance when, or whether, that moment would come.</p>
+<p>The rest of the trace is the interesting part, and the plotted curve carries information the three printed numbers do not. For roughly the first fifteen hundred iterations the loss wanders noisily on a plateau, declining but nowhere near zero: the mean squared equation residual is still of the order it started from, and the network has learned the level of the solution far better than its oscillation. Then, over a few hundred iterations, the loss drops by three orders of magnitude and settles, and there it stays. That shape, a long plateau followed by a sudden descent, is typical of PINNs on oscillatory solutions. The plateau is the network fitting the mean and the overall bend of $u$; the descent is the moment at which its derivative locks onto $\cos 2\pi t$. Nothing in the loss told us in advance when, or whether, that moment would come.</p>
 <br/>
 <p>The noise on the curve has an identifiable source: the collocation points are resampled at every iteration, so the quantity being plotted is not one fixed function evaluated at successive iterates but a fresh random estimate at each step. Twenty points is a small sample from which to estimate a mean square, and an unlucky draw that happens to concentrate near the steep parts of $\cos 2\pi t$ will report a larger loss than the previous iterate even though the weights improved. Under a fixed learning rate, a stochastic gradient method does not converge to a minimizer at all; it converges to a neighbourhood whose size is set by the product of the step size and the gradient noise, and then wanders inside it, which is what the flat tail of the curve shows. When you read a PINN loss curve, ask first whether the objective is fixed or resampled, because the two produce very different-looking plots for the same underlying progress.</p>
 <br/>
-<p>One more fact belongs here. The same six cells, run in the original version of this lab under a different framework whose default initialisation differs from PyTorch's, printed $1.4421$, $0.4021$ and $0.3037$ at the three checkpoints and never left the plateau in three thousand iterations. Same equation, same architecture, same optimizer, same step size, same iteration count; a different random starting point; a factor of a thousand in the final loss. Nothing here contradicts Section 1.2, and it is worth stating the relationship in the direction that actually holds. The universal approximation theorem guarantees that a network of this shape exists which makes this loss essentially zero. Whether a particular run finds it is a fact about the optimization, not about the representation, and it is exactly the gap between representability and findability that Section 1.2 warned about. Regularization, MAP Estimation, and Loss Weighting and PINN: Limitations and Overcoming Strategies are devoted to closing it.</p>
+<p>One more fact belongs here. The same six cells, run in the original version of this lab under a different framework whose default initialisation differs from PyTorch's, never left the plateau in three thousand iterations. Same equation, same architecture, same optimizer, same step size, same iteration count; a different random starting point; a factor of a thousand in the final loss. Nothing here contradicts Section 1.2, and it is worth stating the relationship in the direction that actually holds. The universal approximation theorem guarantees that a network of this shape exists which makes this loss essentially zero. Whether a particular run finds it is a fact about the optimization, not about the representation, and it is exactly the gap between representability and findability that Section 1.2 warned about. Regularization, MAP Estimation, and Loss Weighting and PINN: Limitations and Overcoming Strategies are devoted to closing it.</p>
 <br/>
 </div>
 </div>
@@ -14191,7 +14191,7 @@ $$</p>
 <br/>
 <p>Since the deflection never leaves the interval $[-0.125,\, 0]$, keep that range in mind when the network architecture appears.</p>
 <br/>
-<p>Make a neural network and loss functions like below:</p>
+<p>The figure shows the network and the five terms of the loss.</p>
 <br/>
 </div>
 </div>
@@ -14269,13 +14269,11 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The network maps one input to one output through four hidden layers of thirty-two units with $\tanh$ activations, a little larger than the network of Section 4 and still very small by the standards of the rest of this course.</p>
+<p>The network is a little larger than that of Section 4 and still very small by the standards of the rest of this course.</p>
 <br/>
 <p>The architecture contains one feature that should stop you: there is a $\tanh$ after the final linear layer. The output of this network is therefore confined to the interval $(-1,1)$.</p>
 <br/>
 <p>In Section 4.1 the same choice would have been fatal, because the solution there took values near $1.16$. Here it is survivable, because the true deflection lies in $[-0.125, 0]$, comfortably inside the reachable range. It is nevertheless a fragile choice, and worth understanding as a hazard rather than a technique. If the load $q$ were increased by a factor of ten, the true tip deflection would be $-1.25$ and no setting of the weights could produce it; the training would converge to something pressed against the saturation of the output $\tanh$, and the failure would look like a modelling error rather than an architectural one. A second, subtler cost is that $\tanh$ has small derivative when its argument is large, so gradients reaching the network through a saturated output layer are attenuated.</p>
-<br/>
-<p>The optimizer is Adam at $10^{-3}$, and every term of the composite loss will be a mean squared residual.</p>
 <br/>
 </div>
 </div>
@@ -14316,7 +14314,7 @@ $$</p>
 <br/>
 <p>The differentiation is also asked to build a differentiable graph for itself. Without that, the returned derivative would carry no history, and asking for its derivative in turn, which is precisely what the fourth-order chain does next, would fail. It is also what allows the final loss, built from these derivatives, to be differentiated with respect to the network weights. Every higher-order derivative in this notebook depends on it.</p>
 <br/>
-<p>Any tensor with respect to which we intend to differentiate must be created with <code>requires_grad = True</code>, for the reason given in Section 4.1; the training cell below does this for the three point sets.</p>
+<p>Any tensor with respect to which we intend to differentiate must be created with <code>requires_grad = True</code>, for the reason given in Section 4.1; the training loop does this for the three point sets.</p>
 <br/>
 </div>
 </div>
@@ -14340,7 +14338,7 @@ $$</p>
 <br/>
 <p>$$\frac{\partial^4 y}{\partial x^4} + q = 0,  \qquad \text{where} \quad x \in [0,1]$$</p>
 <br/>
-<p>The function below evaluates the residual by applying the derivative helper four times in succession, each call differentiating the output of the previous one. The returned quantity is $y'''' + 1$, that is, $y'''' + q$ with $q = 1$, and it should be zero when the equation holds.</p>
+<p>The residual function applies the derivative helper four times in succession, each call differentiating the output of the previous one. The returned quantity is $y'''' + 1$, that is, $y'''' + q$ with $q = 1$, and it should be zero when the equation holds.</p>
 <br/>
 <p>This is where the cost of a high-order equation becomes visible. Each call extends the computational graph, so the graph differentiated at the end of the step is several times as deep as the network itself, and the memory and time per epoch scale accordingly. It is also where the smoothness requirement of Section 1.2 becomes non-negotiable: a ReLU network differentiated four times returns zero everywhere, so the residual would be identically $1$ and no amount of training would reduce it.</p>
 <br/>
@@ -14391,7 +14389,7 @@ $$</p>
 <br/>
 <p>$$y''(1) = 0, \quad y'''(1) = 0$$</p>
 <br/>
-<p>The two functions below return the four residuals: at the left boundary, the value of the network and its first derivative; at the right boundary, its second and third derivatives. Because all four prescribed values are zero, each residual is simply the corresponding derivative of the network. Had the beam been clamped at a prescribed non-zero settlement $y(0) = \delta$, the residual would have been $y_\theta(0) - \delta$, following the pattern of Section 2 exactly; the homogeneous case merely makes the subtraction invisible.</p>
+<p>The two boundary functions return the four residuals: at the left boundary, the value of the network and its first derivative; at the right boundary, its second and third derivatives. Because all four prescribed values are zero, each residual is simply the corresponding derivative of the network. Had the beam been clamped at a prescribed non-zero settlement $y(0) = \delta$, the residual would have been $y_\theta(0) - \delta$, following the pattern of Section 2 exactly; the homogeneous case merely makes the subtraction invisible.</p>
 <br/>
 <p>The homogeneity has a consequence for the training output that is worth predicting now. An untrained network produces values near zero, so all four boundary residuals begin small, and essentially all of the initial loss will come from the equation term.</p>
 <br/>
@@ -14433,7 +14431,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The three point sets are created as tracked tensors and the loop runs for a thousand and one epochs. Each epoch computes the equation residual on the twenty-five collocation points and the four boundary residuals, takes the mean square of each, and adds them:</p>
+<p>Training minimizes the mean squared equation residual on the collocation points together with the mean squares of the four boundary residuals:</p>
 <br/>
 <p>$$
 \mathcal{L} = \mathcal{L}_{\text{PDE}} + \mathcal{L}_{\text{BC1}} + \mathcal{L}_{\text{BC2}} + \mathcal{L}_{\text{BC3}} + \mathcal{L}_{\text{BC4}}.
@@ -14509,7 +14507,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The cell prints a total of $1.0029$ at epoch $0$, of which $0.9173$ is the equation term and $0.0855$ the boundary terms, which is the predicted split: the equation term near $1$ and dominant, the boundary terms small. (The equation term is somewhat below $1$ because the freshly initialised network's fourth derivative is not exactly zero.) By epoch $500$ the total is $0.0005$, and by epoch $1000$ it is $0.0001$, with both the equation and the boundary terms printing as $0.0000$ to four decimal places: the network satisfies the fourth-order equation and all four boundary conditions to about that accuracy.</p>
+<p>The first printed line is the predicted split: the equation term near $1$ and dominant, the boundary terms small. (The equation term is somewhat below $1$ because the freshly initialised network's fourth derivative is not exactly zero.) Within a thousand epochs the loss has fallen by four orders of magnitude, with both the equation and the boundary terms printing as zero to four decimal places: the network satisfies the fourth-order equation and all four boundary conditions to about that accuracy.</p>
 <br/>
 <p>Compare this with Section 4.1, where a <em>first</em>-order equation, after three times as many iterations, was still reporting a loss around $0.35$ at its thousandth iteration, and did not leave that level until about iteration $1500$. The order of differentiation was clearly not the obstacle there. Three differences account for the contrast. The collocation points here are fixed rather than resampled, so the gradient is exact and Adam is minimizing a genuine function rather than chasing a moving target, and the loss printed here is correspondingly an exact value rather than a noisy estimate. The solution here is a quartic polynomial, smooth and monotone over the whole domain, whereas the solution in Section 4.1 oscillated through two full periods, and a network must work considerably harder to produce an oscillation than a bend. And this network is deeper, with four hidden layers against two. The general lesson, which PINN: Limitations and Overcoming Strategies develops, is that PINN difficulty tracks the character of the solution and the conditioning of the optimization far more than it tracks the order of the equation.</p>
 <br/>
@@ -14632,7 +14630,7 @@ $$</p>
 <br/>
 <p>These three assumptions are the plate analogue of the assumption that plane sections remain plane in beam theory, and they do the same work. They say that the displacement everywhere through the thickness is determined by the displacement of the mid-surface, so a three-dimensional elasticity problem collapses into a two-dimensional one posed on that surface. Without them the unknowns would be functions of three variables and the network would need a third input. They are accurate when the plate is thin, which is the case here: the thickness is $h = 1$ mm against a width of $20$ mm.</p>
 <br/>
-<p>A non-uniform stretching force is applied to a square elastic plate. Because both the geometry and the in-plane loading are symmetric about the two centre-lines, only one quarter of the plate need be considered, the yellow region in the figure below. This is standard practice in finite element analysis, and it is worth being precise about why it is legitimate and what replaces the material that has been removed. Symmetry of geometry and loading implies symmetry of the solution, and a symmetric displacement field has no component normal to a plane of symmetry: material on the symmetry plane cannot move across it, since the mirror-image material on the other side would have to move the opposite way. The removed three quarters are therefore replaced by exactly two conditions, $u = 0$ on the plane $x = 0$ and $v = 0$ on the plane $y = 0$. Those are the first two boundary conditions listed below, and reading them as symmetry conditions rather than as clamps is essential to understanding the problem.</p>
+<p>A non-uniform stretching force is applied to a square elastic plate. Because both the geometry and the in-plane loading are symmetric about the two centre-lines, only one quarter of the plate need be considered, the yellow region in the figure. This is standard practice in finite element analysis, and it is worth being precise about why it is legitimate and what replaces the material that has been removed. Symmetry of geometry and loading implies symmetry of the solution, and a symmetric displacement field has no component normal to a plane of symmetry: material on the symmetry plane cannot move across it, since the mirror-image material on the other side would have to move the opposite way. The removed three quarters are therefore replaced by exactly two conditions, $u = 0$ on the plane $x = 0$ and $v = 0$ on the plane $y = 0$. Those are the first two boundary conditions of the problem, and reading them as symmetry conditions rather than as clamps is essential to understanding the problem.</p>
 <br/>
 </div>
 </div>
@@ -14750,7 +14748,7 @@ $$</p>
 <br/>
 <p>Note that these last four conditions constrain stresses, not displacements, and stresses are built from first derivatives of $u$ and $v$. In the language of Section 2 they are Neumann-type conditions, and implementing them requires nothing new: the network is differentiated at the boundary points, the derivatives are assembled into the stress components using the constitutive relations above, and the result is compared against the prescribed value.</p>
 <br/>
-<p>The network and the loss terms are defined below.</p>
+<p>The figure shows the network and the loss terms.</p>
 <br/>
 </div>
 </div>
@@ -14770,7 +14768,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Numerical Solution (treated as the exact solution)</strong></p>
-<p>A finite element solution of the same problem is shown below, giving the displacement components $u$ and $v$ and the stresses $\sigma_{xx}$ and $\sigma_{yy}$ over the quarter domain. We will solve the problem with a PINN and compare against it.</p>
+<p>A finite element solution of the same problem is shown in the figure, giving the displacement components $u$ and $v$ and the stresses $\sigma_{xx}$ and $\sigma_{yy}$ over the quarter domain. We will solve the problem with a PINN and compare against it.</p>
 <br/>
 <p>Two habits of mind are worth adopting here. First, the finite element result is called the exact solution throughout this section, and it is not; it is a numerical approximation with its own discretization error, and it is being used as a reference because it is the best available answer, not because it is the truth. Second, look at the four fields before reading on and predict which will be hardest for the network. The plate is being pulled in $x$, so $u$ is the large, smooth, directly driven response, while $v$ is the smaller transverse contraction produced by the Poisson effect, an order of magnitude smaller and therefore contributing correspondingly less to a loss that weights all residuals equally. That prediction is confirmed in Section 6.3, where it turns out to be exactly the field the data term is needed for.</p>
 <br/>
@@ -14801,7 +14799,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The first cell selects a device, since this laboratory is the one that benefits from a GPU; the second defines the material and geometric constants, which the residual and boundary functions will read. The constants are $E = 50$, $\nu = 0.3$, $a = b = 10$, $h = 1$ and $f = 1$, matching Section 6.1 in millimetre-megapascal units. Only $b$ is used in what follows, since the quarter domain is square.</p>
+<p>This laboratory is the one that benefits from a GPU. The material and geometric constants of Section 6.1 are set in millimetre-megapascal units, and the residual and boundary functions read them; only $b$ is used in what follows, since the quarter domain is square.</p>
 <br/>
 </div>
 </div>
@@ -14850,7 +14848,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>A $50 \times 50$ lattice on $[0,10]^2$ gives $2500$ interior collocation points, and the four edges are then extracted by testing each coordinate against $0$ or $b$, giving fifty points per edge.</p>
+<p>The collocation points are a $50 \times 50$ lattice on the quarter plate, $2500$ points in all, and the four edges are the points of the lattice that lie on each side, fifty per edge.</p>
 <br/>
 <p>Note that the four corner points satisfy two edge tests each, so they appear in two of the boundary sets and are constrained twice. This is harmless, and it is in fact what one wants, since both conditions do hold at a corner.</p>
 <br/>
@@ -14909,11 +14907,11 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The network takes the two coordinates as input and returns the two displacement components as output, through six hidden layers of sixty-four $\tanh$ units. Three points of construction deserve comment.</p>
+<p>The network takes the two coordinates as input and returns the two displacement components as output. Three points of construction deserve comment.</p>
 <br/>
 <p>The two outputs are produced by one network with a shared trunk, not by two independent networks. This matters because the governing equations are coupled through the mixed derivative $\partial^2 v/\partial x\partial y$, so the two fields must be learned together in any case, and a shared representation is the natural choice.</p>
 <br/>
-<p>The weights are initialized by the Xavier, or Glorot, scheme, which scales the weight variance by the fan-in and fan-out of each layer so that the variance of the activations neither grows nor decays with depth. With six hidden layers this matters more than it did with two. The network is written as a class, because the pre-trained models loaded later in this section were saved as whole objects of this class and are unpickled against it.</p>
+<p>The weights are initialized by the Xavier scheme, which keeps the activations of a deeper network at a usable scale. The network is written as a class, because the pre-trained models loaded later in this section were saved as whole objects of this class.</p>
 <br/>
 <p>There is no activation after the final linear layer, so the outputs are unbounded. Contrast Section 5, where a final $\tanh$ was tolerable only because the answer happened to be small. Here the displacements are of order $0.1$ and the unbounded choice is simply correct.</p>
 <br/>
@@ -14964,9 +14962,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The derivative helper is the two-dimensional version of the one from Section 5. The gradient with respect to the full input has two columns, so the helper slices out the two partial derivatives and returns them as a pair, $\partial/\partial x$ first and $\partial/\partial y$ second. Everything said in Section 5 about the vector of ones and about recording the differentiation applies unchanged; the tensor of ones is created on the same device as the model.</p>
-<br/>
-<p>Returning both partials at once has a pleasant consequence for second derivatives. Applying the helper to $\partial u/\partial x$ returns $\partial^2 u/\partial x^2$ and $\partial^2 u/\partial x \partial y$ in one call, so the mixed derivative is obtained for free alongside the pure one, and the residual function below exploits this.</p>
+<p>The derivative helper is the two-dimensional version of the one from Section 5: it returns both partial derivatives at once, so that applying it to $\partial u/\partial x$ gives $\partial^2 u/\partial x^2$ and the mixed derivative $\partial^2 u/\partial x \partial y$ in one call. Everything said in Section 5 about the vector of ones and about recording the differentiation applies unchanged.</p>
 <br/>
 </div>
 </div>
@@ -15000,7 +14996,7 @@ $$</p>
 \end{align*}
 $$</p>
 <br/>
-<p>The function below computes six second derivatives and assembles the two residuals. Read it with the derivation of Section 6.1 alongside and the correspondence is exact. One naming convention will otherwise confuse you: the $x$-displacement is called $w$ throughout the code, so a second derivative named <code>dw_xx</code> is $\partial^2 u/\partial x^2$ and not a derivative of any out-of-plane deflection. The letter $w$ conventionally denotes transverse deflection in plate theory, and it is used here for the in-plane $u$ instead.</p>
+<p>The residual function assembles the two residuals from six second derivatives. Read it with the derivation of Section 6.1 alongside and the correspondence is exact. One naming convention will otherwise confuse you: the $x$-displacement is called $w$ throughout the code, so a second derivative named <code>dw_xx</code> is $\partial^2 u/\partial x^2$ and not a derivative of any out-of-plane deflection. The letter $w$ conventionally denotes transverse deflection in plate theory, and it is used here for the in-plane $u$ instead.</p>
 <br/>
 <p>The residuals are returned unsquared, as before.</p>
 <br/>
@@ -15098,7 +15094,7 @@ $$</p>
 \end{align*}
 $$</p>
 <br/>
-<p>The next cell implements the two edges. On each, the network is evaluated, its first derivatives are taken, the stress components are assembled from them, and the residual is the stress minus its prescribed value. On the top edge both prescribed values are zero, so the residuals are the stresses themselves. On the right edge the shear residual is the stress itself, while the normal residual is the difference between $\sigma_{xx}$ and</p>
+<p>On each of the two edges the residual is the stress, assembled from the first derivatives of the network, minus its prescribed value. On the top edge both prescribed values are zero, so the residuals are the stresses themselves. On the right edge the shear residual is the stress itself, while the normal residual is the difference between $\sigma_{xx}$ and</p>
 <br/>
 <p>$$
 \sigma_{\text{ex}}(y) = f\,h\,\cos\!\left(\frac{\pi y}{2b}\right),
@@ -15155,7 +15151,7 @@ $$</p>
 \mathcal{L} = \underbrace{\mathcal{L}_{\text{PDE},x} + \mathcal{L}_{\text{PDE},y}}_{\text{equilibrium}} \; + \; \underbrace{\mathcal{L}_{\text{bottom}} + \mathcal{L}_{\text{left}} + \mathcal{L}_{\text{top},1} + \mathcal{L}_{\text{top},2} + \mathcal{L}_{\text{right},1} + \mathcal{L}_{\text{right},2}}_{\text{boundary}}.
 $$</p>
 <br/>
-<p>Training a PINN can be computationally expensive and time-consuming. To facilitate experimentation and reproducibility, a trained model is provided below, so that the results can be evaluated and analysed without waiting for a long run. You may still run the loop yourself to watch the behaviour; the printed trace is from a run on a GPU.</p>
+<p>Training a PINN can be computationally expensive and time-consuming. To facilitate experimentation and reproducibility, a trained model is provided, so that the results can be evaluated and analysed without waiting for a long run. You may still run the loop yourself to watch the behaviour; the printed trace is from a run on a GPU.</p>
 <br/>
 <p>Before running anything, notice one consequence of the unit weighting that the discussion of Section 6.1 anticipated. The equation residuals are multiplied by $E/(1-\nu^2) \approx 54.9$, so a given displacement error contributes far more through the equilibrium terms than through the displacement boundary terms. The stress boundary conditions carry the same large factor. The transverse displacement $v$, being the small Poisson response, influences all of these only weakly, and it is therefore the field the optimizer has the least incentive to get right. Keep this in mind when the results appear.</p>
 <br/>
@@ -15235,7 +15231,7 @@ Epoch: 10000 Loss: 0.0001 PDELoss: 0.0000 BCLoss: 0.0000
 <li><a href="https://drive.google.com/file/d/1u64cvvA4GNSl3un0L8UAz40Pa4hSMSQx/view?usp=drive_link">lab2_adam_model.pt</a></li>
 </ul>
 <br/>
-<p>The first cell downloads the file; the second loads the model onto the selected device. The file holds the whole <code>PINN</code> object, so the class above must have been defined before it is loaded.</p>
+<p>The file holds the whole <code>PINN</code> object, so the class must be defined before it is loaded.</p>
 <br/>
 </div>
 </div>
@@ -15280,13 +15276,13 @@ To: /content/lab2_adam_model.pt
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>Two helpers follow. The first evaluates the network at a set of points, takes the two first derivatives it needs, and returns $\sigma_{xx}$ and $\sigma_{yy}$ from the constitutive relations; this is the same computation performed inside the right-edge boundary function, now applied over the whole domain rather than on an edge. The second draws two scatter maps side by side, each with its own fixed colour range.</p>
+<p>The trained model is evaluated over the whole domain, and the stresses are recovered from its first derivatives by the constitutive relations, the same computation performed inside the right-edge boundary function.</p>
 <br/>
 <p>Observe that the stresses are <em>derived</em> quantities here. The network outputs displacements only; the stress field is obtained afterwards by differentiating it. A finite element code proceeds the same way, computing nodal displacements first and recovering stresses from them, with the difference that the finite element derivative is taken of a piecewise-polynomial interpolant and is discontinuous between elements, while the PINN derivative is taken of a smooth function and is exact.</p>
 <br/>
 <p>The test grid is then refined to $100 \times 100$, giving ten thousand evaluation points, four times as many as were used for training. As in Section 5, most of them lie between training points, so this is a genuine test of whether the network has learned a field rather than memorized a lattice. Note that the test points carry <code>requires_grad = True</code> even though nothing is trained here: a stress is a derivative, and a derivative needs a graph.</p>
 <br/>
-<p>The colour limits are fixed by hand so that the PINN maps can be compared directly against the finite element maps shown earlier: $u$ on $[0, 0.182]$, $v$ on $[-0.06, 0.011]$, $\sigma_{xx}$ on $[-0.0022, 1.0]$ and $\sigma_{yy}$ on $[-0.15, 0.45]$. Fixing the scale by hand is essential for a comparison of this kind, since a colour map with automatically chosen limits makes every field look equally well resolved.</p>
+<p>The colour limits are fixed by hand to those of the finite element maps shown earlier, so that the two sets can be compared directly. Fixing the scale by hand is essential for a comparison of this kind, since a colour map with automatically chosen limits makes every field look equally well resolved.</p>
 <br/>
 </div>
 </div>
@@ -15413,9 +15409,9 @@ To: /content/lab2_adam_model.pt
 <li><a href="https://drive.google.com/file/d/1NVLCxoF9HX-K2wa1Ofk7TaRCdYzktRCY/view?usp=drive_link">lab2_Plate Data</a></li>
 </ul>
 <br/>
-<p>The finite element data file contains, for each node, the two coordinates, the two displacement components, and the two stress components, and the cell below splits it accordingly. The array named <code>w</code> again holds the $x$-displacement $u$, following the convention adopted in the network code.</p>
+<p>The finite element data file contains, for each node, the two coordinates, the two displacement components, and the two stress components, and is split accordingly. The array named <code>w</code> again holds the $x$-displacement $u$, following the convention adopted in the network code.</p>
 <br/>
-<p>The line used for the comparison is the anti-diagonal $x + y = 10$, running from the corner $(0,10)$ to the corner $(10,0)$. It is a good line to choose, because it crosses the domain from the free top edge to the loaded right edge and therefore passes through the regions where each boundary condition is active. The next cells evaluate the trained model along a hundred and one evenly spaced points on that line, select the finite element nodes lying on it, and draw four panels, one per field, each carrying the PINN prediction as a solid line and the finite element reference as a dashed black line.</p>
+<p>The line used for the comparison is the anti-diagonal $x + y = 10$, running from the corner $(0,10)$ to the corner $(10,0)$. It is a good line to choose, because it crosses the domain from the free top edge to the loaded right edge and therefore passes through the regions where each boundary condition is active. The trained model is evaluated along that line and drawn against the finite element nodes lying on it, one panel per field, with the PINN prediction as a solid line and the finite element reference as a dashed black line.</p>
 <br/>
 <p>Before looking, predict which of the four panels will show the largest discrepancy. The argument was made above: the loss weights all residuals equally, the equation and stress residuals carry a factor of $E/(1-\nu^2)\approx 55$, and the transverse displacement $v$ is the smallest of the fields, so it exerts the least influence on the objective and has the least incentive to be right.</p>
 <br/>
@@ -15557,9 +15553,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The observation set is selected by a condition on both coordinates at once: a finite element node is retained when its $x$-coordinate is one of $0, 2, 5, 10$ <em>and</em> its $y$-coordinate is also one of those four values. The retained nodes therefore sit at the sixteen intersections of four vertical lines with four horizontal ones, a coarse rectangular array of sensors rather than a dense sampling of anything. For each of them the two displacement components and the two stress components are retained.</p>
-<br/>
-<p>Read the logic of the selection rather than the numbers, because a single-coordinate test would have given something quite different. Testing $x$ alone would retain four complete vertical lines, several hundred nodes; conjoining the two tests reduces that to the handful of points where the two families of lines cross. Sixteen scattered readings against the $2500$ collocation points of Section 6.2 is a very thin data budget, which is what makes the improvement worth measuring.</p>
+<p>The sensors are sixteen finite element nodes at the intersections of four vertical and four horizontal lines, a coarse rectangular array rather than a dense sampling of anything, and for each of them the two displacement components and the two stress components are retained. Sixteen scattered readings against the $2500$ collocation points of Section 6.2 is a very thin data budget, which is what makes the improvement worth measuring.</p>
 <br/>
 <p>One honest caveat about the experiment. The observations are drawn from the same finite element solution that will serve as the reference, so the comparison is favourable by construction; real sensor data would be noisy, would not lie on a tidy lattice, and would not include stresses, which are not directly measurable and would have to be inferred from strain gauges.</p>
 <br/>
@@ -15643,7 +15637,7 @@ $$</p>
 \mathcal{L} = \mathcal{L}_{\text{PDE}} + \mathcal{L}_{\text{BC}} + \mathcal{L}_{\text{data}},
 $$</p>
 <br/>
-<p>where the data group is itself the sum of three mean squared errors, on $u$, on $v$, and on the pair of stresses. All weights are again $1$, so in the notation of the formula above $\omega_{\text{data}} = \omega_{\text{PDE}} = \omega_{\text{BC}} = 1$. As in Section 6.2 the training cell may be skipped; the trained model is loaded below.</p>
+<p>where the data group is itself the sum of three mean squared errors, on $u$, on $v$, and on the pair of stresses. All weights are again $1$, so in the notation of the formula above $\omega_{\text{data}} = \omega_{\text{PDE}} = \omega_{\text{BC}} = 1$. As in Section 6.2 the training may be skipped; a trained model is provided.</p>
 <br/>
 <p>Note that the comparison being set up is a fair one: the same architecture, the same optimizer, the same learning rate, and the same number of epochs, with the data term as the only difference. Whatever improvement appears is attributable to the data and to nothing else.</p>
 <br/>
@@ -15725,9 +15719,9 @@ Epoch: 10000 Loss: 0.0002 PDELoss: 0.0001 BCLoss: 0.0001 DATALoss: 0.0001
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The printed trace repays a moment's reading. At epoch $0$ the total is $22.6604$, split as $3.2873$ from the equilibrium equations, $6.9588$ from the boundary conditions and $12.4143$ from the data. The data term dominates at initialization for a reason that should now be predictable: an untrained network outputs values near zero, and the measured displacements and stresses are not near zero, so the data residual is essentially the size of the measurements themselves.</p>
+<p>The printed trace repays a moment's reading. At initialization the data term is the largest of the three, for a reason that should now be predictable: an untrained network outputs values near zero, and the measured displacements and stresses are not near zero, so the data residual is essentially the size of the measurements themselves.</p>
 <br/>
-<p>By epoch $1000$ the total has fallen to $0.0031$ and by the end of the run to about $10^{-4}$, with the three groups roughly balanced and the equation term the largest of them. The trace is not monotone: at epoch $2000$ the total rises to $0.0178$, almost all of it in the data term, before falling again. Adam is not a descent method in the strict sense; its momentum and its per-parameter scaling can carry it into a worse region, and on a non-convex objective an occasional excursion of this kind is unremarkable so long as the run recovers. It is a useful reminder that a single printed loss is a sample of a trajectory rather than a measurement of quality, and it is one more argument for reading the whole trace rather than the last line.</p>
+<p>By the end of the run the total is about $10^{-4}$, with the three groups roughly balanced and the equation term the largest of them. The trace is not monotone: once on the way down the total rises again, almost all of the rise in the data term, before falling back. Adam is not a descent method in the strict sense; its momentum and its per-parameter scaling can carry it into a worse region, and on a non-convex objective an occasional excursion of this kind is unremarkable so long as the run recovers. It is a useful reminder that a single printed loss is a sample of a trajectory rather than a measurement of quality, and it is one more argument for reading the whole trace rather than the last line.</p>
 <br/>
 </div>
 </div>
@@ -15808,7 +15802,7 @@ To: /content/lab2_data_model.pt
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Comparison with FEM data along the diagonal</strong></p>
-<p>The decisive plot is the next one. The cell below evaluates the data-trained model along the same anti-diagonal as in Section 6.2 and draws the four panels, this time with the data-trained PINN in green against the same dashed black reference.</p>
+<p>The decisive comparison is along the same anti-diagonal as in Section 6.2, with the data-trained PINN in green against the same dashed black reference.</p>
 <br/>
 <p>Because the two figures are drawn on the same axes and along the same line, the comparison the section exists for is made by looking at this figure and the corresponding figure of Section 6.2 in turn, one panel at a time. In the two $x$-direction panels the pure solver was already close to the reference, and there is little room for the data to help. In the $y$-displacement and $\sigma_{yy}$ panels the pure solver deviated, and the data-trained curve should sit closer to the black line. That is the contribution of the data term, stated as a picture: it does not improve the model uniformly, it improves it where the physics-only loss was insensitive.</p>
 <br/>

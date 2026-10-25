@@ -13300,7 +13300,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The computation below fits the ten radial basis functions by least squares and shows the result twice: the fitted curve against the data, and the fitted coefficients as a stem plot. Look at the second panel before reading on.</p>
+<p>The ten radial basis functions are fitted by least squares, and the result is shown twice: the fitted curve against the data, and the fitted coefficients as a stem plot. The second panel is the one to look at.</p>
 </div>
 </div>
 </div>
@@ -13494,9 +13494,7 @@ number of exactly zero coefficients: 0
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>With the penalty in place the fitted curve is smooth and passes near the observations rather than through them. The largest coefficient has fallen from about $15.6$ to about $5.0$, and the alternation of signs from one centre to the next has largely disappeared. The residual sum of squares has risen from zero to about $4.60$, so the fit to the training data is strictly worse than before. This is the intended effect and not a failure: a small amount of bias has been accepted in exchange for a large reduction in variance, and the smooth curve is the better description of whatever process generated the observations.</p>
-<br/>
-<p>The coefficient required to bring this about is small. At $\lambda = 0.1$ the penalty term contributes $2.81$ against a residual sum of squares of $4.60$, so the two are of comparable size at the solution.</p>
+<p>With the penalty in place the fitted curve is smooth and passes near the observations rather than through them. The largest coefficient has fallen by a factor of three, and the alternation of signs from one centre to the next has largely disappeared. The residual sum of squares is no longer zero, so the fit to the training data is strictly worse than before. This is the intended effect and not a failure: a small amount of bias has been accepted in exchange for a large reduction in variance, and the smooth curve is the better description of whatever process generated the observations.</p>
 <br/>
 <p>One feature of the result deserves attention: not a single coefficient is exactly zero. The $L_2$ penalty shrinks every coefficient toward the origin and, except by coincidence, sends none of them all the way there. It therefore governs how large the model may be, not which basis functions it may use.</p>
 </div>
@@ -13505,7 +13503,7 @@ number of exactly zero coefficients: 0
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Sweeping $\lambda$ over five decades and recording all ten coefficients at each value gives the plot below, with $\lambda$ on a logarithmic axis. It is called a regularization path.</p>
+<p>Sweeping $\lambda$ over five decades and recording all ten coefficients at each value, with $\lambda$ on a logarithmic axis, gives what is called a regularization path.</p>
 </div>
 </div>
 </div>
@@ -13549,7 +13547,7 @@ number of exactly zero coefficients: 0
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Every trace begins at its unregularized value on the left, where the coefficients are spread from about $-14.9$ to $+15.6$, and every one of them contracts toward zero as $\lambda$ increases.</p>
+<p>Every trace begins at its unregularized value on the left, where the coefficients are large and of both signs, and every one of them contracts toward zero as $\lambda$ increases.</p>
 </div>
 </div>
 </div>
@@ -13737,7 +13735,7 @@ $$</p>
 <br/>
 <p><strong>Lab:</strong></p>
 <br/>
-<p>The following example demonstrates that if a linear model is correctly specified and well estimated, then the residual errors (i.e., the differences between predicted and observed values) should approximately follow a Gaussian distribution:</p>
+<p>This example demonstrates that if a linear model is correctly specified and well estimated, then the residual errors (i.e., the differences between predicted and observed values) should approximately follow a Gaussian distribution:</p>
 <br/>
 <p>$$
 \varepsilon = y - \omega^T x \sim \mathcal{N}(0, \sigma^2)
@@ -13898,6 +13896,14 @@ $$</p>
 "/>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<br/>
+<p>Only the least-squares line leaves residuals that are centred at zero, bell-shaped, and without structure when each residual is plotted against the previous one. The two lines chosen by hand leave residuals that are shifted and drift along the line of points, which is the signature of a model that has not absorbed everything the data have to say. The Gaussian noise model is therefore not only an assumption behind least squares; it is also a check that the fit can be held to afterwards.</p>
 </div>
 </div>
 </div>
@@ -14193,7 +14199,7 @@ $$</p>
 <br/>
 <p><strong>Model, points and loss terms</strong></p>
 <br/>
-<p>The network takes $x$ and returns $u_\theta(x)$ directly: one input, three hidden layers of $64$ units with $\tanh$, one output. The collocation points are the $N_f = 100$ interior points of a uniform grid, so that no collocation point coincides with a boundary point, and the forcing term is evaluated at them once. Two details matter for every comparison in this notebook. <code>new_pinn()</code> resets the random seed before building the network, so that every model starts from the same weights; and <code>derivative</code> wraps the one call to automatic differentiation that is needed, returning $\partial u/\partial x$ at the collocation points, so that calling it twice gives $u_{xx}$. The optimizer is Adam with learning rate $10^{-4}$, and every long run takes $30\,000$ iterations.</p>
+<p>The network takes $x$ and returns $u_\theta(x)$ directly. The collocation points are the interior points of a uniform grid, so that no collocation point coincides with a boundary point. One detail matters for every comparison in this notebook: <code>new_pinn()</code> resets the random seed before building the network, so that every model starts from the same weights, and every run uses the same points, optimizer and number of iterations. Whatever differs between two runs is therefore the loss and nothing else.</p>
 </div>
 </div>
 </div>
@@ -14236,7 +14242,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The boundary values stay at zero whatever $\alpha$ is; what $\alpha$ changes is the interior, which oscillates faster and needs a larger second derivative to match the forcing. The two conditions therefore live on very different scales, and the gap widens with $\alpha$. The cell below draws the exact solution for three values of $\alpha$.</p>
+<p>The boundary values stay at zero whatever $\alpha$ is; what $\alpha$ changes is the interior, which oscillates faster and needs a larger second derivative to match the forcing. The two conditions therefore live on very different scales, and the gap widens with $\alpha$, as the exact solution for three values of $\alpha$ shows.</p>
 </div>
 </div>
 </div>
@@ -14297,7 +14303,7 @@ $$</p>
 \mathcal{L}_{\mathrm{total}} = \mathcal{L}_{\mathrm{PDE}} + \mathcal{L}_{\mathrm{BC}} .
 $$</p>
 <br/>
-<p>This is the <strong>naive PINN</strong>, and it is what most first implementations do. Every iteration of the loop below does the same five things: clear the old gradients, evaluate the network and its second derivative at the collocation points, form the two losses and their sum, backpropagate, and take a step. The two losses are recorded at every iteration and plotted under the prediction.</p>
+<p>This is the <strong>naive PINN</strong>, and it is what most first implementations do. The two losses are recorded separately throughout training, because the question of this chapter is not whether the total falls but what each term does while it falls.</p>
 </div>
 </div>
 </div>
@@ -14394,7 +14400,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The result is not a slightly wrong solution; it is a different function altogether. The prediction is a steep curve that leaves the plotting window, the PDE residual is $3.4\times10^{4}$, and the boundary loss is $58$, which means the two end values are of order $\pm 10$. After $30\,000$ iterations neither condition is satisfied, and yet nothing in the run would have raised an alarm: the total loss started above $10^{5}$ and fell for the whole run. The lower panel shows the two terms separately. The PDE loss is three orders of magnitude larger than the boundary loss throughout, and it is the only one that descends; the boundary loss starts near $10^{-2}$, because an untrained network returns values near zero at the ends, and is driven <em>up</em> to about $60$, with a few brief dips, as the optimizer trades the boundary values away for a smaller residual. A loss that is falling says that the optimizer is doing its job. It does not say that the job was well posed. The simplest remedy is to weight the two terms differently, which is the subject of the next chapter; what the optimizer was actually doing is examined in Section 7.1.</p>
+<p>The result is not a slightly wrong solution; it is a different function altogether. The prediction is a steep curve that leaves the plotting window, the PDE residual is still enormous, and the boundary loss says that the two end values are of order ten rather than zero. Neither condition is satisfied, and yet nothing in the run would have raised an alarm: the total loss fell for the whole run. The lower panel shows why. The PDE loss is three orders of magnitude larger than the boundary loss throughout, and it is the only one that descends; the boundary loss starts small, because an untrained network returns values near zero at the ends, and is driven <em>up</em> by orders of magnitude as the optimizer trades the boundary values away for a smaller residual. A loss that is falling says that the optimizer is doing its job. It does not say that the job was well posed. The simplest remedy is to weight the two terms differently, which is the subject of the next chapter; what the optimizer was actually doing is examined in Section 7.1.</p>
 </div>
 </div>
 </div>
@@ -14410,7 +14416,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Fixed weighting sets the coefficient once and never touches it again. If the two gradient norms are mismatched by a known factor, a constant can bring the two contributions to the same length, and the method corrects the imbalance when the factor is known. The two runs below use the same network, starting weights, points, optimizer and $30\,000$ iterations as the naive run of Section 5.2, and differ from it in one constant.</p>
+<p>Fixed weighting sets the coefficient once and never touches it again. If the two gradient norms are mismatched by a known factor, a constant can bring the two contributions to the same length, and the method corrects the imbalance when the factor is known. The two runs of this chapter use the same network, starting weights, points, optimizer and number of iterations as the naive run of Section 5.2, and differ from it in one constant.</p>
 </div>
 </div>
 </div>
@@ -14532,7 +14538,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The solution is recovered. The prediction lies on the exact solution to the width of the line, with a maximum error of $4\times10^{-4}$; the PDE residual has fallen from $3.4\times10^{4}$ to $7.8\times10^{-3}$, and the boundary loss to $4.7\times10^{-8}$. Nothing else changed between this run and the previous one: same network, same starting weights, same points, same optimizer, same number of iterations. One constant in one line turned a failure into a solution, which is both the appeal of fixed weighting and its warning.</p>
+<p>The solution is recovered. The prediction lies on the exact solution to the width of the line, the PDE residual has fallen by seven orders of magnitude from the naive run, and the boundary loss is negligible. Nothing else changed between this run and the previous one: same network, same starting weights, same points, same optimizer, same number of iterations. One constant in one line turned a failure into a solution, which is both the appeal of fixed weighting and its warning.</p>
 </div>
 </div>
 </div>
@@ -14636,7 +14642,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The boundary loss is small, $2.9\times10^{-7}$, so the two ends are pinned at zero. Everything between them is wrong: the prediction shoots off the plotting window within a few hundredths of either end, the PDE residual is $1.7\times10^{4}$, and the maximum error is about $10$. A weight of $10^{2}$ was enough to enforce the boundary values, and not enough to keep the interior from the same large-amplitude function that the naive PINN found.</p>
+<p>The boundary loss is small, so the two ends are pinned at zero. Everything between them is wrong: the prediction shoots off the plotting window within a few hundredths of either end, and the PDE residual is as large as in the naive run. A weight of $10^{2}$ was enough to enforce the boundary values, and not enough to keep the interior from the same large-amplitude function that the naive PINN found.</p>
 <br/>
 <p>The run did not fail to converge. The optimizer converged, the losses settled, and the boundary condition is satisfied to seven decimal places; by every number available during training this looks like a finished run. It converged to the wrong function, and the only way to know is to compare with the exact solution, which on a real problem is not available. <strong>A badly chosen weight does not produce a visibly broken run; it produces a converged-looking run with a wrong answer.</strong> That is what makes the choice of weight a matter of care rather than of taste.</p>
 </div>
@@ -14658,7 +14664,7 @@ $$</p>
 <br/>
 <p>The first is that <strong>the right value is not known in advance</strong>. The weight $10^{4}$ was found by trying values, with the exact solution available to judge them, which is not a procedure available on a problem whose solution is unknown. A sweep over weights, with some independent check of the answer, can address this, at the cost of many training runs.</p>
 <br/>
-<p>The second is that <strong>even a right value does not stay right</strong>. The relative scales of the two gradients change as the network moves through parameter space, so a pair of constants that balances them at one iteration over-corrects at another, and the competition reappears with the roles reversed. The figure below shows the sequence. No sweep can address this, because the quantity being tuned is not a constant of the problem at all. The remedy has to read the gradients as they are, not as they were, which is <strong>adaptive weighting</strong>.</p>
+<p>The second is that <strong>even a right value does not stay right</strong>. The relative scales of the two gradients change as the network moves through parameter space, so a pair of constants that balances them at one iteration over-corrects at another, and the competition reappears with the roles reversed. The two figures show the sequence. No sweep can address this, because the quantity being tuned is not a constant of the problem at all. The remedy has to read the gradients as they are, not as they were, which is <strong>adaptive weighting</strong>.</p>
 </div>
 </div>
 </div>
@@ -14831,7 +14837,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Adaptive weighting</strong></p>
 <br/>
-<p>The function <code>grad_norm</code> collects the gradient of one loss with respect to every parameter of the network and returns its length. Two of its arguments deserve a word. <code>retain_graph=True</code> keeps the computation graph alive, because the same graph is needed twice, once per loss, and then once more for <code>loss.backward()</code>. And <code>allow_unused=True</code> is needed because the bias of the output layer adds a constant to $u_\theta$, which $u_{xx}$ does not see, so its gradient with respect to $\mathcal{L}_{\mathrm{PDE}}$ does not exist and is returned as <code>None</code>. The weights are plain numbers, computed with <code>.item()</code>, so they scale the losses without being differentiated themselves. The loop records both losses and both weights at every iteration, so that the two conditions can be compared with the naive run of Section 5.2 and the weights with what was chosen by hand in Section 6.</p>
+<p><code>grad_norm</code> measures the length of the gradient of one loss term with respect to every parameter of the network, which is the quantity the rule of Section 7.2 reads. The weights are recomputed from the two lengths at every iteration and treated as plain numbers, so that they scale the losses without being differentiated themselves. Both losses and both weights are recorded throughout, so that the two conditions can be compared with the naive run of Section 5.2 and the weights with what was chosen by hand in Section 6.</p>
 </div>
 </div>
 </div>
@@ -14956,7 +14962,7 @@ Final weights | PDE 5.000e-01 | BC 7.992e+04
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The solution is recovered, with a maximum error of $9\times10^{-4}$, a PDE residual of $4.1\times10^{-2}$ and a boundary loss of $2.5\times10^{-12}$. No constant was chosen. The middle panel is the counterpart of the naive run of Section 5.2, and the difference is in the boundary loss: there it was driven up to $60$, here it is held between $10^{-4}$ and $10^{-12}$ from the first iterations, while the PDE loss descends in two stages, a long plateau near $10^{3}$ and then a drop to $10^{-1}$ after iteration $20\,000$. The boundary condition is never sacrificed for the residual, which is what balancing the two gradients means in practice. The bottom panel shows what the rule chose to achieve this: $\omega_{\mathrm{PDE}}$ sits at $0.5$ throughout, as it must when one gradient is far longer than the other, and $\omega_{\mathrm{BC}}$ rises within the first few hundred iterations from $10^{2}$ to $10^{4}$ and then fluctuates between $10^{4}$ and $10^{6}$ for the rest of the run, ending at $2.7\times10^{4}$.</p>
+<p>The solution is recovered, with a residual and a boundary loss as small as those of the well-chosen fixed weight, and no constant was chosen. The middle panel is the counterpart of the naive run of Section 5.2, and the difference is in the boundary loss: there it was driven up by orders of magnitude, here it is held small from the first iterations, while the PDE loss descends in stages. The boundary condition is never sacrificed for the residual, which is what balancing the two gradients means in practice. The bottom panel shows what the rule chose to achieve this: $\omega_{\mathrm{PDE}}$ sits at $0.5$ throughout, as it must when one gradient is far longer than the other, and $\omega_{\mathrm{BC}}$ rises within the first few hundred iterations to the order of $10^{4}$ and then fluctuates over about two decades above that for the rest of the run.</p>
 <br/>
 <p>This panel is the retrospective verdict on Section 6. The fixed weight $10^{4}$ sits at the lower edge of the band the rule chose, which is why it worked; the fixed weight $10^{2}$ is a hundred times below it, which is why it did not. And the band is two decades wide and never settles, which is the second limitation of Section 6.3 made visible: the right weight is not a number but a moving target, and a constant can only ever be right on average.</p>
 </div>
@@ -14982,7 +14988,7 @@ Final weights | PDE 5.000e-01 | BC 7.992e+04
 \omega_i^{(k)} = (1 - \alpha)\,\omega_i^{(k-1)} + \alpha\,\hat\omega_i^{(k)} ,
 $$</p>
 <br/>
-<p>with $0 &lt; \alpha \le 1$. This is an exponential moving average of the instantaneous weights. At $\alpha = 1$ it is Section 7.2; at small $\alpha$ the weight remembers roughly the last $1/\alpha$ measurements and a single spike moves it by a fraction $\alpha$ of the spike. The run below uses $\alpha = 0.01$, a memory of about a hundred iterations, and starts both weights at $1$, so that the first hundred iterations are a ramp from the naive objective to the balanced one.</p>
+<p>with $0 &lt; \alpha \le 1$. This is an exponential moving average of the instantaneous weights. At $\alpha = 1$ it is Section 7.2; at small $\alpha$ the weight remembers roughly the last $1/\alpha$ measurements and a single spike moves it by a fraction $\alpha$ of the spike. This run uses $\alpha = 0.01$, a memory of about a hundred iterations, and starts both weights at $1$, so that the first hundred iterations are a ramp from the naive objective to the balanced one.</p>
 </div>
 </div>
 </div>
@@ -15115,7 +15121,7 @@ Final weights | PDE 5.000e-01 | BC 1.187e+04
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The solution is again recovered, with a maximum error of $1.9\times10^{-3}$, a PDE residual of $9.4\times10^{-2}$ and a boundary loss of $5.2\times10^{-12}$, all within a factor of two of Section 7.2. What has changed is visible in the two lower panels. The weight is now a smooth curve: it ramps up over the first few hundred iterations, settles near $10^{7}$, and descends over the run to $3\times10^{4}$, while the instantaneous values it averages scatter across two decades around it. The losses follow suit; the PDE loss descends in one smooth sweep instead of the plateau-and-drop of Section 7.2, and the boundary loss is held in a narrow band near $10^{-7}$ with none of the excursions seen there.</p>
+<p>The solution is again recovered, to about the accuracy of Section 7.2. What has changed is visible in the two lower panels. The weight is now a smooth curve: it ramps up over the first few hundred iterations and then drifts slowly over the run, while the instantaneous values it averages scatter across two decades around it. The losses follow suit; the PDE loss descends in one smooth sweep instead of the stages of Section 7.2, and the boundary loss is held in a narrow band with none of the excursions seen there.</p>
 <br/>
 <p>Two things are worth noticing. First, the averaged weight sits a decade <em>above</em> the band of Section 7.2 for most of the run, not in the middle of it. An arithmetic average of a quantity that spikes upward is pulled up by the spikes, and the gradient ratio is such a quantity; averaging $\log\hat\omega$ instead would give the geometric mean and would sit in the middle. Second, the smoothing cost nothing in accuracy here and bought a far more regular training curve, which is why most practical implementations of adaptive weighting include it, with an update every few iterations rather than every iteration as a further economy.</p>
 </div>
@@ -15190,7 +15196,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Hard-constrained PINN</strong></p>
 <br/>
-<p>The same network, points, optimizer, learning rate, iterations and starting weights. The only changes are the line that defines $u$ inside the loop and the loss, which is now the PDE term alone. The second derivative is taken of the product, not of $N_\theta$, so the multiplier enters the residual through the chain rule; automatic differentiation takes care of that. The boundary loss is evaluated once at the end, to confirm that it is zero.</p>
+<p>The same network, points, optimizer and starting weights as every run before; only the definition of $u$ and the loss change, and the loss is now the PDE term alone. The boundary loss is evaluated once at the end, to confirm that it is zero.</p>
 </div>
 </div>
 </div>
@@ -15280,7 +15286,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
-<p>The hard-constrained model is the most accurate of the four. The PDE residual is $6.8\times10^{-3}$, the smallest in the notebook, and the boundary loss is exactly zero, not because it was minimized but because it was never possible for it to be anything else. The error panel shows the signature of the construction: the error is about $2\times10^{-4}$ across the interior and drops to exactly zero at $x = 0$ and $x = 1$, where the multiplier vanishes. There was no boundary term to weight and nothing to trade the interior against, so every gradient step went into the equation.</p>
+<p>The hard-constrained model is the most accurate of the four. The PDE residual is the smallest in the notebook, and the boundary loss is exactly zero, not because it was minimized but because it was never possible for it to be anything else. The error panel shows the signature of the construction: the error is small and smooth across the interior and drops to exactly zero at $x = 0$ and $x = 1$, where the multiplier vanishes. There was no boundary term to weight and nothing to trade the interior against, so every gradient step went into the equation.</p>
 </div>
 </div>
 </div>
@@ -15317,10 +15323,10 @@ $$</p>
 <li><strong>A penalty term is prior knowledge written into the objective.</strong> An overfitted model is one whose coefficients are large and nearly cancelling, so the magnitude of the coefficients is itself worth a cost; ridge regression adds $\lambda\lVert\theta\rVert_2^2$ to the residual sum of squares and trades a little bias for a large reduction in variance.</li>
 <li><strong>Regularization is MAP estimation.</strong> Maximum likelihood under Gaussian noise is least squares; a Gaussian prior on the coefficients turns the maximum a posteriori estimate into ridge regression, with $\lambda$ the ratio of the noise variance to the prior variance. The penalty is not a trick but a prior, and the coefficient is a statement of relative trust.</li>
 <li><strong>The physics loss is a soft constraint, not a regularizer in the narrow sense.</strong> It carries problem-specific knowledge, a governing equation rather than a preference for small parameters, into the objective by penalty, and a PINN is a MAP estimate whose prior is a physical law.</li>
-<li><strong>A naive PINN can fail while its loss falls.</strong> With unit weights the PDE term of the $\alpha = 7$ Poisson problem dominated the update so completely that the boundary condition was never enforced; after $30\,000$ iterations the residual was $3.4\times10^{4}$, the boundary loss $58$, and the prediction a different function altogether.</li>
-<li><strong>A fixed weight can work, and can fail silently.</strong> $\omega_{\mathrm{BC}} = 10^{4}$ recovered the solution to $4\times10^{-4}$, while $\omega_{\mathrm{BC}} = 10^{2}$ converged, with a small boundary loss, to a wrong interior. The right value is not known in advance, and even a right value becomes wrong as the gradients change during training.</li>
-<li><strong>The reason is in the gradients, not the losses.</strong> The optimizer follows the sum of the term gradients, and the two differ in length for reasons unrelated to the coefficients. Adaptive weighting reads the gradient norms at every iteration and rescales the terms so that their contributions are equal; it found a boundary weight of order $10^{4}$ to $10^{6}$ by itself and recovered the solution to $9\times10^{-4}$. Smoothing the weights with a moving average removes their iteration-to-iteration swings at no cost in accuracy. The conditions remain penalties.</li>
-<li><strong>A masking function removes the boundary condition from the competition</strong> by building it into the output, $u = 4x(1-x)N_\theta(x)$. There is no boundary loss to weight, and the PDE residual alone reached $6.8\times10^{-3}$, the smallest of the four runs.</li>
+<li><strong>A naive PINN can fail while its loss falls.</strong> With unit weights the PDE term of the $\alpha = 7$ Poisson problem dominated the update so completely that the boundary condition was never enforced; the residual stayed enormous, the boundary loss was driven up rather than down, and the prediction was a different function altogether.</li>
+<li><strong>A fixed weight can work, and can fail silently.</strong> $\omega_{\mathrm{BC}} = 10^{4}$ recovered the solution, while $\omega_{\mathrm{BC}} = 10^{2}$ converged, with a small boundary loss, to a wrong interior. The right value is not known in advance, and even a right value becomes wrong as the gradients change during training.</li>
+<li><strong>The reason is in the gradients, not the losses.</strong> The optimizer follows the sum of the term gradients, and the two differ in length for reasons unrelated to the coefficients. Adaptive weighting reads the gradient norms at every iteration and rescales the terms so that their contributions are equal; it found a boundary weight of the order of $10^{4}$ and above by itself and recovered the solution. Smoothing the weights with a moving average removes their iteration-to-iteration swings at no cost in accuracy. The conditions remain penalties.</li>
+<li><strong>A masking function removes the boundary condition from the competition</strong> by building it into the output, $u = 4x(1-x)N_\theta(x)$. There is no boundary loss to weight, and the PDE residual alone reached the smallest value of the four runs.</li>
 </ul>
 <p><strong>Looking ahead.</strong> Weighting and masking deal with conditions that compete for the parameters. The remaining limitations of a PINN are of a different kind: the collocation points can miss the part of the domain that matters, the solution can have a shape that a smooth network does not easily represent, and a transient problem can be trained without regard to the direction of time. <strong>PINN: Limitations and Overcoming Strategies</strong> takes these up.</p>
 </div>

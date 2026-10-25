@@ -13092,7 +13092,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><br/><br/>
-<font size="5"><b>Scientific Machine Learning:</b></font><br/><br/><br/>
+<font size="5"><b>Scientific Machine Learning:</b></font><br/>
 <font size="6"><b>Embedding Prior Knowledge into Neural Networks: Labs</b></font><br/><br/></p>
 <p>These laboratory problems accompany the discussion of embedding prior knowledge into neural networks. Three compact examples are treated, each one an application in which the required behavior is known before any data is seen.</p>
 <table>
@@ -13235,7 +13235,7 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Setup</strong></p>
-<p>The cell below loads the libraries and fixes the random seeds. Run it once before any of the sections that follow. Everything else is written out where it is used: each section builds its own network with <code>nn.Sequential</code>, writes its own training loop, and draws its own figures, so that no part of a laboratory problem is hidden in a helper defined elsewhere.</p>
+<p>Libraries and random seeds, fixed once for all three laboratories. Everything else is written out where it is used: each section builds its own network, writes its own training loop and draws its own figures, so that no part of a laboratory problem is hidden in a helper defined elsewhere.</p>
 </div>
 </div>
 </div>
@@ -13282,7 +13282,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><a name="section-1-1"></a></p>
-<h2 id="1.1.-Sparse-Noisy-Data">1.1. Sparse Noisy Data<a class="anchor-link" href="#1.1.-Sparse-Noisy-Data">¶</a></h2>
+<h2 id="1.1.-Sparse-Noisy-Data">1.1. Sparse Noisy Data<a class="anchor-link" href="#1.1.-Sparse-Noisy-Data">¶</a></h2><p>Twelve noisy measurements of a decaying concentration, one of them an outlier and the last one negative: a record on which a fit that knows nothing about the physics can go wrong in exactly the ways the prior knowledge forbids.</p>
 </div>
 </div>
 </div>
@@ -13714,7 +13714,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><a name="section-2-1"></a></p>
-<h2 id="2.1.-Reference-SIR-Data">2.1. Reference SIR Data<a class="anchor-link" href="#2.1.-Reference-SIR-Data">¶</a></h2>
+<h2 id="2.1.-Reference-SIR-Data">2.1. Reference SIR Data<a class="anchor-link" href="#2.1.-Reference-SIR-Data">¶</a></h2><p>The reference curves are the SIR equations integrated numerically, and seventeen noisy measurements of the three fractions are drawn from them. The noise is what makes the sum and the signs of the predictions uncertain.</p>
 </div>
 </div>
 </div>
@@ -13875,7 +13875,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><a name="section-2-3"></a></p>
-<h2 id="2.3.-Training-the-Baseline,-Soft,-and-Hard-Models">2.3. Training the Baseline, Soft, and Hard Models<a class="anchor-link" href="#2.3.-Training-the-Baseline,-Soft,-and-Hard-Models">¶</a></h2>
+<h2 id="2.3.-Training-the-Baseline,-Soft,-and-Hard-Models">2.3. Training the Baseline, Soft, and Hard Models<a class="anchor-link" href="#2.3.-Training-the-Baseline,-Soft,-and-Hard-Models">¶</a></h2><p>The three models fit the same seventeen measurements and differ only in where the prior knowledge enters: nowhere, in the loss, or in the output.</p>
 </div>
 </div>
 </div>
@@ -14003,7 +14003,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><a name="section-2-4"></a></p>
-<h2 id="2.4.-Projection-and-Output-Transformations">2.4. Projection and Output Transformations<a class="anchor-link" href="#2.4.-Projection-and-Output-Transformations">¶</a></h2>
+<h2 id="2.4.-Projection-and-Output-Transformations">2.4. Projection and Output Transformations<a class="anchor-link" href="#2.4.-Projection-and-Output-Transformations">¶</a></h2><p>Projection is applied to the baseline after training, with no further learning; the sum at $t = 0$ shows the correction being exact.</p>
 </div>
 </div>
 </div>
@@ -14237,7 +14237,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><a name="section-3-1"></a></p>
-<h2 id="3.1.-Pairwise-Interaction-Data">3.1. Pairwise Interaction Data<a class="anchor-link" href="#3.1.-Pairwise-Interaction-Data">¶</a></h2>
+<h2 id="3.1.-Pairwise-Interaction-Data">3.1. Pairwise Interaction Data<a class="anchor-link" href="#3.1.-Pairwise-Interaction-Data">¶</a></h2><p>Ninety pairs at distances between $0.7$ and $2$, all in nearly the same orientation and centred near the origin. The narrowness is deliberate: the training data say nothing about rotation or translation, so whatever invariance a model shows must come from where the symmetry was embedded.</p>
 </div>
 </div>
 </div>
@@ -14353,7 +14353,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><a name="section-3-3"></a></p>
-<h2 id="3.3.-Training-the-Symmetry-Strategies">3.3. Training the Symmetry Strategies<a class="anchor-link" href="#3.3.-Training-the-Symmetry-Strategies">¶</a></h2>
+<h2 id="3.3.-Training-the-Symmetry-Strategies">3.3. Training the Symmetry Strategies<a class="anchor-link" href="#3.3.-Training-the-Symmetry-Strategies">¶</a></h2><p>Three models are trained on the same energies: one on the raw coordinates, one on the pairs rotated, translated and swapped, and one on the distance alone.</p>
 </div>
 </div>
 </div>
@@ -14441,7 +14441,7 @@ invariant loss = 3.663e-06
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.3.1.-Transformation-Pooling-at-Inference">3.3.1. Transformation Pooling at Inference<a class="anchor-link" href="#3.3.1.-Transformation-Pooling-at-Inference">¶</a></h3>
+<h3 id="3.3.1.-Transformation-Pooling-at-Inference">3.3.1. Transformation Pooling at Inference<a class="anchor-link" href="#3.3.1.-Transformation-Pooling-at-Inference">¶</a></h3><p>Pooling averages the augmented model's prediction over four rotations and the two particle orderings. It is applied at inference and trains nothing.</p>
 </div>
 </div>
 </div>
@@ -14493,7 +14493,7 @@ invariant loss = 3.663e-06
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><a name="section-3-4"></a></p>
-<h2 id="3.4.-Equivalent-Configurations">3.4. Equivalent Configurations<a class="anchor-link" href="#3.4.-Equivalent-Configurations">¶</a></h2>
+<h2 id="3.4.-Equivalent-Configurations">3.4. Equivalent Configurations<a class="anchor-link" href="#3.4.-Equivalent-Configurations">¶</a></h2><p>One pair at distance $1.2$ is rotated through a full circle, moved along a line and reordered. Every one of these configurations has the same energy, so any variation in a prediction is a failure of invariance.</p>
 </div>
 </div>
 </div>
@@ -14709,7 +14709,7 @@ $$</p>
 U(RX)=U(X), \qquad \mathbf F(RX)=R\mathbf F(X).
 $$</p>
 <br/>
-<p>The following cell checks this relation numerically. It verifies the <strong>equivariance structure</strong>, not the physical accuracy of the force magnitude.</p>
+<p>The check is numerical: the pair is rotated, and the force predicted for the rotated pair is compared with the rotated force of the original. It verifies the <strong>equivariance structure</strong>, not the physical accuracy of the force magnitude.</p>
 </div>
 </div>
 </div>

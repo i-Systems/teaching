@@ -13428,7 +13428,7 @@ $$</p>
 <br/>
 <p><strong>Define Network and Hyper-parameters</strong></p>
 <p>The neural network takes the coordinate $x$ as input and predicts the transverse displacement $y(x)$.</p>
-<p>The architecture is four hidden layers of $32$ units with $\tanh$ activations. Adam with a learning rate of $10^{-3}$ completes the setup; every loss term will be a mean squared residual.</p>
+<p>It is an ordinary fully connected network, and nothing in the method depends on its size; every loss term will be a mean squared residual.</p>
 </div>
 </div>
 </div>
@@ -14694,7 +14694,7 @@ property of the system at the same time.</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Set the Random Seed</strong></p>
-<p>Here the seed fixes both the weights and the collocation points, which are redrawn at every iteration below.</p>
+<p>Here the seed fixes both the weights and the collocation points, which are redrawn at every training iteration.</p>
 </div>
 </div>
 </div>
@@ -14922,7 +14922,7 @@ $$</p>
 \mathcal{L}_{IC}.
 $$</p>
 <br/>
-<p>Both terms are evaluated at the freshly drawn points. The initial-condition residual is pushed towards $1$ rather than towards $0$, and that line is the only place where the value $h(0) = 1$ enters the computation at all.</p>
+<p>No measured level appears anywhere: the network is fitted to the equation at the freshly drawn points and to the single value $h(0) = 1$.</p>
 </div>
 </div>
 </div>
@@ -15019,7 +15019,7 @@ Epoch: 5000 Loss: 0.000190 ODELoss: 0.000177 ICLoss: 0.000012
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Result</strong></p>
-<p>The prediction should follow the parabola down to the moment the tank empties; the printed error puts a number on how closely.</p>
+<p>The prediction should follow the parabola down to the moment the tank empties.</p>
 </div>
 </div>
 </div>
@@ -15102,7 +15102,7 @@ rather than assumed.</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Define Network and Unknown Parameter</strong></p>
-<p>A fresh network and a fresh $C$, initialized at $0.5$ — half the true value, so that any agreement at the end has to be earned.</p>
+<p>A fresh network and a fresh $C$, handed to the optimizer as one more number to adjust.</p>
 </div>
 </div>
 </div>
@@ -15836,7 +15836,7 @@ t\in[0,100]
 $$</p>
 <br/>
 <p>using a high-accuracy numerical ODE solver.</p>
-<p>This plays the part of the real epidemic. The network never sees it — only the handful of noisy samples drawn from it below — and it is kept aside so that the recovered trajectory and parameters can be checked at the end.</p>
+<p>This plays the part of the real epidemic. The network never sees it — only the handful of noisy samples drawn from it — and it is kept aside so that the recovered trajectory and parameters can be checked at the end.</p>
 </div>
 </div>
 </div>
@@ -16048,7 +16048,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Define Functions to Compute Physics Loss</strong></p>
-<p>The helper below is the same <code>derivative</code> as in the earlier chapters.</p>
+<p>The same <code>derivative</code> as in the earlier chapters.</p>
 </div>
 </div>
 </div>
@@ -16263,7 +16263,7 @@ Epoch  9000 | Loss: 1.201e-04 | Data: 1.949e-06 | Physics: 9.751e-05 | beta: 0.0
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Refine with L-BFGS</strong></p>
-<p>The loss history above spikes repeatedly after the first few thousand epochs: Adam's fixed step is too large for the sharpest directions once the loss is small. As in the beam problem, the network and the two parameters are refined with L-BFGS, which uses curvature and a line search. The closure recomputes the full loss and its gradient at every trial point. L-BFGS decides each step by comparing loss values along a line search. Near $10^{-5}$ those differences fall below what single precision can resolve, so the refinement runs in double precision.</p>
+<p>The printed loss spikes repeatedly after the first few thousand epochs: Adam's fixed step is too large for the sharpest directions once the loss is small. As in the beam and the tank, the network and the two parameters are refined with L-BFGS, in double precision, with the same closure as before.</p>
 </div>
 </div>
 </div>
@@ -16666,7 +16666,7 @@ $$</p>
 <br/>
 <p>The physical readings are worth naming. At the inlet the fluid arrives with a uniform speed of $1$ in the $x$-direction and none in $y$. At the outlet the flow is required to leave straight, $v=0$, and the pressure is fixed at zero, which is a datum rather than a physical statement: only pressure <em>differences</em> drive an incompressible flow, so the pressure field is determined by the equations only up to an additive constant, and one boundary value must be nominated to remove that freedom. At the channel walls and on the cylinder surface the no-slip condition applies: a viscous fluid does not slide along a solid boundary, so both velocity components vanish there.</p>
 <br/>
-<p>Make a neural network and loss functions like below :</p>
+<p>The network and the loss functions are arranged as in the figure:</p>
 <br/>
 </div>
 </div>
@@ -16808,11 +16808,11 @@ To: /content/lab3_gt_domain.npy
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Define Collocation Points</strong></p>
-<p>The boundary point sets are constructed by hand, one per physical surface: two hundred points along each of the top and bottom walls, one hundred at the inlet and one hundred at the outlet, and two hundred distributed around the cylinder by sampling the angle $\theta$ uniformly on $[0, 2\pi]$ and mapping to $(r\cos\theta, r\sin\theta)$ with $r = 0.05$.</p>
+<p>The boundary point sets are constructed by hand, one per physical surface, and the cylinder is covered by sampling the angle around it.</p>
 <br/>
 <p>The cylinder illustrates a real advantage of the mesh-free formulation. A curved boundary in a finite volume code requires a body-fitted mesh, or a cut-cell treatment, or an immersed boundary method, each of which is a substantial piece of engineering. Here the curved boundary is a list of parametric coordinates, and the no-slip condition is imposed at those coordinates by the same mean squared error used everywhere else. Geometry that is difficult to mesh is not difficult to sample.</p>
 <br/>
-<p>The top wall, the bottom wall, and the cylinder are concatenated into a single array, since all three carry the identical no-slip condition and can therefore share one loss term. The scatter plot then shows the domain points together with the four boundary sets; as in Section 6 in <strong>Physics-informed Neural Networks (PINN)</strong>, the value of the plot is that it catches construction errors that would otherwise appear only as an inexplicable failure to converge, and the geometry here is complicated enough that the check is worth its cell.</p>
+<p>The top wall, the bottom wall, and the cylinder are concatenated into a single array, since all three carry the identical no-slip condition and can therefore share one loss term. The scatter plot then shows the domain points together with the four boundary sets; as in Section 6 in <strong>Physics-informed Neural Networks (PINN)</strong>, the value of the plot is that it catches construction errors that would otherwise appear only as an inexplicable failure to converge.</p>
 <br/>
 </div>
 </div>
@@ -16896,7 +16896,7 @@ To: /content/lab3_gt_domain.npy
 </li>
 </ul>
 <br/>
-<p>The cell that places the sensors repays reading, because the placement is deliberate rather than random. Twelve locations are laid out on a rectangular lattice spanning the channel, four values of $x$ from $-0.3$ to $1.3$ crossed with three values of $y$ from $-0.45$ to $0.45$. Five more are placed evenly around a circle of radius $0.12$ centred on the cylinder, that is, just outside the cylinder's own radius of $0.05$. None of these seventeen points is guaranteed to be a node of the CFD mesh, so the cell measures the distance from each to every one of the $19692$ domain points and keeps the nearest.</p>
+<p>The placement is deliberate rather than random: twelve sensors on a rectangular lattice spanning the channel, and five on a ring just outside the cylinder, each moved to the nearest node of the CFD mesh.</p>
 <br/>
 <p>The arrangement is worth a moment's thought, because it is a small piece of experimental design. The lattice samples the free stream and the wake; the ring concentrates five of the seventeen sensors, nearly a third of the budget, in the annulus immediately around the cylinder where the velocity gradients are largest and therefore where the viscous term $\mu(u_{xx}+u_{yy})$ is largest. Since $\mu$ can only be identified from places where the viscous term is not negligible, spending a third of the sensors there is exactly the right instinct. PINN: Limitations and Overcoming Strategies returns to this idea in its general form.</p>
 <br/>
@@ -16977,11 +16977,11 @@ GT obs: (17, 3)
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Define PINN Network</strong></p>
-<p>The network maps the two coordinates to three outputs, $u$, $v$ and $p$, through four hidden layers of two hundred and fifty-six units. It is considerably larger than the plate network of Section 6 in <strong>Physics-informed Neural Networks (PINN)</strong>, reflecting a harder problem: a non-linear system of three coupled equations on a domain with a hole in it.</p>
+<p>The network maps the two coordinates to three outputs, $u$, $v$ and $p$. It is considerably larger than the plate network of Section 6 in <strong>Physics-informed Neural Networks (PINN)</strong>, reflecting a harder problem: a non-linear system of three coupled equations on a domain with a hole in it.</p>
 <br/>
-<p>Predicting the pressure with the same network that predicts the velocities is the natural choice here, since the momentum equations couple all three fields at every point. Weights are again Xavier-normal initialized with zero biases.</p>
+<p>Predicting the pressure with the same network that predicts the velocities is the natural choice here, since the momentum equations couple all three fields at every point.</p>
 <br/>
-<p>The plotting helper that follows displays three panels for the $x$-velocity, namely the CFD reference, the current prediction, and the absolute error between them, followed by two panels tracing the estimated density and viscosity against iteration.</p>
+<p>The plotting helper shows the $x$-velocity against the CFD reference, with their difference, and traces the estimated density and viscosity against iteration.</p>
 <br/>
 <p>Those two parameter traces are the most informative diagnostic in this laboratory, and it is worth knowing how to read them. A parameter estimate that is still moving steadily has not converged, whatever the loss is doing; one that has flattened onto a horizontal line has converged, and the value it has flattened onto is the estimate. A trace that oscillates without settling indicates that the learning rate is too large for that parameter, or that the parameter is not identifiable from the available information, which is a possibility examined directly below.</p>
 <br/>
@@ -17109,7 +17109,7 @@ $$</p>
 <br/>
 <p>The third equation is new and is the reason the system has three equations for three unknowns. It is the continuity equation for an incompressible fluid: the divergence of the velocity field vanishes, so that no volume is created or destroyed anywhere. It contains neither $\rho$ nor $\mu$, and therefore carries no information about them, but it is indispensable, since without it there would be two equations for three fields.</p>
 <br/>
-<p>The residual function computes seven derivatives, two first and two second for each velocity component and one first derivative for the pressure, and assembles the three residuals. The two unknown parameters appear in it as ordinary multiplicative factors. This is the mechanical heart of the inverse construction: because they are ordinary factors in an expression built from tensors that are being tracked, the residual is a differentiable function of them, and $\partial\mathcal{L}/\partial\rho$ costs nothing beyond the backward pass that is happening anyway.</p>
+<p>The two unknown parameters appear in the residual as ordinary multiplicative factors. This is the mechanical heart of the inverse construction: because they are ordinary factors in an expression built from tensors that are being tracked, the residual is a differentiable function of them, and $\partial\mathcal{L}/\partial\rho$ costs nothing beyond the backward pass that is happening anyway.</p>
 <br/>
 </div>
 </div>
@@ -17172,9 +17172,7 @@ $$</p>
 <br/>
 <p>$$p(1,y) = 0, \quad v(1,y) = 0$$</p>
 <br/>
-<p>The inlet and outlet coordinates are written schematically here; the code places them at $x=-0.5$ and $x=1.5$, matching the geometry of Section 4.1. All eight conditions are Dirichlet, prescribing values rather than derivatives, so the three residual functions below are simply network evaluations, with a subtraction where the prescribed value is non-zero. The inlet function subtracts a tensor of ones from the $x$-velocity, implementing $u = u_{\text{in}} = 1$; every other condition is homogeneous and the residual is the raw output.</p>
-<br/>
-<p>The wall function takes the concatenated array of top wall, bottom wall and cylinder points and returns the two velocity components, which is why those three surfaces were merged earlier: one function and one loss term serve all of them.</p>
+<p>The inlet and outlet coordinates are written schematically here; the code places them at $x=-0.5$ and $x=1.5$, matching the geometry of Section 4.1. All eight conditions are Dirichlet, prescribing values rather than derivatives, so each residual is the network output minus the prescribed value. The top wall, the bottom wall and the cylinder share one residual function and one loss term, since all three carry the same no-slip condition.</p>
 <br/>
 </div>
 </div>
@@ -17205,11 +17203,11 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Parameters to be Optimized</strong></p>
-<p>All we need to do is to define the unknown parameters, specifically $\rho$ (density) and $\mu$ (viscosity), as trainable variables within the PINN. The next cell is where the entire inverse machinery of Section 3 in <strong>Physics-informed Neural Networks (PINN)</strong> is implemented, and it is two lines long.</p>
+<p>All we need to do is to define the unknown parameters, specifically $\rho$ (density) and $\mu$ (viscosity), as trainable variables within the PINN. This is where the entire inverse machinery of Section 3 in <strong>Physics-informed Neural Networks (PINN)</strong> is implemented, and it is two lines long.</p>
 <br/>
 <p>Both parameters start at $1$. For the density that is the true value by luck; for the viscosity it is a factor of one hundred too large, so the optimizer must transport that parameter from $1$ down to $0.01$.</p>
 <br/>
-<p>The optimizer is constructed with three parameter groups, one for the network and one for each scalar, all at a learning rate of $10^{-4}$. Groups exist so that different learning rates can be assigned, and here the facility is set up but not used, all three rates being equal. It is worth doing an order-of-magnitude check on whether that rate suffices. Adam normalizes each update by a running estimate of the gradient magnitude, so the step taken in any one parameter is at most of order the learning rate. Moving the viscosity from $1$ to $0.01$ therefore requires at least about $0.99/10^{-4} \approx 10^4$ iterations even at full speed, which is why the loop below runs for fifty thousand and not for the thousand that sufficed in Section 5 in <strong>Physics-informed Neural Networks (PINN)</strong>.</p>
+<p>It is worth doing an order-of-magnitude check on whether the learning rate of $10^{-4}$ suffices for the viscosity. Adam normalizes each update by a running estimate of the gradient magnitude, so the step taken in any one parameter is at most of order the learning rate. Moving the viscosity from $1$ to $0.01$ therefore requires at least about $0.99/10^{-4} \approx 10^4$ iterations even at full speed, which is why the training runs for fifty thousand iterations and not for the thousand that sufficed in Section 5 in <strong>Physics-informed Neural Networks (PINN)</strong>.</p>
 <br/>
 </div>
 </div>
@@ -17245,7 +17243,7 @@ $$</p>
 \end{align*}
 $$</p>
 <br/>
-<p>The first cell initializes the bookkeeping lists and the second runs the loop, in which the loss is</p>
+<p>The loss is</p>
 <br/>
 <p>$$
 \mathcal{L} = \mathcal{L}_{\text{PDE}} + \mathcal{L}_{\text{BC}} + 10\,\mathcal{L}_{\text{data}},
@@ -17253,7 +17251,7 @@ $$</p>
 <br/>
 <p>and the factor of ten is the first non-unit weight in this notebook. It is deliberate and the reason is structural rather than empirical. In the forward problems of Sections 4 to 6, every term of the loss was pushing towards the same unique answer, so the weighting affected only the rate of convergence. Here the equation and boundary terms have a whole family of solutions available to them, one for each pair $(\rho,\mu)$, and the data term is the <em>only</em> term that distinguishes among them. Under-weighting it would let the network settle into some equation-satisfying flow with wrong properties and a small total loss. The data term is carrying the entire identification, and seventeen points against nearly twenty thousand collocation points would otherwise be a whisper against a shout.</p>
 <br/>
-<p>Everything else in the loop is familiar: three equation residuals over the domain, six boundary residuals, three data residuals for the three observed fields, all as mean squared errors, summed and backpropagated. A single optimizer step updates the network weights, the density, and the viscosity together, which is Section 3 in <strong>Physics-informed Neural Networks (PINN)</strong>'s central claim reduced to one line of code. The estimates are appended to the trace lists at every iteration, so the two parameter plots are drawn from a record of all fifty thousand steps.</p>
+<p>A single optimizer step updates the network weights, the density, and the viscosity together, which is Section 3 in <strong>Physics-informed Neural Networks (PINN)</strong>'s central claim reduced to one line of code.</p>
 <br/>
 <p><strong>What is identifiable, and why the pressure observations matter</strong></p>
 <p>Before reading the answer, here is an argument worth following, because it decides whether this problem can be solved at all.</p>
@@ -17492,9 +17490,7 @@ To: /content/vis_list.npy
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The cell prints a predicted density of $0.9945$ and a predicted viscosity of $0.0099$, and redraws the diagnostic panels.</p>
-<br/>
-<p>Compare against the true values $\rho = 1$ and $\mu = 0.01$. The density is recovered with a relative error of $0.55\%$ and the viscosity with a relative error of about $1\%$, the latter having travelled from its initial value of $1$ down by two orders of magnitude to reach $0.0099$. Both estimates were obtained from seventeen measurements, fewer than one domain point in a thousand, together with the knowledge that the flow obeys the Navier-Stokes equations.</p>
+<p>Against the true values $\rho = 1$ and $\mu = 0.01$, both parameters are recovered to within about one percent, the viscosity having travelled two orders of magnitude down from its initial value. Both estimates were obtained from seventeen measurements, fewer than one domain point in a thousand, together with the knowledge that the flow obeys the Navier-Stokes equations.</p>
 <br/>
 <p>That result deserves a moment's reflection rather than a nod. The network was never told what a density is. It was given a functional form containing two unknown numbers, a set of coordinates, and seventeen readings, and it recovered both numbers by gradient descent, at the same time and in the same loop as it recovered the flow field. The estimated field, shown in the first row of panels against the CFD reference and the pointwise error, is a by-product; in an identification problem it is the two numbers that were wanted.</p>
 <br/>
@@ -17597,7 +17593,7 @@ $$</p>
 <br/>
 <p>A conventional finite element or finite difference code cannot even be started in this situation, since assembling its system of equations requires a value or a flux at every boundary node. A PINN, by contrast, will run happily: it will minimize a loss that contains no information about the top edge, and it will return one member of the family. Whether that member is the right one is another question, and Section 5.2 answers it.</p>
 <br/>
-<p>Make a neural network and loss functions like below:</p>
+<p>The network and the loss functions are arranged as in the figure:</p>
 <br/>
 <br/>
 </div>
@@ -17668,7 +17664,7 @@ $$</p>
 <li><a href="https://drive.google.com/file/d/1PHr2D76v31bQ58vrw9O1B5yqyJUovaC4/view?usp=sharing">lab4_gt_domain</a></li>
 </ul>
 <br/>
-<p>As in Section 6 in <strong>Physics-informed Neural Networks (PINN)</strong>, this reference plays two roles that should be kept distinct: it supplies the nine sensor readings used for training in Sections 8.3 and 8.4, and it supplies the ground truth against which all three models are judged. Only nine of its ten thousand values ever reach the optimizer.</p>
+<p>As in Section 6 in <strong>Physics-informed Neural Networks (PINN)</strong>, this reference plays two roles that should be kept distinct: it supplies the nine sensor readings used for training in Sections 5.3 and 5.4, and it supplies the ground truth against which all three models are judged. Only nine of its ten thousand values ever reach the optimizer.</p>
 <br/>
 </div>
 </div>
@@ -17714,9 +17710,9 @@ To: /content/lab4_gt_domain.npy
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Define Observation Points</strong></p>
-<p>Assume that nine thermometers are positioned at specific locations as shown below. These thermometers provide observed temperature data, which will be used to infer the unknown boundary condition in the 2D heat transfer problem.</p>
+<p>Assume that nine thermometers are positioned inside the plate. Their readings are the observed data from which the unknown boundary condition will be inferred.</p>
 <br/>
-<p>The cell selects the grid indices $15$, $50$ and $85$ in each direction and takes all nine combinations, giving a regular $3\times3$ array of sensors at coordinates approximately $-0.697$, $0.010$ and $0.717$ in each axis. They therefore sit well inside the domain, none of them close to the unknown top edge, which is realistic: an inaccessible boundary is inaccessible to instrumentation as well.</p>
+<p>The sensors form a regular $3\times3$ array well inside the domain, none of them close to the unknown top edge, which is realistic: an inaccessible boundary is inaccessible to instrumentation as well.</p>
 <br/>
 <p>Nine numbers is a thin diet even compared with the seventeen of Section 4, and the unknown here is not a pair of scalars but an entire function along an edge. That mismatch is why Section 5.3 improves the answer without perfecting it, and why Section 5.4 needs to supply structure rather than more data.</p>
 <br/>
@@ -17778,7 +17774,7 @@ To: /content/lab4_gt_domain.npy
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Define Collocation Points</strong></p>
-<p>A $100\times100$ lattice gives ten thousand interior collocation points, and each of the four edges is sampled with a hundred points; the last lines turn every point set into a tensor on the selected device, with gradients tracked only for the interior points, where the equation is differentiated. Note that the top edge is included in the point sets even though no condition is imposed on it in this section; it will be needed in Section 5.4, where the prior knowledge term is evaluated there, and in Section 5.5, where the recovered profile is plotted along it.</p>
+<p>Collocation points fill the square, and each of the four edges is sampled as well. The top edge is included even though no condition is imposed on it in this section; it will be needed in Section 5.4, where the prior knowledge term is evaluated there, and in Section 5.5, where the recovered profile is plotted along it.</p>
 <br/>
 </div>
 </div>
@@ -17849,9 +17845,9 @@ To: /content/lab4_gt_domain.npy
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Define PINN Network</strong></p>
-<p>Two inputs, one output, four hidden layers of two hundred and fifty-six units, with Adam at a learning rate of $10^{-4}$. The network is nearly as large as the Navier-Stokes network of Section 4, which is generous for a linear equation in a single field. Since the whole section is a comparison between three training regimes, a fixed and generous architecture is the right choice: it removes capacity from the list of possible explanations for the differences observed.</p>
+<p>The network is nearly as large as the Navier-Stokes network of Section 4, which is generous for a linear equation in a single field. Since the whole section is a comparison between three training regimes, a fixed and generous architecture is the right choice: it removes capacity from the list of possible explanations for the differences observed.</p>
 <br/>
-<p>The plotting helper draws the reference field, the current prediction, and the absolute error, with the error panel's colour scale fixed to $[0, 0.2]$ so that the three regimes can be compared on identical terms. Fixing that scale by hand is what makes the comparison in Sections 8.3 and 8.4 legible.</p>
+<p>The plotting helper draws the reference field, the current prediction, and the absolute error on a fixed colour scale, so that the three regimes of Sections 5.2 to 5.4 can be compared on identical terms.</p>
 <br/>
 </div>
 </div>
@@ -17958,7 +17954,7 @@ To: /content/lab4_gt_domain.npy
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Define Governing Equation and Three Known Boundary Conditions</strong></p>
-<p>The residual function takes two derivatives in each direction and returns $\kappa(T_{xx} + T_{yy})$ with $\kappa = 1$ written explicitly as a factor. The three boundary functions evaluate the network on the bottom, right and left edges and subtract the prescribed values $0$, $1$ and $0.5$ respectively.</p>
+<p>The residual is the Laplacian of the network output, and the three boundary functions compare the network with the prescribed values on the bottom, right and left edges.</p>
 <br/>
 <p>There is no function for the top edge. That absence is the entire content of this section, and it is worth pausing on the fact that nothing in the code will complain about it. The loss will be assembled from four terms, will descend, and will produce a field. The missing physics announces itself nowhere except in the answer.</p>
 <br/>
@@ -18001,13 +17997,13 @@ To: /content/lab4_gt_domain.npy
 <div class="text_cell_render border-box-sizing rendered_html">
 <br/>
 <p><strong>Train</strong></p>
-<p>Twenty thousand epochs with</p>
+<p>The loss is</p>
 <br/>
 <p>$$
 \mathcal{L} = \mathcal{L}_{\text{PDE}} + \mathcal{L}_{\text{bottom}} + \mathcal{L}_{\text{right}} + \mathcal{L}_{\text{left}},
 $$</p>
 <br/>
-<p>and no term for the top edge and no data. This is the pure physics baseline, and the diagnostic figure is redrawn every thousand epochs so that the field can be watched as it forms.</p>
+<p>with no term for the top edge and no data. This is the pure physics baseline.</p>
 <br/>
 </div>
 </div>
@@ -18180,7 +18176,7 @@ To: /content/lab4_wo_data.pt
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Train with data</strong></p>
-<p>The model is rebuilt from scratch so that the comparison is clean, then trained for the same twenty thousand epochs with the identical optimizer and learning rate. The loss now carries one additional term,</p>
+<p>The model is rebuilt from scratch and trained with the same settings, so that the comparison is clean. The loss now carries one additional term,</p>
 <br/>
 <p>$$
 \mathcal{L} = \mathcal{L}_{\text{PDE}} + \mathcal{L}_{\text{BC}} + \mathcal{L}_{\text{data}},
@@ -18374,7 +18370,7 @@ $$</p>
 <p>The general lesson is worth extracting from the special case. Anything you know about the solution that can be written as a differentiable function of the network output, vanishing when the knowledge is respected, can be added to the loss as a term. Monotonicity, symmetry, non-negativity, a bound, an integral constraint, a known asymptotic slope: these are all expressible in the same way. The PINN loss is not restricted to differential equations. It is a place to put everything you know, which is the theme Embedding Prior Knowledge into Neural Networks develops at length.</p>
 <br/>
 <p><strong>Train again using both data and prior knowledge</strong></p>
-<p>The model is rebuilt once more and trained for the same twenty thousand epochs with</p>
+<p>The model is rebuilt once more and trained with</p>
 <br/>
 <p>$$
 \mathcal{L} = \mathcal{L}_{\text{PDE}} + \mathcal{L}_{\text{BC}} + \mathcal{L}_{\text{data}} + \mathcal{L}_{\text{prior}},
