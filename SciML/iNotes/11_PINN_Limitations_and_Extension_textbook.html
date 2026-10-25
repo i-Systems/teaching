@@ -13749,7 +13749,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=57fe154e"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The predicted von Mises field on the same colour scale as the ground truth, $0$ to $3\,\sigma_0$, and the absolute error on a grey scale from $0$ to $0.15\,\sigma_0$; errors above that are shown white.</p>
+<p>The predicted von Mises field and its absolute error against the Kirsch solution, on the colour scales used for every model of this lab.</p>
 </div>
 </div>
 </div>
@@ -13894,7 +13894,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=cf4b5e3f"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Predicted fields in the top row on the colour scale of the ground truth, errors in the bottom row on the grey scale of the previous figure.</p>
+<p>The two predictions side by side with the ground truth, and their errors on a common scale.</p>
 </div>
 </div>
 </div>
@@ -14474,7 +14474,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=0170689b"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.3.4.-Naive-PINN-vs.-Fourier-feature-PINN">3.3.4. Naive PINN vs. Fourier-feature PINN<a class="anchor-link" href="#3.3.4.-Naive-PINN-vs.-Fourier-feature-PINN">¶</a></h3>
+<h3 id="3.3.4.-Naive-PINN-vs.-Fourier-feature-PINN">3.3.4. Naive PINN vs. Fourier-feature PINN<a class="anchor-link" href="#3.3.4.-Naive-PINN-vs.-Fourier-feature-PINN">¶</a></h3><p>The Fourier-feature model is trained by the same loop as the naive one, with the embedding placed in front of the network and nothing else changed.</p>
 </div>
 </div>
 </div>
@@ -14579,7 +14579,7 @@ Fourier PINN Relative L2 Error : 0.062004
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=5a157d00"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The Fourier-feature PINN lies on the exact solution through all ten oscillations, with a relative error two orders of magnitude below the naive model's. The loss trace tells the same story from the other side: the naive loss was still high at the end of the run, while the Fourier-feature loss had fallen by several orders of magnitude within the first few hundred iterations. No data were added and the equation was not changed. The network was given a representation in which the solution is easy to express, and the optimizer found it almost at once.</p>
+<p>The Fourier-feature PINN lies on the exact solution through all ten oscillations, with a relative error two orders of magnitude below the naive model's. The loss trace tells the same story from the other side: the naive loss was still high at the end of the run, while the Fourier-feature loss had fallen by three orders of magnitude by the first printed checkpoint. No data were added and the equation was not changed. The network was given a representation in which the solution is easy to express, and the optimizer found it almost at once.</p>
 </div>
 </div>
 </div>
@@ -14982,7 +14982,7 @@ Naive | epoch 3000 | loss 5.0001e-01
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=MwZKiN-3VHFE"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The prediction is compared with the exact shear force, with the absolute error beside it.</p>
+<p>The prediction is compared with the exact shear force.</p>
 </div>
 </div>
 </div>
@@ -15020,6 +15020,13 @@ Naive | epoch 3000 | loss 5.0001e-01
 "/>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=57aa0e63"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The loss stops at one half and cannot go lower, and the prediction shows why: it is a smooth line that splits the difference between the two halves of the exact shear force, wrong on both sides of the load rather than only at it. No continuous function can satisfy the equation and the equilibrium condition at once, and the optimizer has found the best compromise a smooth network allows.</p>
 </div>
 </div>
 </div>
@@ -15081,7 +15088,7 @@ Learned alpha : 0.9980
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=V4xM4L_oVHFE"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The two predictions and their errors are drawn together, and the learned coefficient is compared with the value mechanics assigns to the jump.</p>
+<p>The two predictions are drawn together, and the learned coefficient is compared with the value mechanics assigns to the jump.</p>
 </div>
 </div>
 </div>
@@ -15297,7 +15304,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=5iR7MsCrX7rA"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The two conductivities and the piecewise linear temperature, evaluated on a $201\times201$ grid that serves as the ground truth throughout.</p>
+<p>The two conductivities and the piecewise linear temperature, evaluated on a $201\times201$ grid that serves as the ground truth throughout, followed by the collocation points: interior points in each material, points on the four edges, and points along the interface.</p>
 </div>
 </div>
 </div>
@@ -15509,6 +15516,13 @@ EPOCH :  5000 | Loss_Total : 1.361e-02 | PDE : 1.313e-04 | BC : 6.055e-04 | Flux
 </pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1dac1b01"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The flux term stops falling almost at once and stays where it is while the residual and the boundary terms keep going down: the optimizer has found the compromise a single network allows, satisfying the equation and giving up on the interface.</p>
 </div>
 </div>
 </div>
@@ -97566,7 +97580,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=f3e1d19a"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This case illustrates a fundamental challenge in training PINNs for time-dependent problems: the optimizer may satisfy the governing equations without correctly propagating the initial state through time. Because the standard objective function treats all time points equally, the network is not required to resolve the solution at the beginning of the interval before fitting the later stages. To overcome this, the training process must be modified to prioritize the early stages of the time axis, ensuring that the solution is established chronologically, starting from the initial condition.</p>
+<p>The naive prediction drifts away from the reference as time goes on: its error grows steadily from $t = 0$, and by the end of the interval the field bears little resemblance to the plateaus and transition layers of the reference, although the residual there is small, since a nearly stationary field satisfies the equation almost as well as the true transient does. This case illustrates a fundamental challenge in training PINNs for time-dependent problems: the optimizer may satisfy the governing equations without correctly propagating the initial state through time. Because the standard objective function treats all time points equally, the network is not required to resolve the solution at the beginning of the interval before fitting the later stages. To overcome this, the training process must be modified to prioritize the early stages of the time axis, ensuring that the solution is established chronologically, starting from the initial condition.</p>
 </div>
 </div>
 </div>
@@ -97692,7 +97706,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=6d0d7360"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.3.1.-Causal-Training">4.3.1. Causal Training<a class="anchor-link" href="#4.3.1.-Causal-Training">¶</a></h3><p>The residual is averaged within each time slice to give $L_i$, the weights are built from the detached cumulative sum with $\epsilon = 100$, a large value because the losses here are small numbers, and the weighted average replaces the plain one. The smallest weight is printed alongside the losses as training proceeds, so that the advancing front can be watched.</p>
+<h3 id="4.3.1.-Causal-Training">4.3.1. Causal Training<a class="anchor-link" href="#4.3.1.-Causal-Training">¶</a></h3><p>The only change to the training loop is the causal weighting of the residual, with $\epsilon = 100$, a large value because the slice losses here are small numbers. The smallest weight is printed alongside the losses as training proceeds, so that the advancing front can be watched.</p>
 </div>
 </div>
 </div>
@@ -150225,7 +150239,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=2ae92c52"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A relative error of one is the error of predicting zero everywhere; above that level a prediction is worse than no prediction at all.</p>
+<p>The same error as a continuous curve over the interval, on logarithmic axes.</p>
 </div>
 </div>
 </div>
@@ -150265,7 +150279,7 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=D5LsE9E-yu6E"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The curves make the same point at a glance. The red curve is flat and low until $t \approx 0.1$ and then rises almost as a straight line on the logarithmic axes, heading for the level of no prediction at all. The blue curve is flat from beginning to end. The crossing of the two near $t = 0.1$ is where the solution has fallen to about a third of its initial size, which is where the weight $e^{-2\lambda t}$ has dropped below one tenth.</p>
+<p>The curves make the same point at a glance. The red curve is flat and low until $t \approx 0.1$ and then rises almost as a straight line on the logarithmic axes, heading for the level of no prediction at all. The blue curve is flat from beginning to end. The crossing of the two near $t = 0.1$ is where the solution has fallen to about a third of its initial size, which is where the weight $e^{-2\lambda t}$ has fallen to about one seventh.</p>
 </div>
 </div>
 </div>

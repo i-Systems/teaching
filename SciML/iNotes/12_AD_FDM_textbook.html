@@ -13669,6 +13669,14 @@ $$</p>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=c01224e8"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<br/>
+<p>The three approximations lie on the exact curve at the scale of the upper panel, and the lower panel shows what the upper one hides: an error that follows the shape of $u''''$, largest where the curve bends most, and that shrinks by about a factor of four each time $h$ is halved. The stencil is doing what Taylor's theorem says it should, and its accuracy is set by $h$ and by nothing else.</p>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=mNUxvA-00vmp"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -14675,7 +14683,7 @@ h = 0.0100 | final loss = 8.370e-08 | relative L2 error = 4.275e-04
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=k3UX2JCn0vm9"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Two PINNs with the same network, the same points, the same loss and the same optimizer solved the same heat conduction problem, and the one difference between them, how $\theta_{xx} + \theta_{yy}$ was computed, showed up exactly where the theory of Chapters 2 and 3 said it would. The AD-PINN had the smaller error, because its derivatives were exact. The FDM-PINN was faster, because five forward passes cost less than two orders of autograd, and its error was the truncation error of its stencil, falling with $h$ until roundoff took over. Both reached the same answer to within about a hundredth of a degree on a field whose total rise is under two degrees, so for this problem either method is adequate, and the choice is a trade between the last digit of accuracy and the training time.</p>
+<p>Two PINNs with the same network, the same points, the same loss and the same optimizer solved the same heat conduction problem, and the one difference between them, how $\theta_{xx} + \theta_{yy}$ was computed, showed up exactly where the theory of Chapters 2 and 3 said it would. The AD-PINN had the smaller error, because its derivatives were exact. The FDM-PINN was faster, because five forward passes cost less than two orders of autograd, and its error was the truncation error of its stencil, falling with $h$ until it met the floor set by the network itself, the error of the AD-PINN. Both reached the same answer to within about a hundredth of a degree on a field whose total rise is under two degrees, so for this problem either method is adequate, and the choice is a trade between the last digit of accuracy and the training time.</p>
 </div>
 </div>
 </div>
