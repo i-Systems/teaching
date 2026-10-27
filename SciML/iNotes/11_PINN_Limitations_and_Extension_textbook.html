@@ -15023,7 +15023,7 @@ Naive | epoch 3000 | loss 5.0001e-01
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=57aa0e63"><div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=be657639"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The loss stops at one half and cannot go lower, and the prediction shows why: it is a smooth line that splits the difference between the two halves of the exact shear force, wrong on both sides of the load rather than only at it. No continuous function can satisfy the equation and the equilibrium condition at once, and the optimizer has found the best compromise a smooth network allows.</p>
@@ -15519,7 +15519,7 @@ EPOCH :  5000 | Loss_Total : 1.361e-02 | PDE : 1.313e-04 | BC : 6.055e-04 | Flux
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=1dac1b01"><div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=c160339b"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The flux term stops falling almost at once and stays where it is while the residual and the boundary terms keep going down: the optimizer has found the compromise a single network allows, satisfying the equation and giving up on the interface.</p>
@@ -97596,23 +97596,93 @@ $$</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=6493bb3c"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A causal PINN keeps one network over the whole domain and changes only how much each time slice is allowed to matter. Write the residual loss of the $i$th slice as</p>
+<p>A causal PINN keeps one network over the whole domain and changes only how much each time slice is allowed to matter. The change is small enough to be worth deriving rather than asserting.</p>
+<br/>
+<p>The construction begins by putting an order on time. Introduce $N_t + 1$ nodes,</p>
 <br/>
 <p>$$
-L_i = \frac{1}{N_x}\sum_{j=1}^{N_x} r_\theta(x_j, t_i)^2 ,
+0 = t_0 &lt; t_1 &lt; t_2 &lt; \cdots &lt; t_{N_t} = T ,
 $$</p>
 <br/>
-<p>so that the ordinary loss is the plain average $\mathcal{L}_{\mathrm{PDE}} = \frac{1}{N_t}\sum_i L_i$. Causal training replaces the average by a weighted one,</p>
+<p>which cut the interval into $N_t$ consecutive slabs,</p>
+<br/>
+<p>$$
+[t_0, t_1) , \;\; [t_1, t_2) , \;\; \ldots , \;\; [t_{N_t - 1}, t_{N_t}] ,
+$$</p>
+<br/>
+<p>the last one closed so that the final time belongs to a slab. Each slab carries a strip of space-time with it,</p>
+<br/>
+<p>$$
+\Omega_i = \bigl\{ (x, t) \;:\; x \in \Omega , \;\; t_{i-1} \le t &lt; t_i \bigr\} , \qquad i = 1, \ldots, N_t ,
+$$</p>
+<br/>
+<p>and the collocation points inherit the partition. Writing $S_i$ for the points that fall in $\Omega_i$ and $N_i = |S_i|$, the full collocation set is the disjoint union of the $S_i$, so that $\sum_i N_i = N$. Define the residual loss restricted to one slab,</p>
+<br/>
+<p>$$
+L_i = \frac{1}{N_i} \sum_{(x_j, t_j) \,\in\, S_i} r_\theta(x_j, t_j)^2 .
+$$</p>
+<br/>
+<p>In Section 4.1 and in the lab below the collocation points are drawn on a grid, $N_t$ time levels with $N_x$ points each. Each slab then contains exactly one level, which we continue to write $t_i$, so that $N_i = N_x$ and the definition reduces to the average over that level,</p>
+<br/>
+<p>$$
+L_i = \frac{1}{N_x} \sum_{j=1}^{N_x} r_\theta(x_j, t_i)^2 .
+$$</p>
+<br/>
+<p>Nothing that follows depends on which of the two is used. The slabs matter only because they are ordered, and the same partition reappears in Section 4.4, where the windows of time marching are these slabs trained one at a time rather than weighted.</p>
+<br/>
+<p>These slab losses are not a new object; they are the old loss taken apart. Collecting the sum over all collocation points slab by slab,</p>
+<br/>
+<p>$$
+\mathcal{L}_{\mathrm{PDE}} = \frac{1}{N} \sum_{j=1}^{N} r_\theta(x_j, t_j)^2 = \sum_{i=1}^{N_t} \frac{N_i}{N}\, L_i ,
+$$</p>
+<br/>
+<p>and when the slabs are sampled uniformly, so that $N_i = N / N_t$,</p>
+<br/>
+<p>$$
+\mathcal{L}_{\mathrm{PDE}} = \frac{1}{N_t} \sum_{i=1}^{N_t} L_i .
+$$</p>
+<br/>
+<p>Nothing has happened yet; this is the same number written differently. But in this form the objection of Section 4.1 can be stated exactly. The loss is already a sum over time slabs, and every slab enters with the same coefficient $1/N_t$. The coefficient multiplying the last slab does not depend on how well the first has been fitted. That constant, identical for every $i$, is the whole of the problem.</p>
+<br/>
+<p>Causal training replaces it by a coefficient that does depend on the earlier slices,</p>
 <br/>
 <p>$$
 \mathcal{L}_{\mathrm{PDE}}^{\mathrm{causal}} = \frac{1}{N_t}\sum_{i=1}^{N_t} w_i\,L_i ,
 \qquad
-w_i = \exp\Bigl(-\epsilon\sum_{k&lt;i} L_k\Bigr) .
+w_i = \exp\Bigl(-\epsilon\sum_{k&lt;i} L_k\Bigr) ,
 $$</p>
 <br/>
-<p>The weight of a slice is an exponential of the accumulated loss of all the slices before it. The first slice has nothing before it, so $w_1 = 1$ and it is trained at full strength from the start. A later slice has weight close to zero as long as the earlier slices are still poorly fitted, and its weight rises towards one only as their losses fall. Training therefore proceeds from left to right in time, not because the collocation points are ordered but because the loss is: the later residuals are present at every iteration, and they are ignored until the earlier ones have been dealt with.</p>
+<p>with a single new parameter $\epsilon &gt; 0$. The sum in the exponent runs over the slices strictly before $i$, so it is the accumulated residual error upstream in time. Written out, the first few weights are</p>
 <br/>
-<p>The parameter $\epsilon$ sets how strictly the order is enforced. For $\epsilon \to 0$ every weight is one and the ordinary loss is recovered; for large $\epsilon$ even a small early loss suppresses everything after it. Two details of the implementation matter. The accumulated losses inside the exponential are detached from the graph, so that the weights act as a schedule and are not themselves optimized, and the weights are recomputed at every iteration from the current residuals, so that the active region moves forward on its own as the solution improves. Nothing else changes: no new equation, no extra network, no partition of the domain.</p>
+<p>$$
+w_1 = e^0 = 1 , \qquad w_2 = e^{-\epsilon L_1} , \qquad w_3 = e^{-\epsilon(L_1 + L_2)} , \qquad w_4 = e^{-\epsilon(L_1 + L_2 + L_3)} ,
+$$</p>
+<br/>
+<p>and in general each weight is the previous one multiplied by one more factor,</p>
+<br/>
+<p>$$
+w_{i+1} = w_i\,e^{-\epsilon L_i} , \qquad e^{-\epsilon L_i} \in (0, 1] .
+$$</p>
+<br/>
+<p>Three properties follow from this recursion alone. The first slice has an empty sum in its exponent, so $w_1 = 1$ for the whole of training: the slice next to the initial condition is never gated. The weights are non-increasing in time,</p>
+<br/>
+<p>$$
+1 = w_1 \ge w_2 \ge \cdots \ge w_{N_t} &gt; 0 ,
+$$</p>
+<br/>
+<p>a staircase descending into the future. And a weight is close to one only when every slice before it has small loss, since one large $L_k$ contributes a small factor that suppresses all the weights after it.</p>
+<br/>
+<p>What the weights do to training is seen in the gradient. Since they are held fixed when the derivative is taken,</p>
+<br/>
+<p>$$
+\nabla_\theta\,\mathcal{L}_{\mathrm{PDE}}^{\mathrm{causal}} = \frac{1}{N_t}\sum_{i=1}^{N_t} w_i\,\nabla_\theta L_i ,
+$$</p>
+<br/>
+<p>so $w_i$ is how loudly slice $i$ speaks in a parameter update. At the first iteration $L_1$ is large, $w_2$ and everything after it are near zero, and the update is driven by the first slice alone: the network is in effect solving the equation next to the initial condition that anchors it. As $L_1$ falls, $w_2$ rises towards one and the second slice begins to contribute; as $L_2$ falls in turn, the third follows. Training proceeds from left to right in time, not because the collocation points are ordered but because the loss is: the later residuals are present at every iteration, and they are ignored until the earlier ones have been dealt with.</p>
+<br/>
+<p>The parameter $\epsilon$ sets how strictly the order is enforced. For $\epsilon \to 0$ every weight is one and the ordinary loss is recovered; for large $\epsilon$ even a small early loss suppresses everything after it. It has a scale rather than a universal value, since $L_k$ carries the units of the residual squared and a value tuned for one equation does not transfer to another whose residual is measured differently.</p>
+<br/>
+<p>Two details of the implementation matter. The accumulated losses inside the exponential are detached from the graph, so that the weights act as a schedule and are not themselves optimized; otherwise the optimizer would discover that $\sum_i w_i L_i$ can be reduced by shrinking the weights rather than the residuals. And the weights are recomputed at every iteration from the current residuals, so that the active region moves forward on its own as the solution improves. Nothing else changes: no new equation, no extra network, no partition of the domain.</p>
 </div>
 </div>
 </div>
@@ -97684,6 +97754,19 @@ $$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In the left panel the weights fall off geometrically with the slice index, slowly for $\epsilon = 0.1$ and steeply for $\epsilon = 2$; at the start of training only the first slice or two are active. When the first loss drops, the weights of all later slices rise together, because the sum inside the exponential has shrunk for every one of them; when the second drops as well, the active front moves one slice further. The region in which the equation is actually enforced advances in time as the solution behind it converges, which is the behaviour of a time-stepping scheme obtained from a single loss.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=23f6a523"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Because the weights descend, the smallest of them is always the last,</p>
+<br/>
+<p>$$
+\min_i w_i = w_{N_t} ,
+$$</p>
+<br/>
+<p>and that single number says whether training ever finished. If $w_{N_t}$ has risen close to one by the end of the run, every gate has opened and the equation has been enforced over the whole interval. If it is still small, the active front never reached the end: the late slices were never fitted, and the prediction there should not be trusted however small the reported total loss is, because the total is small precisely in virtue of having weighted those slices out of it. The quantity that gates the training doubles as the diagnostic that validates it, and is worth recording alongside the loss. It also gives a practical rule for $\epsilon$: take the largest value for which $w_{N_t}$ still reaches one within the iteration budget.</p>
 </div>
 </div>
 </div>
@@ -149844,7 +149927,7 @@ To: /content/convection_time_marching.pt
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=ca6fdca9"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.6.1.-A-Decaying-Solution-Weights-Its-Own-Loss">4.6.1. A Decaying Solution Weights Its Own Loss<a class="anchor-link" href="#4.6.1.-A-Decaying-Solution-Weights-Its-Own-Loss">¶</a></h3><p>Start with a picture. Suppose the network is wrong by ten percent at every time. At $t = 0$ the solution has size $1$, so the error is $0.1$ and its square is $0.01$. At $t = T$ the solution has shrunk to $0.01$, so the same ten-percent error is $0.0001$ and its square is $10^{-8}$. The optimizer sees the second mistake as a million times less important than the first, even though the two are equally bad in relative terms. Nobody asked for the late times to be discounted; the decay of the solution did it.</p>
+<h3 id="4.6.1.-A-Decaying-Solution-Weights-Its-Own-Loss">4.6.1. A Decaying Solution Weights Its Own Loss<a class="anchor-link" href="#4.6.1.-A-Decaying-Solution-Weights-Its-Own-Loss">¶</a></h3><p>Start with a picture. Suppose the network is wrong by ten percent at every time. At $t = 0$ the solution has size $1$, so the error is $0.1$ and its square is $0.01$. At $t = T$ the solution has shrunk to $0.01$, so the same ten-percent error is $0.001$ and its square is $10^{-6}$. The optimizer sees the second mistake as ten thousand times less important than the first, even though the two are equally bad in relative terms. Nobody asked for the late times to be discounted; the decay of the solution did it.</p>
 <br/>
 <p>Now the same statement made exact. Solutions of the heat equation with fixed ends decay like $e^{-\lambda t}$. So write the solution as the known decay times a field that does not decay,</p>
 <br/>
@@ -149876,7 +149959,7 @@ $$</p>
 = \frac{1}{N_f}\sum_{j=1}^{N_f} e^{-2\lambda t_j}\; r_v(x_j, t_j)^2
 $$</p>
 <br/>
-<p>Read the right-hand side as a weighted loss on $v$: the point at time $t_j$ carries the weight $e^{-2\lambda t_j}$. This is the million-to-one of the picture above, now with its exact value. The plain loss on $u$ was a weighted loss all along, and the weights were chosen by the decay, not by us.</p>
+<p>Read the right-hand side as a weighted loss on $v$: the point at time $t_j$ carries the weight $e^{-2\lambda t_j}$. This is the ten-thousand-to-one of the picture above, now with its exact value. The plain loss on $u$ was a weighted loss all along, and the weights were chosen by the decay, not by us.</p>
 <br/>
 <p>How bad is it? For the heat equation on the unit interval with fixed ends, $\lambda = \alpha\pi^2 \approx 9.9$ when $\alpha = 1$. The table gives, for three interval lengths, how far the solution has decayed by $t = T$, how much weight the loss gives to $t = T$ compared with $t = 0$, and how early half of the whole loss has already been spent.</p>
 <br/>
